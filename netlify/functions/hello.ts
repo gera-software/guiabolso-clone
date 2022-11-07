@@ -12,11 +12,12 @@ const TransactionSchema = new mongoose.Schema({
 
 const Transaction = mongoose.model('transactions', TransactionSchema);
 
-const handler :Handler = async (event, context) => {
-  await mongoose.connect('mongodb://localhost:27017/guiabolso');
-  
-  // use `await mongoose.connect('mongodb://user:password@localhost:27017/test');` if your database has auth enabled
+const mongoUri = process.env.VITE_MONGO_URI || 'mongodb://localhost:27017/guiabolso'
 
+const handler :Handler = async (event, context) => {
+  console.log('[connecting] ' + mongoUri)
+  await mongoose.connect(mongoUri);
+  
   const year = event.queryStringParameters?.year
   const month = event.queryStringParameters?.month
 
