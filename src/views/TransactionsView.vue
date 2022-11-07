@@ -19,13 +19,13 @@ watch(monthFilter, async () => {
     const [ year, month ] = monthFilter.value.split('-')
     console.log(year, month)
 
-    await getTransactions(+year, +month)
+    await getTransactions(year, month)
 
 })
 
 const transactions = ref([])
 
-async function getTransactions(year: number, month: number) {
+async function getTransactions(year: String, month: String) {
     console.log(year, month)
   return api.guiabolsoApi({
     method: 'get',
