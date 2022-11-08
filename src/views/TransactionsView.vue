@@ -125,6 +125,7 @@ const transactionsGroupedByDate = computed(() => {
   .category {
     font-size: .8em;
     opacity: .7;
+    white-space: nowrap;
   }
 
   .description {
