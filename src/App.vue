@@ -3,14 +3,14 @@
 </script>
 
 <template>
-  <ul style="margin:0">
+  <!-- <ul style="margin:0">
     <li>
       <router-link to="/">Home</router-link>
     </li>
     <li>
       <router-link :to="{ name: 'transactions' }">Transactions</router-link>
     </li>
-  </ul>
+  </ul> -->
   <router-view></router-view>
 </template>
 

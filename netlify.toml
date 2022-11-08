@@ -19,3 +19,6 @@ to = '/index.html'
 
 [dev]
 functionsPort = 8885
+
+[functions]
+  external_node_modules = ["mongodb"]
