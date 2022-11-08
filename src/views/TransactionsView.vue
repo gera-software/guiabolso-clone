@@ -99,6 +99,7 @@ const transactionsGroupedByDate = computed(() => {
   .date-group h2 {
     margin: 0;
     padding-left: 15px;
+    font-size: 1.2em;
   }
 
   .transaction {
@@ -122,22 +123,24 @@ const transactionsGroupedByDate = computed(() => {
   }
 
   .category {
+    font-size: .8em;
     opacity: .7;
   }
 
   .description {
-    font-size: 1.2em;
+    font-size: 1em;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
   }
 
   .account {
+    font-size: .8em;
     opacity: .7;
   }
 
   .value {
-    font-size: 1.2em;
+    font-size: 1em;
     font-weight: bold;
   }
 </style>
