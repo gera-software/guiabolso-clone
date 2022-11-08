@@ -29,7 +29,7 @@ async function getTransactions(year: String, month: String) {
     console.log(year, month)
   return api.guiabolsoApi({
     method: 'get',
-    url: `/hello?year=${year}&month=${month}`,
+    url: `/get-transactions?year=${year}&month=${month}`,
   }).then(function (response) {
     console.log(response.data)
     transactions.value = response.data

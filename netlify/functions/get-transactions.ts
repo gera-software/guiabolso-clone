@@ -17,20 +17,24 @@ const mongoUri = process.env.VITE_MONGO_URI || 'mongodb://localhost:27017/guiabo
 const handler :Handler = async (event, context) => {
   console.log('[connecting] ' + mongoUri)
   await mongoose.connect(mongoUri);
+
+  const currentDate = new Date()
+  const currentYear = '' + currentDate.getFullYear()
+  const currentMonth = (currentDate.getMonth() + 1).toString()
   
-  const year = event.queryStringParameters?.year
-  const month = event.queryStringParameters?.month
+  const year = parseInt(event.queryStringParameters?.year ?? currentYear)
+  const month = parseInt(event.queryStringParameters?.month ?? currentMonth) 
 
+  const firstDay = new Date(`${year}-${month}-01`)
+  const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
-  // const transactions = await Transaction.find({ _id: "63682d7c90a6d4bf4c5ac6a3" });
   const transactions = await Transaction.aggregate([
-    // { $match: { _id: new mongoose.Types.ObjectId("63682d7c90a6d4bf4c5ac6a3") } },
-    { $match: { date: { $gte: new Date(`${year}-${month}-01`), $lt: new Date(`${year}-${month}-28`) } } },
+    { $match: { date: { $gte: firstDay, $lt: lastDay } } },
     { $lookup: { from: 'accounts', localField: 'accountId', foreignField: '_id', as: 'account' } },
     { $lookup: { from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'category' } },
+    { $sort: { date: -1 } }
   ]);
 
-  
   return {
     statusCode: 200,
     body: JSON.stringify(transactions),
