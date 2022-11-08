@@ -110,12 +110,15 @@ const transactionsGroupedByDate = computed(() => {
   .col-1 {
     display: flex;
     flex-direction: column;
+    flex-basis: min-content;
+    overflow: hidden;
   }
 
   .col-2 {
     display: flex;
     flex-direction: column;
     text-align: right;
+    flex-shrink: 0;
   }
 
   .category {
@@ -124,6 +127,9 @@ const transactionsGroupedByDate = computed(() => {
 
   .description {
     font-size: 1.2em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   .account {
