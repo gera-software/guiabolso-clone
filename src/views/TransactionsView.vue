@@ -30,6 +30,14 @@
     <CategoryIcon icon="LifestyleTvInternetIcon" color="red"/>
     <CategoryIcon icon="LifestyleTaxesIcon" color="red"/>
     <CategoryIcon icon="LifestyleTravelIcon" color="red"/>
+    <br>
+    <CategoryIcon icon="LoanPayrollIcon" color="purple"/>
+    <CategoryIcon icon="LoanOverdraftIcon" color="purple"/>
+    <CategoryIcon icon="LoanBillIcon" color="purple"/>
+    <CategoryIcon icon="LoanCreditIcon" color="purple"/>
+    <CategoryIcon icon="LoanInterestIcon" color="purple"/>
+    <CategoryIcon icon="LoanCardInterestIcon" color="purple"/>
+    <CategoryIcon icon="LoanOtherIcon" color="purple"/>
 
     <div class="date-group" v-for="(transactions, dateString) in transactionsGroupedByDate" :key="dateString">
       <h2>{{ new Date(dateString).toLocaleDateString() }}</h2>

@@ -30,6 +30,13 @@ import LifestyleServicesIcon from '@/components/icons/LifestyleServicesIcon.vue'
 import LifestyleTvInternetIcon from '@/components/icons/LifestyleTvInternetIcon.vue'
 import LifestyleTaxesIcon from '@/components/icons/LifestyleTaxesIcon.vue'
 import LifestyleTravelIcon from '@/components/icons/LifestyleTravelIcon.vue'
+import LoanPayrollIcon from '@/components/icons/LoanPayrollIcon.vue'
+import LoanOverdraftIcon from '@/components/icons/LoanOverdraftIcon.vue'
+import LoanBillIcon from '@/components/icons/LoanBillIcon.vue'
+import LoanCreditIcon from '@/components/icons/LoanCreditIcon.vue'
+import LoanInterestIcon from '@/components/icons/LoanInterestIcon.vue'
+import LoanCardInterestIcon from '@/components/icons/LoanCardInterestIcon.vue'
+import LoanOtherIcon from '@/components/icons/LoanOtherIcon.vue'
 
 
 const app = createApp(App)
@@ -64,5 +71,13 @@ app.component('LifestyleServicesIcon', LifestyleServicesIcon)
 app.component('LifestyleTvInternetIcon', LifestyleTvInternetIcon)
 app.component('LifestyleTaxesIcon', LifestyleTaxesIcon)
 app.component('LifestyleTravelIcon', LifestyleTravelIcon)
+
+app.component('LoanPayrollIcon', LoanPayrollIcon)
+app.component('LoanOverdraftIcon', LoanOverdraftIcon)
+app.component('LoanBillIcon', LoanBillIcon)
+app.component('LoanCreditIcon', LoanCreditIcon)
+app.component('LoanInterestIcon', LoanInterestIcon)
+app.component('LoanCardInterestIcon', LoanCardInterestIcon)
+app.component('LoanOtherIcon', LoanOtherIcon)
 
 app.mount('#app')
