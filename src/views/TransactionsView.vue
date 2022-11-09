@@ -2,6 +2,11 @@
     <input v-model="monthFilter" type="month">
 
     <CategoryIcon icon="IncomeBonusIcon" color="red"/>
+    <CategoryIcon icon="IncomeLoanIcon" color="blue"/>
+    <CategoryIcon icon="NewCategoryIcon" color="green"/>
+    <CategoryIcon icon="IncomeOtherIcon" color="green"/>
+    <CategoryIcon icon="IncomeWageIcon" color="green"/>
+    <CategoryIcon icon="IncomeReturnIcon" color="green"/>
 
     <div class="date-group" v-for="(transactions, dateString) in transactionsGroupedByDate" :key="dateString">
       <h2>{{ new Date(dateString).toLocaleDateString() }}</h2>
