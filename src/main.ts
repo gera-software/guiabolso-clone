@@ -37,6 +37,11 @@ import LoanCreditIcon from '@/components/icons/LoanCreditIcon.vue'
 import LoanInterestIcon from '@/components/icons/LoanInterestIcon.vue'
 import LoanCardInterestIcon from '@/components/icons/LoanCardInterestIcon.vue'
 import LoanOtherIcon from '@/components/icons/LoanOtherIcon.vue'
+import BankPostingsApplicationIcon from '@/components/icons/BankPostingsApplicationIcon.vue'
+import BankPostingsCreditCardIcon from '@/components/icons/BankPostingsCreditCardIcon.vue'
+import BankPostingsRescueIcon from '@/components/icons/BankPostingsRescueIcon.vue'
+import BankPostingsTransferIcon from '@/components/icons/BankPostingsTransferIcon.vue'
+import UncategorizedIcon from '@/components/icons/UncategorizedIcon.vue'
 
 
 const app = createApp(App)
@@ -79,5 +84,12 @@ app.component('LoanCreditIcon', LoanCreditIcon)
 app.component('LoanInterestIcon', LoanInterestIcon)
 app.component('LoanCardInterestIcon', LoanCardInterestIcon)
 app.component('LoanOtherIcon', LoanOtherIcon)
+
+app.component('BankPostingsApplicationIcon', BankPostingsApplicationIcon)
+app.component('BankPostingsCreditCardIcon', BankPostingsCreditCardIcon)
+app.component('BankPostingsRescueIcon', BankPostingsRescueIcon)
+app.component('BankPostingsTransferIcon', BankPostingsTransferIcon)
+
+app.component('UncategorizedIcon', UncategorizedIcon)
 
 app.mount('#app')

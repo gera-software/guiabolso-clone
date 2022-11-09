@@ -38,6 +38,14 @@
     <CategoryIcon icon="LoanInterestIcon" color="purple"/>
     <CategoryIcon icon="LoanCardInterestIcon" color="purple"/>
     <CategoryIcon icon="LoanOtherIcon" color="purple"/>
+    <br>
+    <CategoryIcon icon="BankPostingsApplicationIcon" color="purple"/>
+    <CategoryIcon icon="BankPostingsCreditCardIcon" color="purple"/>
+    <CategoryIcon icon="BankPostingsRescueIcon" color="purple"/>
+    <CategoryIcon icon="BankPostingsTransferIcon" color="purple"/>
+    <br>
+    <CategoryIcon icon="UncategorizedIcon" color="red"/>
+
 
     <div class="date-group" v-for="(transactions, dateString) in transactionsGroupedByDate" :key="dateString">
       <h2>{{ new Date(dateString).toLocaleDateString() }}</h2>
