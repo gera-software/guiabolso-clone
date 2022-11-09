@@ -7,6 +7,14 @@
     <CategoryIcon icon="IncomeOtherIcon" color="green"/>
     <CategoryIcon icon="IncomeWageIcon" color="green"/>
     <CategoryIcon icon="IncomeReturnIcon" color="green"/>
+    <CategoryIcon icon="EssentialResidentialBillsIcon" color="green"/>
+    <br>
+    <CategoryIcon icon="EssentialEducationIcon" color="green"/>
+    <CategoryIcon icon="EssentialMarketIcon" color="green"/>
+    <CategoryIcon icon="EssentialLivingIcon" color="green"/>
+    <CategoryIcon icon="EssentialHealthIcon" color="green"/>
+    <CategoryIcon icon="EssentialCommuteIcon" color="red"/>
+    <br>
 
     <div class="date-group" v-for="(transactions, dateString) in transactionsGroupedByDate" :key="dateString">
       <h2>{{ new Date(dateString).toLocaleDateString() }}</h2>
