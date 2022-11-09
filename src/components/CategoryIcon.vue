@@ -23,5 +23,6 @@ console.log(props.color)
     border: 1px solid rgb(0, 0, 0);
     color: rgb(0, 0, 0);
     fill: rgb(0, 0, 0);
+    flex-shrink: 0;
 }
 </style>

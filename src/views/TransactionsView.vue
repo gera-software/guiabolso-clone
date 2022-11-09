@@ -1,7 +1,7 @@
 <template>
     <input v-model="monthFilter" type="month">
 
-    <CategoryIcon icon="IncomeBonusIcon" color="red"/>
+    <!-- <CategoryIcon icon="IncomeBonusIcon" color="red"/>
     <CategoryIcon icon="IncomeLoanIcon" color="blue"/>
     <CategoryIcon icon="NewCategoryIcon" color="green"/>
     <CategoryIcon icon="IncomeOtherIcon" color="green"/>
@@ -44,15 +44,18 @@
     <CategoryIcon icon="BankPostingsRescueIcon" color="purple"/>
     <CategoryIcon icon="BankPostingsTransferIcon" color="purple"/>
     <br>
-    <CategoryIcon icon="UncategorizedIcon" color="red"/>
+    <CategoryIcon icon="UncategorizedIcon" color="red"/> -->
 
 
     <div class="date-group" v-for="(transactions, dateString) in transactionsGroupedByDate" :key="dateString">
       <h2>{{ new Date(dateString).toLocaleDateString() }}</h2>
       <div class="transaction" v-for="transaction in transactions" :key="transaction._id">
         <div class="col-1">
-          <span class="category">{{ transaction.category[0].name }}</span>
-          <span class="description">{{ transaction.description }}</span> 
+          <CategoryIcon icon="UncategorizedIcon" color="red"/>
+          <div class="flex">
+            <span class="category">{{ transaction.category[0].name }}</span>
+            <span class="description">{{ transaction.description }}</span> 
+          </div>
         </div>
         <div class="col-2">
           <span class="account">{{ transaction.account[0].name }}</span>
@@ -154,7 +157,8 @@ const transactionsGroupedByDate = computed(() => {
 
   .col-1 {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
+    flex-direction: row;
     flex-basis: min-content;
     overflow: hidden;
   }
@@ -164,6 +168,14 @@ const transactionsGroupedByDate = computed(() => {
     flex-direction: column;
     text-align: right;
     flex-shrink: 0;
+  }
+
+  .flex {
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-basis: min-content;
+    overflow: hidden;
   }
 
   .category {
