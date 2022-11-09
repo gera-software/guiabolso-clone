@@ -15,6 +15,21 @@ import EssentialMarketIcon from '@/components/icons/EssentialMarketIcon.vue'
 import EssentialLivingIcon from '@/components/icons/EssentialLivingIcon.vue'
 import EssentialHealthIcon from '@/components/icons/EssentialHealthIcon.vue'
 import EssentialCommuteIcon from '@/components/icons/EssentialCommuteIcon.vue'
+import LifestyleRestaurantsIcon from '@/components/icons/LifestyleRestaurantsIcon.vue'
+import LifestyleShoppingIcon from '@/components/icons/LifestyleShoppingIcon.vue'
+import LifestylePersonalCareIcon from '@/components/icons/LifestylePersonalCareIcon.vue'
+import LifestyleWorkExpensesIcon from '@/components/icons/LifestyleWorkExpensesIcon.vue'
+import LifestyleEmployeesIcon from '@/components/icons/LifestyleEmployeesIcon.vue'
+import LifestyleFamilyIcon from '@/components/icons/LifestyleFamilyIcon.vue'
+import LifestyleBankTaxesIcon from '@/components/icons/LifestyleBankTaxesIcon.vue'
+import LifestyleRecreationIcon from '@/components/icons/LifestyleRecreationIcon.vue'
+import LifestyleOtherIcon from '@/components/icons/LifestyleOtherIcon.vue'
+import LifestyleGiftsIcon from '@/components/icons/LifestyleGiftsIcon.vue'
+import LifestyleWithdrawalIcon from '@/components/icons/LifestyleWithdrawalIcon.vue'
+import LifestyleServicesIcon from '@/components/icons/LifestyleServicesIcon.vue'
+import LifestyleTvInternetIcon from '@/components/icons/LifestyleTvInternetIcon.vue'
+import LifestyleTaxesIcon from '@/components/icons/LifestyleTaxesIcon.vue'
+import LifestyleTravelIcon from '@/components/icons/LifestyleTravelIcon.vue'
 
 
 const app = createApp(App)
@@ -33,5 +48,21 @@ app.component('EssentialMarketIcon', EssentialMarketIcon)
 app.component('EssentialLivingIcon', EssentialLivingIcon)
 app.component('EssentialHealthIcon', EssentialHealthIcon)
 app.component('EssentialCommuteIcon', EssentialCommuteIcon)
+
+app.component('LifestyleRestaurantsIcon', LifestyleRestaurantsIcon)
+app.component('LifestyleShoppingIcon', LifestyleShoppingIcon)
+app.component('LifestylePersonalCareIcon', LifestylePersonalCareIcon)
+app.component('LifestyleWorkExpensesIcon', LifestyleWorkExpensesIcon)
+app.component('LifestyleEmployeesIcon', LifestyleEmployeesIcon)
+app.component('LifestyleFamilyIcon', LifestyleFamilyIcon)
+app.component('LifestyleBankTaxesIcon', LifestyleBankTaxesIcon)
+app.component('LifestyleRecreationIcon', LifestyleRecreationIcon)
+app.component('LifestyleOtherIcon', LifestyleOtherIcon)
+app.component('LifestyleGiftsIcon', LifestyleGiftsIcon)
+app.component('LifestyleWithdrawalIcon', LifestyleWithdrawalIcon)
+app.component('LifestyleServicesIcon', LifestyleServicesIcon)
+app.component('LifestyleTvInternetIcon', LifestyleTvInternetIcon)
+app.component('LifestyleTaxesIcon', LifestyleTaxesIcon)
+app.component('LifestyleTravelIcon', LifestyleTravelIcon)
 
 app.mount('#app')

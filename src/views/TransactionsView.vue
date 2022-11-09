@@ -13,8 +13,23 @@
     <CategoryIcon icon="EssentialMarketIcon" color="green"/>
     <CategoryIcon icon="EssentialLivingIcon" color="green"/>
     <CategoryIcon icon="EssentialHealthIcon" color="green"/>
-    <CategoryIcon icon="EssentialCommuteIcon" color="red"/>
+    <CategoryIcon icon="EssentialCommuteIcon" color="green"/>
     <br>
+    <CategoryIcon icon="LifestyleRestaurantsIcon" color="red"/>
+    <CategoryIcon icon="LifestyleShoppingIcon" color="red"/>
+    <CategoryIcon icon="LifestylePersonalCareIcon" color="red"/>
+    <CategoryIcon icon="LifestyleWorkExpensesIcon" color="red"/>
+    <CategoryIcon icon="LifestyleEmployeesIcon" color="red"/>
+    <CategoryIcon icon="LifestyleFamilyIcon" color="red"/>
+    <CategoryIcon icon="LifestyleBankTaxesIcon" color="red"/>
+    <CategoryIcon icon="LifestyleRecreationIcon" color="red"/>
+    <CategoryIcon icon="LifestyleOtherIcon" color="red"/>
+    <CategoryIcon icon="LifestyleGiftsIcon" color="red"/>
+    <CategoryIcon icon="LifestyleWithdrawalIcon" color="red"/>
+    <CategoryIcon icon="LifestyleServicesIcon" color="red"/>
+    <CategoryIcon icon="LifestyleTvInternetIcon" color="red"/>
+    <CategoryIcon icon="LifestyleTaxesIcon" color="red"/>
+    <CategoryIcon icon="LifestyleTravelIcon" color="red"/>
 
     <div class="date-group" v-for="(transactions, dateString) in transactionsGroupedByDate" :key="dateString">
       <h2>{{ new Date(dateString).toLocaleDateString() }}</h2>
