@@ -1,9 +1,8 @@
 <template>
     <input v-model="monthFilter" type="month">
 
-    <!-- <pre>
-      {{ transactionsGroupedByDate }}
-    </pre> -->
+    <CategoryIcon icon="IncomeBonusIcon" color="red"/>
+
     <div class="date-group" v-for="(transactions, dateString) in transactionsGroupedByDate" :key="dateString">
       <h2>{{ new Date(dateString).toLocaleDateString() }}</h2>
       <div class="transaction" v-for="transaction in transactions" :key="transaction._id">
@@ -25,6 +24,7 @@ import { ref, watch, computed  } from 'vue'
 import api from '../config/axios.js'
 import { onMounted } from 'vue'
 import { groupBy } from 'lodash'
+import CategoryIcon from '@/components/CategoryIcon.vue'
 
 interface Account {
   _id: String,
