@@ -2,6 +2,7 @@ import { Handler } from "@netlify/functions";
 
 const handler :Handler = async (event, context) => {
  
+    console.log(event.queryStringParameters)
     const pluggy = require('pluggy-sdk');
 
     let item;
@@ -13,7 +14,7 @@ const handler :Handler = async (event, context) => {
             clientSecret: process.env.VITE_PLUGGY_CLIENT_SECRET,
         });
 
-        item = await client.fetchItem(process.env.VITE_PLUGGY_NUBANK_ID)  
+        item = await client.fetchItem(event.queryStringParameters?.itemId ?? '')  
         console.log(item);
 
     } catch(err) {

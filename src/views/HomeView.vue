@@ -1,15 +1,17 @@
 <template>
-    <HelloWorld msg="Home view" />
-    <button @click="getNubank">get nubank</button>
+    <h1>Pluggy API Playground</h1>
+    <input type="text" placeholder="connection id" v-model="selectedConnection"/> {{selectedConnection}}
+    <button @click="getConnection">get connection</button>
     <pre>
-        {{ nubank }}
+        {{ connection }}
     </pre>
-    <button @click="listNubankAccounts">list nubank accounts</button>
+    <input type="text" placeholder="connection id" v-model="selectedConnection"/> {{selectedConnection}}
+    <button @click="listAccounts">list accounts by connection</button>
     <pre>
         {{ accounts }}
     </pre>
-    <input type="text" placeholder="nubank account id" v-model="selectedAccount"/> {{selectedAccount}}
-    <button @click="listTransactions">listTransactions</button>
+    <input type="text" placeholder="account id" v-model="selectedAccount"/> {{selectedAccount}}
+    <button @click="listTransactions">list Transactions by account</button>
     <pre>
         {{ transactions }}
     </pre>
@@ -20,28 +22,29 @@ import HelloWorld from '@/components/HelloWorld.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 
-const nubank = ref({})
+const connection = ref({})
 
-async function getNubank() {
+async function getConnection() {
     try {
         const response = await axios({
             method: 'get',
-            url: `/api/pluggy-get-item`,
+            url: `/api/pluggy-get-item?itemId=${selectedConnection.value}`,
         });
     // console.log(response.data)
-        nubank.value = response.data;
+        connection.value = response.data;
     } catch (error) {
         console.log(error);
     }
 }
 
+const selectedConnection = ref('')
 const accounts = ref({})
 
-async function listNubankAccounts() {
+async function listAccounts() {
     try {
         const response = await axios({
             method: 'get',
-            url: `/api/pluggy-list-accounts`,
+            url: `/api/pluggy-list-accounts?itemId=${selectedConnection.value}`,
         });
         // console.log(response.data)
         accounts.value = response.data;
