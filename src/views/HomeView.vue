@@ -15,6 +15,20 @@
     <pre>
         {{ transactions }}
     </pre>
+    
+    <hr>
+    <h2>Connectors</h2>
+    <button @click="listConnectors">list connectors</button>
+    <ul>
+        <li v-for="connector in connectors" :key="connector.id">
+            <img :src="connector.imageUrl" width="50"/>
+        {{connector.id}} - {{connector.name}} - {{connector.type}} ({{connector.health.status}})
+        </li>
+    </ul>
+    <!-- <pre>
+        {{ connectors }}
+    </pre> -->
+    
 </template>
 
 <script setup lang="ts">
@@ -69,6 +83,29 @@ async function listTransactions() {
     }
 }
 
+type Connector = {
+    id: string,
+    imageUrl: string,
+    name: string,
+    type: string,
+    health: {
+        status: string
+    }
+}
+const connectors = ref<Array<Connector>>([])
+
+async function listConnectors() {
+    try {
+        const response = await axios({
+            method: 'get',
+            url: `/api/pluggy-list-connectors`,
+        });
+        // console.log(response.data)
+        connectors.value = response.data.results;
+    } catch (error) {
+        console.log(error);
+    }
+}
 </script>
   
 <style scoped>
