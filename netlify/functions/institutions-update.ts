@@ -1,6 +1,6 @@
 import { Handler } from "@netlify/functions";
 import { updateAll } from '../repositories/institutionRepository'
-import * as DataProvider from '../config/dataProvider'
+import PluggyDataProvider from '../config/dataProvider'
 
 const handler: Handler = async (event, context) => {
 
@@ -8,15 +8,9 @@ const handler: Handler = async (event, context) => {
     let res;
 
     try {
-        connectors = await DataProvider.fetchInstitutions()
-            .then((connectors) => {
-                return connectors.map((connector) => ({
-                    pluggyConnectorId: connector.id,
-                    name: connector.name,
-                    imageUrl: connector.imageUrl,
-                    primaryColor: "#" + connector.primaryColor,
-                }));
-            })
+        const provider = new PluggyDataProvider()
+
+        connectors = await provider.fetchInstitutions()
             .then(connectors => {
                 return connectors.map(connector => (
                     {
