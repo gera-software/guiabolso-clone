@@ -3,7 +3,14 @@ import Institution from '../schemas/InstitutionSchema'
 
 export async function fetchAll() {
     await connect()
-    const institutions = await Institution.find()
+    const result = await Institution.find()
     await disconnect()
-    return institutions
+    return result
+}
+
+export async function updateAll(connectors) {
+    await connect()
+    const result = await Institution.bulkWrite(connectors);
+    await disconnect()
+    return result
 }

@@ -1,20 +1,8 @@
 import { Handler } from "@netlify/functions";
-import mongoose from "mongoose";
+import { updateAll } from '../repositories/institutionRepository'
 
-const InstitutionSchema = new mongoose.Schema({
-    pluggyConnectorId: Number,
-    name: String,
-    imageUrl: String,
-    primaryColor: String,
-});
-
-const Institution = mongoose.model("institutions", InstitutionSchema);
-
-const mongoUri =
-    process.env.VITE_MONGO_URI || "mongodb://localhost:27017/guiabolso";
 
 const handler: Handler = async (event, context) => {
-    console.log("[connecting] " + mongoUri);
 
     const pluggy = require("pluggy-sdk");
 
@@ -50,22 +38,16 @@ const handler: Handler = async (event, context) => {
                 ))
             })
 
-        await mongoose.connect(mongoUri);
-
-        res = await Institution.bulkWrite(connectors);
+        res = await updateAll(connectors);
 
     } catch (err) {
         console.error(err);
-        await mongoose.disconnect()
 
         return {
             statusCode: 400,
             body: JSON.stringify(err),
         };
     }
-    
-    await mongoose.disconnect()
-    
 
     return {
         statusCode: 200,
