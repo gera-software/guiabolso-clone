@@ -1,19 +1,14 @@
 import { Handler } from "@netlify/functions";
 import { updateAll } from '../repositories/institutionRepository'
-
+import createPluggy from '../config/pluggy'
 
 const handler: Handler = async (event, context) => {
-
-    const pluggy = require("pluggy-sdk");
 
     let connectors;
     let res;
 
     try {
-        const client = new pluggy.PluggyClient({
-            clientId: process.env.VITE_PLUGGY_CLIENT_ID,
-            clientSecret: process.env.VITE_PLUGGY_CLIENT_SECRET,
-        });
+        const client = createPluggy()
 
         connectors = await client
             .fetchConnectors()
