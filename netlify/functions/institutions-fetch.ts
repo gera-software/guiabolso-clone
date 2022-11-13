@@ -1,6 +1,6 @@
 import { Handler } from "@netlify/functions";
 import mongoose from 'mongoose';
-import Institution from './InstitutionSchema'
+import Institution from '../schemas/InstitutionSchema'
 
 const mongoUri = process.env.VITE_MONGO_URI ?? ''
 
