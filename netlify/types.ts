@@ -13,6 +13,12 @@ export interface Category {
     primaryColor: String
 }
 
+export interface User {
+    _id?: String,
+    name: String,
+    email: String,
+}
+
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
 }
