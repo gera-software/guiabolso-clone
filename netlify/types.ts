@@ -1,4 +1,4 @@
-export type Institution = {
+export interface Institution {
     _id?: String,
     pluggyConnectorId?: Number,
     name: String,

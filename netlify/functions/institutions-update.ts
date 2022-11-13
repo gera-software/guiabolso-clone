@@ -1,10 +1,11 @@
 import { Handler } from "@netlify/functions";
 import * as InstitutionRepository from '../repositories/institutionRepository'
 import PluggyDataProvider from '../config/pluggyDataProvider'
+import { Institution } from "../types";
 
 const handler: Handler = async (event, context) => {
 
-    let institutions;
+    let institutions: Institution[];
     let res;
 
     try {

@@ -1,9 +1,10 @@
 import { Handler } from "@netlify/functions";
-import { fetchAll } from '../repositories/institutionRepository'
+import * as InstitutionRepository from '../repositories/institutionRepository'
+import { Institution } from "../types";
 
 const handler :Handler = async (event, context) => {
   
-    const institutions = await fetchAll()
+    const institutions: Institution[] = await InstitutionRepository.fetchAll()
     
     return {
         statusCode: 200,
