@@ -18,6 +18,8 @@ const handler :Handler = async (event, context) => {
   
     const institutions = await Institution.find()
 
+    await mongoose.disconnect()
+    
     return {
         statusCode: 200,
         body: JSON.stringify(institutions),

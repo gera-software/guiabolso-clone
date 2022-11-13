@@ -35,6 +35,8 @@ const handler :Handler = async (event, context) => {
     { $sort: { date: -1 } }
   ]);
 
+  await mongoose.disconnect()
+
   return {
     statusCode: 200,
     body: JSON.stringify(transactions),

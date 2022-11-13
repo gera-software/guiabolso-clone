@@ -56,11 +56,16 @@ const handler: Handler = async (event, context) => {
 
     } catch (err) {
         console.error(err);
+        await mongoose.disconnect()
+
         return {
             statusCode: 400,
             body: JSON.stringify(err),
         };
     }
+    
+    await mongoose.disconnect()
+    
 
     return {
         statusCode: 200,
