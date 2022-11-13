@@ -9,4 +9,10 @@ function createPluggy() {
     return client
 }
 
-export default createPluggy
+export async function fetchInstitutions() {
+    const client = createPluggy()
+    
+    return client
+            .fetchConnectors()
+            .then((response) => response.results)
+}

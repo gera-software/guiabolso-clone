@@ -1,6 +1,6 @@
 import { Handler } from "@netlify/functions";
 import { updateAll } from '../repositories/institutionRepository'
-import createPluggy from '../config/pluggy'
+import * as DataProvider from '../config/dataProvider'
 
 const handler: Handler = async (event, context) => {
 
@@ -8,11 +8,7 @@ const handler: Handler = async (event, context) => {
     let res;
 
     try {
-        const client = createPluggy()
-
-        connectors = await client
-            .fetchConnectors()
-            .then((response) => response.results)
+        connectors = await DataProvider.fetchInstitutions()
             .then((connectors) => {
                 return connectors.map((connector) => ({
                     pluggyConnectorId: connector.id,
