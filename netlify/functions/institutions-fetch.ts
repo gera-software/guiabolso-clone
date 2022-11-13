@@ -1,13 +1,9 @@
 import { Handler } from "@netlify/functions";
-import Institution from '../schemas/InstitutionSchema'
-import { connect, disconnect } from '../config/database'
+import { fetchAll } from '../repositories/institutionRepository'
 
 const handler :Handler = async (event, context) => {
-    await connect()
   
-    const institutions = await Institution.find()
-
-    await disconnect()
+    const institutions = await fetchAll()
     
     return {
         statusCode: 200,
