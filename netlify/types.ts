@@ -6,6 +6,13 @@ export interface Institution {
     primaryColor?: String,
 }
 
+export interface Category {
+    _id?: String,
+    name: String,
+    iconName: String,
+    primaryColor: String
+}
+
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
 }
