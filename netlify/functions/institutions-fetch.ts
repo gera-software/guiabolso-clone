@@ -1,16 +1,13 @@
 import { Handler } from "@netlify/functions";
-import mongoose from 'mongoose';
 import Institution from '../schemas/InstitutionSchema'
-
-const mongoUri = process.env.VITE_MONGO_URI ?? ''
+import { connect, disconnect } from '../config/database'
 
 const handler :Handler = async (event, context) => {
-    console.log('[connecting] ' + mongoUri)
-    await mongoose.connect(mongoUri);
+    await connect()
   
     const institutions = await Institution.find()
 
-    await mongoose.disconnect()
+    await disconnect()
     
     return {
         statusCode: 200,
