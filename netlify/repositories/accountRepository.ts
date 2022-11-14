@@ -49,9 +49,9 @@ const schema = new Schema<Account>({
 const AccountModel = model<Account>('accounts', schema);
 
 
-export async function fetchAll(): Promise<Account[]> {
+export async function fetchByUserId(id): Promise<Account[]> {
     await connect();
-    const result = await AccountModel.find();
+    const result = await AccountModel.find({ userId: id });
     await disconnect();
     return result;
 }
