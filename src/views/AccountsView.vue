@@ -6,50 +6,31 @@
     <h1>Contas e Cartões</h1>
   </div>
   <div class="container">
+
     <div class="card">
-      <div class="card-header">Nubank</div>
-      <div class="account">
-        <div class="name">cartão 5346</div>
-        <div class="balance">R$ -3645,88</div>
+      <div class="card-header">Contas bancárias</div>
+      <div class="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()">
+        <div class="name">{{account.name}}</div>
+        <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
       </div>
-      <div class="account">
-        <div class="name">cartão 5346</div>
-        <div class="balance">R$ -3645,88</div>
+    </div> 
+
+    <div class="card">
+      <div class="card-header">Cartões de Crédito</div>
+      <div class="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()">
+        <div class="name">{{account.name}}</div>
+        <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="card-header">Carteiras</div>
+      <div class="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()">
+        <div class="name">{{account.name}}</div>
+        <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-header">Nubank</div>
-      <div class="account">
-        <div class="name">cartão 5346</div>
-        <div class="balance">R$ -3645,88</div>
-      </div>
-      <div class="account">
-        <div class="name">cartão 5346</div>
-        <div class="balance">R$ -3645,88</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">Nubank</div>
-      <div class="account">
-        <div class="name">cartão 5346</div>
-        <div class="balance">R$ -3645,88</div>
-      </div>
-      <div class="account">
-        <div class="name">cartão 5346</div>
-        <div class="balance">R$ -3645,88</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">Nubank</div>
-      <div class="account">
-        <div class="name">cartão 5346</div>
-        <div class="balance">R$ -3645,88</div>
-      </div>
-      <div class="account">
-        <div class="name">cartão 5346</div>
-        <div class="balance">R$ -3645,88</div>
-      </div>
-    </div>
+
   </div>
 </template>
 
@@ -59,6 +40,100 @@ import api from '../config/axios.js'
 import { onMounted } from 'vue'
 import { groupBy } from 'lodash'
 
+interface Institution {
+    _id?: String,
+    pluggyConnectorId?: Number,
+    name: String,
+    imageUrl?: String,
+    primaryColor?: String,
+}
+
+enum AccountSyncType {
+    MANUAL = 'MANUAL',
+    AUTOMATIC = 'AUTOMATIC'
+} 
+
+enum AccountType {
+    WALLET = 'WALLET',
+    BANK = 'BANK',
+    CREDIT_CARD = 'CREDIT_CARD'
+}
+
+enum CurrencyCodes {
+    BRL = 'BRL',
+}
+
+interface AccountOwner {
+    name: String,
+    pluggyIdentityId?: String,
+    cpf?: String,
+}
+
+enum ConnectionStatus {
+    UPDATING = 'UPDATING',
+    LOGIN_ERROR = 'LOGIN_ERROR',
+    OUTDATED = 'OUTDATED',
+    WAITING_USER_INPUT = 'WAITING_USER_INPUT',
+    UPDATED = 'UPDATED',
+}
+
+interface Connection {
+    pluggyItemId: String,
+    lastUpdatedAt: Date,
+    status: ConnectionStatus,
+}
+
+interface BankData {
+    institution: Institution,
+} 
+
+interface CreditData {
+    institution: Institution,
+    brand: String,
+    creditLimit: Number,
+    availableCreditLimit: Number,
+    closeDate: Date,
+    dueDate: Date,
+}
+
+interface Account {
+    _id?: String,
+    name: String,
+    syncType: AccountSyncType,
+    pluggyAccountId?: String,
+    balance: Number,
+    currencyCode: CurrencyCodes,
+    type: AccountType,
+    userId: String,
+    accountOwner?: AccountOwner,
+    connection?: Connection,
+    bankData?: BankData,
+    creditData?: CreditData,
+}
+
+const accounts = ref<Account[]>([])
+
+const accountsGroupedByType = computed(() => {
+  return groupBy(accounts.value, (accounts) => accounts.type )
+});
+
+async function getMyAccounts(): Promise<Account[]> {
+    console.log('get my accounts')
+  return api.guiabolsoApi({
+    method: 'get',
+    url: `/accounts-fetch`,
+  }).then(function (response) {
+    // console.log(response.data)
+    accounts.value = response.data
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+onMounted(async () => {
+  getMyAccounts()
+})
 
 </script>
   
