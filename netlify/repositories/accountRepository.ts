@@ -16,6 +16,11 @@ const schema = new Schema<Account>({
         pluggyIdentityId: { type: String, required: false },
         cpf: { type: String, required: false },
     },
+    connection: {
+        pluggyItemId: String,
+        lastUpdatedAt: Date,
+        status: String,
+    }
 });
 
 const AccountModel = model<Account>('accounts', schema);

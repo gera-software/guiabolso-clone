@@ -40,6 +40,20 @@ export interface AccountOwner {
     cpf?: String,
 }
 
+export enum ConnectionStatus {
+    UPDATING = 'UPDATING',
+    LOGIN_ERROR = 'LOGIN_ERROR',
+    OUTDATED = 'OUTDATED',
+    WAITING_USER_INPUT = 'WAITING_USER_INPUT',
+    UPDATED = 'UPDATED',
+}
+
+export interface Connection {
+    pluggyItemId: String,
+    lastUpdatedAt: Date,
+    status: ConnectionStatus,
+}
+
 export interface Account {
     _id?: String,
     name: String,
@@ -49,7 +63,8 @@ export interface Account {
     currencyCode: CurrencyCodes,
     type: AccountType,
     userId: String,
-    accountOwner: AccountOwner,
+    accountOwner?: AccountOwner,
+    connection?: Connection,
 }
 
 export interface DataProvider {
