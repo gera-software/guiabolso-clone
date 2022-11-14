@@ -48,10 +48,16 @@ const schema = new Schema<Account>({
 
 const AccountModel = model<Account>('accounts', schema);
 
-
 export async function fetchByUserId(id): Promise<Account[]> {
     await connect();
     const result = await AccountModel.find({ userId: id });
+    await disconnect();
+    return result;
+}
+
+export async function getById(id): Promise<Account | null> {
+    await connect();
+    const result = await AccountModel.findById(id);
     await disconnect();
     return result;
 }
