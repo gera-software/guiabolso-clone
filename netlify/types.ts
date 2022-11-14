@@ -54,9 +54,19 @@ export interface Connection {
     status: ConnectionStatus,
 }
 
-export interface BankAccountData {
+export interface BankData {
     institution: Institution,
 } 
+
+export interface CreditData {
+    institution: Institution,
+    brand: String,
+    creditLimit: Number,
+    availableCreditLimit: Number,
+    closeDate: Date,
+    dueDate: Date,
+}
+
 export interface Account {
     _id?: String,
     name: String,
@@ -68,7 +78,8 @@ export interface Account {
     userId: String,
     accountOwner?: AccountOwner,
     connection?: Connection,
-    bankData?: BankAccountData
+    bankData?: BankData,
+    creditData?: CreditData,
 }
 
 export interface DataProvider {

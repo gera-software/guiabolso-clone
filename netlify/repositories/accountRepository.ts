@@ -29,6 +29,20 @@ const schema = new Schema<Account>({
             imageUrl: { type: String, required: false },
             primaryColor: { type: String, required: false },
         } 
+    },
+    creditData: {
+        institution: {
+            _id: { type: String, required: false },
+            pluggyConnectorId: { type: Number, required: false },
+            name: String,
+            imageUrl: { type: String, required: false },
+            primaryColor: { type: String, required: false },
+        },
+        brand: String,
+        creditLimit: Number,
+        availableCreditLimit: Number,
+        closeDate: Date,
+        dueDate: Date,
     }
 });
 
