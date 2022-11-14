@@ -77,3 +77,11 @@ export async function create(transaction: Transaction | null): Promise<Transacti
 
     return result;
 }
+
+export async function updateOne(transaction: Transaction): Promise<Transaction | null> {
+    await connect();
+    const result = await TransactionModel.findOneAndReplace({ _id: transaction?._id }, transaction);
+    await disconnect();
+
+    return result;
+}
