@@ -19,13 +19,19 @@ const schema = new Schema<Transaction>({
     comment: { type: String, required: false },
     ignored: Boolean,
     accountId: String,
+    _isDeleted: Boolean,
 });
 
 const TransactionModel = model<Transaction>('transactions', schema);
 
+/**
+ * Get a not deleted transaction by id
+ * @param id 
+ * @returns 
+ */
 export async function getById(id): Promise<Transaction | null> {
     await connect();
-    const result = await TransactionModel.findById(id);
+    const result = await TransactionModel.findOne({ _id: id, _isDeleted: false });
     await disconnect();
     return result;
 }

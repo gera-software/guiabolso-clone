@@ -105,6 +105,7 @@ export interface Transaction {
     comment?: String,
     ignored: Boolean,
     accountId: String,
+    _isDeleted: Boolean,
 }
 
 export interface DataProvider {
