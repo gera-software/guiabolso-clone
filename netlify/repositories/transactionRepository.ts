@@ -50,13 +50,15 @@ export async function remove(id): Promise<Transaction | null> {
 
 /**
  * Fetch all (not deleted) transactions by account id
- * TODO paginate results
+ * TODO paginate results by month (temporarily limited to 20 last items)
  * @param id 
  * @returns 
  */
 export async function fetchByAccount(id): Promise<Transaction[]> {
     await connect();
-    const result = await TransactionModel.find({ accountId: id, _isDeleted: false });
+    const result = await TransactionModel.find({ accountId: id, _isDeleted: false })
+        .sort({'date': -1})
+        .limit(20);
     await disconnect();
     return result;
 }
