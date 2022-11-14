@@ -2,6 +2,7 @@ import { connect, disconnect } from "../config/database";
 import { Schema, Types, model } from 'mongoose';
 import { Account } from '../types'
 
+
 const schema = new Schema<Account>({
     name: String,
     syncType: String,
@@ -10,6 +11,11 @@ const schema = new Schema<Account>({
     currencyCode: String,
     type: String,
     userId: Types.ObjectId,
+    accountOwner: {
+        name: String,
+        pluggyIdentityId: { type: String, required: false },
+        cpf: { type: String, required: false },
+    },
 });
 
 const AccountModel = model<Account>('accounts', schema);

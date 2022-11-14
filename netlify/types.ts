@@ -34,6 +34,12 @@ export enum CurrencyCodes {
     BRL = 'BRL',
 }
 
+export interface AccountOwner {
+    name: String,
+    pluggyIdentityId?: String,
+    cpf?: String,
+}
+
 export interface Account {
     _id?: String,
     name: String,
@@ -43,6 +49,7 @@ export interface Account {
     currencyCode: CurrencyCodes,
     type: AccountType,
     userId: String,
+    accountOwner: AccountOwner,
 }
 
 export interface DataProvider {
