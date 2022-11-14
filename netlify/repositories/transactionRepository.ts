@@ -1,6 +1,7 @@
 import { connect, disconnect } from "../config/database";
 import { Schema, model, Types } from 'mongoose';
-import { Transaction } from '../types'
+import { CurrencyCodes, Transaction, TransactionType } from '../types'
+import { TransactionStatus } from "pluggy-sdk";
 
 const schema = new Schema<Transaction>({
     pluggyTransactionId: { type: String, required: false },
@@ -60,5 +61,19 @@ export async function fetchByAccount(id): Promise<Transaction[]> {
         .sort({'date': -1})
         .limit(20);
     await disconnect();
+    return result;
+}
+
+/**
+ * Creates a transaction
+ * @param transaction 
+ * @returns 
+ */
+export async function create(transaction: Transaction | null): Promise<Transaction | null> {
+    await connect();
+    const doc = new TransactionModel(transaction);
+    const result = await doc.save();
+    await disconnect();
+
     return result;
 }
