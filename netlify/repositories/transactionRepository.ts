@@ -35,3 +35,15 @@ export async function getById(id): Promise<Transaction | null> {
     await disconnect();
     return result;
 }
+
+/**
+ * Logical deletion of a transaction
+ * @param id 
+ * @returns 
+ */
+export async function remove(id): Promise<Transaction | null> {
+    await connect();
+    const result = await TransactionModel.findOneAndUpdate({ _id: id }, { _isDeleted: true });
+    await disconnect();
+    return result;
+}
