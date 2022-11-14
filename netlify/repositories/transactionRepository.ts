@@ -1,5 +1,5 @@
 import { connect, disconnect } from "../config/database";
-import { Schema, model } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 import { Transaction } from '../types'
 
 const schema = new Schema<Transaction>({
@@ -9,7 +9,7 @@ const schema = new Schema<Transaction>({
     currencyCode: String,
     date: Date,
     category: {
-        _id: String,
+        _id: Types.ObjectId,
         name: String,
         iconName: String,
         primaryColor: String
@@ -18,7 +18,7 @@ const schema = new Schema<Transaction>({
     status: String,
     comment: { type: String, required: false },
     ignored: Boolean,
-    accountId: String,
+    accountId: Types.ObjectId,
     _isDeleted: Boolean,
 });
 
@@ -44,6 +44,19 @@ export async function getById(id): Promise<Transaction | null> {
 export async function remove(id): Promise<Transaction | null> {
     await connect();
     const result = await TransactionModel.findOneAndUpdate({ _id: id }, { _isDeleted: true });
+    await disconnect();
+    return result;
+}
+
+/**
+ * Fetch all (not deleted) transactions by account id
+ * TODO paginate results
+ * @param id 
+ * @returns 
+ */
+export async function fetchByAccount(id): Promise<Transaction[]> {
+    await connect();
+    const result = await TransactionModel.find({ accountId: id, _isDeleted: false });
     await disconnect();
     return result;
 }

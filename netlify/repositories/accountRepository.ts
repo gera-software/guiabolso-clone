@@ -23,7 +23,7 @@ const schema = new Schema<Account>({
     },
     bankData: {
         institution: {
-            _id: { type: String, required: false },
+            _id: { type: Types.ObjectId, required: false },
             pluggyConnectorId: { type: Number, required: false },
             name: String,
             imageUrl: { type: String, required: false },
@@ -32,7 +32,7 @@ const schema = new Schema<Account>({
     },
     creditData: {
         institution: {
-            _id: { type: String, required: false },
+            _id: { type: Types.ObjectId, required: false },
             pluggyConnectorId: { type: Number, required: false },
             name: String,
             imageUrl: { type: String, required: false },
