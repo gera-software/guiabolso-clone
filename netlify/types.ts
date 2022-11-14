@@ -82,6 +82,31 @@ export interface Account {
     creditData?: CreditData,
 }
 
+export enum TransactionType {
+    EXPENSE = 'EXPENSE',
+    INCOME = 'INCOME',
+}
+
+export enum TransactionStatus {
+    PENDING = 'PENDING',
+    POSTED = 'POSTED',
+}
+
+export interface Transaction {
+    _id?: String,
+    pluggyTransactionId?: String,
+    description: String,
+    amount: Number,
+    currencyCode: CurrencyCodes,
+    date: Date,
+    category?: Category,
+    type: TransactionType,
+    status: TransactionStatus,
+    comment?: String,
+    ignored: Boolean,
+    accountId: String,
+}
+
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
 }
