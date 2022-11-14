@@ -54,6 +54,9 @@ export interface Connection {
     status: ConnectionStatus,
 }
 
+export interface BankAccountData {
+    institution: Institution,
+} 
 export interface Account {
     _id?: String,
     name: String,
@@ -65,6 +68,7 @@ export interface Account {
     userId: String,
     accountOwner?: AccountOwner,
     connection?: Connection,
+    bankData?: BankAccountData
 }
 
 export interface DataProvider {

@@ -20,6 +20,15 @@ const schema = new Schema<Account>({
         pluggyItemId: String,
         lastUpdatedAt: Date,
         status: String,
+    },
+    bankData: {
+        institution: {
+            _id: { type: String, required: false },
+            pluggyConnectorId: { type: Number, required: false },
+            name: String,
+            imageUrl: { type: String, required: false },
+            primaryColor: { type: String, required: false },
+        } 
     }
 });
 
