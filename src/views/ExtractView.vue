@@ -61,28 +61,6 @@ const monthOptions = ref([
     { text: "Setembro/22", value: "09-2022" },
 ]);
 
-interface Account {
-  _id: String,
-  name: String,
-}
-
-interface Category {
-  _id: String,
-  name: String,
-}
-
-interface Transaction {
-  _id: string;
-  account: Array<Account>;
-  accountId: String;
-  category: Array<Category>;
-  categoryId: String;
-  comment: String;
-  date: String;
-  description: String;
-  value: Number;
-}
-
 watch(selectedMonth, async () => {
     const [ year, month ] = selectedMonth.value.split('-')
     console.log(year, month)

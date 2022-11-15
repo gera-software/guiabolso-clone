@@ -3,8 +3,8 @@ import * as TransactionRepository from '../repositories/transactionRepository'
 import { Transaction } from "../types";
 
 const handler :Handler = async (event, context) => {
-    const accountId = event.queryStringParameters?.id
-    const transactions: Transaction[] = await TransactionRepository.fetchByAccount(accountId)
+    const userId = event.queryStringParameters?.id
+    const transactions: Transaction[] = await TransactionRepository.fetchByUser(userId)
     
     return {
         statusCode: 200,

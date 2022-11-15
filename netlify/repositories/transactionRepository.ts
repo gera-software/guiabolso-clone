@@ -66,6 +66,19 @@ export async function fetchByAccount(id): Promise<Transaction[]> {
 }
 
 /**
+ * Fetch all (not deleted) transactions by user id
+ * @param id 
+ * @returns 
+ */
+export async function fetchByUser(id): Promise<Transaction[]> {
+    await connect();
+    const result = await TransactionModel.find({ userId: id, _isDeleted: false })
+        .sort({'date': -1})
+    await disconnect();
+    return result;
+}
+
+/**
  * Creates a transaction
  * @param transaction 
  * @returns 
