@@ -10,38 +10,37 @@
         </select>
     </div>
     <div class="container">
-        <div class="transactions-container">
-            <div
-                class="date-group"
-                v-for="day in days"
-                :key="day"
-            >
-                <h2>{{ day }}</h2>
-                <div
-                    class="transaction"
-                    v-for="transaction in listTransactions(day)"
-                    :key="transaction._id?.toString()"
-                >
-                    <div class="col-1">
-                        <CategoryIcon :icon="transaction.category?.iconName" :color="transaction.category?.primaryColor" />
-                        <div class="flex">
-                            <span class="category">{{
-                                transaction.category?.name
-                            }}</span>
-                            <span class="description">{{
-                                transaction.description
-                            }}</span>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <span class="account">{{
-                            transaction.account.name
-                        }}</span>
-                        <span class="value">R$ {{ (+transaction.amount / 100).toFixed(2) }}</span>
-                    </div>
-                </div>
+      <div class="transactions-container">
+        <div v-for="(transaction, index) in transactions">
+          <div class="date-separator" v-if="index === 0 || transactions[index - 1].date.getDate() !== transaction.date.getDate()">
+            <div class="date">
+              <h2 class="day">{{ transaction.date.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2>
+              <div class="month">{{ transaction.date.toLocaleString('pt-BR', { month: 'short'}) }}</div>
             </div>
+          </div>
+
+          <div class="transaction">
+              <div class="col-1">
+                  <CategoryIcon :icon="transaction.category?.iconName" :color="transaction.category?.primaryColor" />
+                  <div class="flex">
+                      <span class="category">{{
+                          transaction.category?.name
+                      }}</span>
+                      <span class="description">{{
+                          transaction.description
+                      }}</span>
+                  </div>
+              </div>
+              <div class="col-2">
+                  <span class="account">{{
+                      transaction.account.name
+                  }}</span>
+                  <span class="value">R$ {{ (+transaction.amount / 100).toFixed(2) }}</span>
+              </div>
+          </div>
         </div>
+
+      </div>
     </div>
 </template>
 
@@ -79,36 +78,9 @@ watch(selectedMonth, async () => {
   const id = route.query.id?.toString() ?? ''
   console.log(id, month, year)
 
-    await getTransactions(id, year, month)
+  await getTransactions(id, year, month)
 
 })
-
-const days = computed(() => {
-      // return transactions.value;
-      const pairs = toPairs( groupBy(transactions.value, (transaction) => (new Date(transaction.date)).getDate() ) )
-      const sort = orderBy(pairs, [function(o){return +o[0]}], ['desc'])
-      return sort.map((kvArray) => kvArray[0])
-      // .sortBy((kvArray) => kvArray[0])
-      // .map((kvArray) => kvArray[1])
-      // .value()
-});
-
-const transactionsGroupedByDate = computed(() => {
-      // return transactions.value;
-      const pairs = toPairs( groupBy(transactions.value, (transaction) => (new Date(transaction.date)).getDate() ) )
-      const sort = orderBy(pairs, [function(o){return +o[0]}], ['desc'])
-      return sort
-      // .sortBy((kvArray) => kvArray[0])
-      // .map((kvArray) => kvArray[1])
-      // .value()
-});
-
-function listTransactions(day: String) {
-  const group = transactionsGroupedByDate.value.find(group => group[0] === day) ?? []
-  return group[1] ?? []
-}
-
-
 
 interface Category {
     _id?: String,
@@ -160,13 +132,17 @@ interface TransactionSummary {
 const transactions = ref<TransactionSummary[]>([])
 
 async function getTransactions(userId: String, year: String, month: String) {
-  return api.guiabolsoApi({
+  transactions.value = await api.guiabolsoApi({
     method: 'get',
     url: `/transactions-fetch-by-user?id=${userId}&month=${month}&year=${year}`,
   }).then(function (response) {
     console.log(response.data)
-    transactions.value = response.data
     return response.data
+  }).then(transactions => {
+    return transactions.map((transaction : TransactionSummary): TransactionSummary => { 
+      transaction.date = new Date(transaction.date) 
+      return transaction 
+    })
   }).catch(function (error) {
     console.log(error.response?.data);
   })
@@ -185,6 +161,7 @@ async function getTransactions(userId: String, year: String, month: String) {
     position: fixed;
     top: 0;
     width: 100vw;
+    z-index: 2;
 }
 
 .app-bar .icon {
@@ -205,31 +182,57 @@ async function getTransactions(userId: String, year: String, month: String) {
     margin-top: 60px;
 }
 
-
+.transactions-container {
+  padding: 15px;
+}
 
 /**
-Date Group
+Transaction
 */
 
-.date-group {
-    border-bottom: 1px solid #AAAAAA;
-    padding: 15px 0;
-  }
+.transactions-container .date-separator {
+  padding: 15px 0;
+  position: relative;
+}
 
-  .date-group h2 {
+.transactions-container .date-separator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 50px;
+  height: 1px;
+  background-color: #AAAAAA;
+}
+
+
+.transactions-container .date-separator .date {
+  text-align: center;
+  padding-right: 15px;
+  max-width: 60px;
+}
+
+.transactions-container .date-separator .day {
     margin: 0;
-    padding-left: 15px;
-    font-size: 1.2em;
+    font-size: 18px;
+    font-weight: 600;
     color: #AAAAAA;
-  }
+}
+.transactions-container .date-separator .month {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+    color: #AAAAAA;
+    text-transform: uppercase;
+}
 
-  .date-group .transaction {
+.transactions-container .transaction {
     display: flex;
     justify-content: space-between;
-    padding: 15px;
-  }
+    padding: 15px 0;
+}
 
-  .date-group .col-1 {
+.transactions-container .transaction .col-1 {
     display: flex;
     /* flex-direction: column; */
     flex-direction: row;
@@ -237,41 +240,43 @@ Date Group
     overflow: hidden;
   }
 
-  .date-group .col-2 {
+.transactions-container .transaction .col-2 {
     display: flex;
     flex-direction: column;
     text-align: right;
     flex-shrink: 0;
   }
 
-.date-group .flex {
-    padding-left: 10px;
+  .transactions-container .transaction .flex {
+    padding-left: 20px;
     display: flex;
     flex-direction: column;
     flex-basis: min-content;
     overflow: hidden;
   }
 
-  .date-group  .category {
+  .transactions-container .transaction .category {
     font-size: .8em;
-    opacity: .7;
+    color: #454545;
     white-space: nowrap;
   }
 
-  .date-group .description {
+  .transactions-container .transaction .description {
     font-size: 1em;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    color: #222222;
   }
 
-  .date-group  .account {
+  .transactions-container .transaction .account {
     font-size: .8em;
-    opacity: .7;
+    color: #454545;
   }
 
-  .date-group  .value {
+  .transactions-container .transaction .value {
     font-size: 1em;
     font-weight: bold;
+    color: #222222;
   }
 </style>

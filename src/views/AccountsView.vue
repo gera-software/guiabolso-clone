@@ -164,6 +164,7 @@ onMounted(async () => {
   position: fixed;
   top: 0;
   width: 100vw;
+  z-index: 2;
 }
 
 .app-bar .icon {
