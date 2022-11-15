@@ -20,6 +20,7 @@ const schema = new Schema<Transaction>({
     comment: { type: String, required: false },
     ignored: Boolean,
     accountId: Types.ObjectId,
+    userId: Types.ObjectId,
     _isDeleted: Boolean,
 });
 

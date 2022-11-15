@@ -20,6 +20,7 @@ const handler: Handler = async (event, context) => {
     //     "comment": "comentario",
     //     "ignored": false,
     //     "accountId": "6371717be128f3741973f5cb",
+    //     "userId": "6371717be128f3741973f5cb",
     //     "_isDeleted": false
     // }
     if (!event.body) {

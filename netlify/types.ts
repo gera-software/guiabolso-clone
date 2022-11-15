@@ -105,6 +105,7 @@ export interface Transaction {
     comment?: String,
     ignored: Boolean,
     accountId: String,
+    userId: String,
     _isDeleted: Boolean,
 }
 
