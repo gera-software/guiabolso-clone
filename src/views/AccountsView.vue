@@ -10,7 +10,7 @@
     <div class="card">
       <div class="card-header">Contas bancárias</div>
       <div class="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()">
-        <img class="account-logo" :title="account.bankData?.institution.name.toString()" :src="account.bankData?.institution.imageUrl?.toString()" />
+        <img class="account-logo" :title="account.bankData?.institution.name.toString()" :src="account.imageUrl?.toString()" />
         <div>
           <div class="name">{{account.name}}</div>
           <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
@@ -23,7 +23,7 @@
     <div class="card">
       <div class="card-header">Cartões de Crédito</div>
       <div class="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()">
-        <img class="account-logo" :title="account.creditData?.institution.name.toString()" :src="account.creditData?.institution.imageUrl?.toString()" />
+        <img class="account-logo" :title="account.creditData?.institution.name.toString()" :src="account.imageUrl?.toString()" />
         <div>
           <div class="name">{{account.name}}</div>
           <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
@@ -114,6 +114,7 @@ interface CreditData {
 interface Account {
     _id?: String,
     name: String,
+    imageUrl?: String,
     syncType: AccountSyncType,
     pluggyAccountId?: String,
     balance: Number,

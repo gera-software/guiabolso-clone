@@ -5,6 +5,7 @@ import { Account } from '../types'
 
 const schema = new Schema<Account>({
     name: String,
+    imageUrl: { type: String, required: false },
     syncType: String,
     pluggyAccountId: { type: String, required: false },
     balance: Number,

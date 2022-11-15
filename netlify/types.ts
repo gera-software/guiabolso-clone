@@ -70,6 +70,7 @@ export interface CreditData {
 export interface Account {
     _id?: String,
     name: String,
+    imageUrl?: String,
     syncType: AccountSyncType,
     pluggyAccountId?: String,
     balance: Number,
