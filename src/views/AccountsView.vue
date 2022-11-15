@@ -10,24 +10,39 @@
     <div class="card">
       <div class="card-header">Contas bancárias</div>
       <div class="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()">
-        <div class="name">{{account.name}}</div>
-        <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
+        <img class="account-logo" :title="account.bankData?.institution.name.toString()" :src="account.bankData?.institution.imageUrl?.toString()" />
+        <div>
+          <div class="name">{{account.name}}</div>
+          <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
+          <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.connection?.lastUpdatedAt)).toLocaleString() }}</div>
+          <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
+        </div>
       </div>
     </div> 
 
     <div class="card">
       <div class="card-header">Cartões de Crédito</div>
       <div class="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()">
-        <div class="name">{{account.name}}</div>
-        <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
+        <img class="account-logo" :title="account.creditData?.institution.name.toString()" :src="account.creditData?.institution.imageUrl?.toString()" />
+        <div>
+          <div class="name">{{account.name}}</div>
+          <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
+          <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.connection?.lastUpdatedAt)).toLocaleString() }}</div>
+          <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
+        </div>
       </div>
     </div> 
 
     <div class="card">
       <div class="card-header">Carteiras</div>
       <div class="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()">
-        <div class="name">{{account.name}}</div>
-        <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
+        <div class="account-logo account-logo--wallet"><font-awesome-icon icon="fa-solid fa-wallet" /></div>
+        <div>
+          <div class="name">{{account.name}}</div>
+          <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
+          <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.connection?.lastUpdatedAt)).toLocaleString() }}</div>
+          <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
+        </div>
       </div>
     </div>
 
@@ -183,11 +198,28 @@ onMounted(async () => {
 .account {
   /* background-color: #F9386A; */
   border-bottom: 1px solid #F2F2F2;
-  padding: 15px 10px;
+  padding: 15px 0px;
+  display: flex;
 }
 
 .account:last-child {
   border-bottom: none;
+}
+
+.account-logo {
+  border: 1px solid #F2F2F2;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  margin-right: 10px;
+}
+
+.account-logo.account-logo--wallet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #F9386A;
+  background-color: #FFF5F8;
 }
 
 .account .name {
@@ -195,6 +227,11 @@ onMounted(async () => {
   font-weight: 400;
   color: #404040;
   text-transform: uppercase;
+}
+.account .date {
+  font-size: 12px;
+  font-weight: 400;
+  color: #404040;
 }
 
 .account .balance {
