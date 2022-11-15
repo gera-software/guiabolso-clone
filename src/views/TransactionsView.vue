@@ -149,13 +149,13 @@ const transactionsGroupedByDate = computed(() => {
     font-size: 1.2em;
   }
 
-  .transaction {
+  .date-group .transaction {
     display: flex;
     justify-content: space-between;
     padding: 15px;
   }
 
-  .col-1 {
+  .date-group .col-1 {
     display: flex;
     /* flex-direction: column; */
     flex-direction: row;
@@ -163,14 +163,14 @@ const transactionsGroupedByDate = computed(() => {
     overflow: hidden;
   }
 
-  .col-2 {
+  .date-group .col-2 {
     display: flex;
     flex-direction: column;
     text-align: right;
     flex-shrink: 0;
   }
 
-  .flex {
+.date-group .flex {
     padding-left: 10px;
     display: flex;
     flex-direction: column;
@@ -178,25 +178,25 @@ const transactionsGroupedByDate = computed(() => {
     overflow: hidden;
   }
 
-  .category {
+  .date-group  .category {
     font-size: .8em;
     opacity: .7;
     white-space: nowrap;
   }
 
-  .description {
+  .date-group .description {
     font-size: 1em;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
   }
 
-  .account {
+  .date-group  .account {
     font-size: .8em;
     opacity: .7;
   }
 
-  .value {
+  .date-group  .value {
     font-size: 1em;
     font-weight: bold;
   }

@@ -10,26 +10,23 @@
         </select>
     </div>
     <div class="container">
-      <pre>
-        {{transactions}}
-      </pre>
-        <!-- <div class="transactions-container">
+        <div class="transactions-container">
             <div
                 class="date-group"
-                v-for="(transactions, dateString) in transactionsGroupedByDate"
-                :key="dateString"
+                v-for="day in days"
+                :key="day"
             >
-                <h2>{{ new Date(dateString).toLocaleDateString() }}</h2>
+                <h2>{{ day }}</h2>
                 <div
                     class="transaction"
-                    v-for="transaction in transactions"
-                    :key="transaction._id"
+                    v-for="transaction in listTransactions(day)"
+                    :key="transaction._id?.toString()"
                 >
                     <div class="col-1">
                         <CategoryIcon icon="UncategorizedIcon" color="red" />
                         <div class="flex">
                             <span class="category">{{
-                                transaction.category[0].name
+                                transaction.category?.name
                             }}</span>
                             <span class="description">{{
                                 transaction.description
@@ -38,13 +35,13 @@
                     </div>
                     <div class="col-2">
                         <span class="account">{{
-                            transaction.account[0].name
+                            transaction.account.name
                         }}</span>
-                        <span class="value">R$ {{ transaction.value }}</span>
+                        <span class="value">R$ {{ transaction.amount }}</span>
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 </template>
 
@@ -52,8 +49,10 @@
 import { ref, watch, computed } from "vue";
 import api from "../config/axios.js";
 import { onMounted } from "vue";
-import { groupBy } from "lodash";
+import { groupBy, sortBy, toPairs, orderBy } from "lodash";
 import { useRoute } from "vue-router";
+import CategoryIcon from '@/components/CategoryIcon.vue'
+
 
 const route = useRoute()
 
@@ -83,6 +82,33 @@ watch(selectedMonth, async () => {
     await getTransactions(id, year, month)
 
 })
+
+const days = computed(() => {
+      // return transactions.value;
+      const pairs = toPairs( groupBy(transactions.value, (transaction) => (new Date(transaction.date)).getDate() ) )
+      const sort = orderBy(pairs, [function(o){return +o[0]}], ['desc'])
+      return sort.map((kvArray) => kvArray[0])
+      // .sortBy((kvArray) => kvArray[0])
+      // .map((kvArray) => kvArray[1])
+      // .value()
+});
+
+const transactionsGroupedByDate = computed(() => {
+      // return transactions.value;
+      const pairs = toPairs( groupBy(transactions.value, (transaction) => (new Date(transaction.date)).getDate() ) )
+      const sort = orderBy(pairs, [function(o){return +o[0]}], ['desc'])
+      return sort
+      // .sortBy((kvArray) => kvArray[0])
+      // .map((kvArray) => kvArray[1])
+      // .value()
+});
+
+function listTransactions(day: String) {
+  const group = transactionsGroupedByDate.value.find(group => group[0] === day) ?? []
+  return group[1] ?? []
+}
+
+
 
 interface Category {
     _id?: String,
@@ -177,4 +203,74 @@ async function getTransactions(userId: String, year: String, month: String) {
 .container {
     margin-top: 60px;
 }
+
+
+
+/**
+Date Group
+*/
+
+.date-group {
+    border-bottom: 1px solid #AAAAAA;
+    padding: 15px 0;
+  }
+
+  .date-group h2 {
+    margin: 0;
+    padding-left: 15px;
+    font-size: 1.2em;
+    color: #AAAAAA;
+  }
+
+  .date-group .transaction {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+  }
+
+  .date-group .col-1 {
+    display: flex;
+    /* flex-direction: column; */
+    flex-direction: row;
+    flex-basis: min-content;
+    overflow: hidden;
+  }
+
+  .date-group .col-2 {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+.date-group .flex {
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-basis: min-content;
+    overflow: hidden;
+  }
+
+  .date-group  .category {
+    font-size: .8em;
+    opacity: .7;
+    white-space: nowrap;
+  }
+
+  .date-group .description {
+    font-size: 1em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .date-group  .account {
+    font-size: .8em;
+    opacity: .7;
+  }
+
+  .date-group  .value {
+    font-size: 1em;
+    font-weight: bold;
+  }
 </style>
