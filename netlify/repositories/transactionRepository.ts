@@ -72,8 +72,37 @@ export async function fetchByAccount(id): Promise<Transaction[]> {
  */
 export async function fetchByUser(id): Promise<Transaction[]> {
     await connect();
-    const result = await TransactionModel.find({ userId: id, _isDeleted: false })
-        .sort({'date': -1})
+    // const result = await TransactionModel.find({ userId: id, _isDeleted: false })
+    //     .sort({'date': -1})
+
+        const result = await TransactionModel.aggregate([
+            // { $match: { _isDeleted: false, date: { $gte: firstDay, $lt: lastDay } } },
+            { $match: { _isDeleted: false } },
+            { $lookup: { 
+                from: 'accounts', 
+                localField: 'accountId', 
+                foreignField: '_id', 
+                as: 'account' 
+                }
+            },
+            { $unwind: { 'path': '$account' } },
+            { $project: {
+                  'account': {
+                    'syncType': 0, 
+                    'pluggyAccountId': 0, 
+                    'balance': 0, 
+                    'currencyCode': 0, 
+                    'userId': 0, 
+                    'accountOwner': 0, 
+                    'bankData': 0, 
+                    'creditData': 0, 
+                    'connection': 0
+                  }
+                }
+            },
+            { $sort: { date: -1 } }
+          ]);
+
     await disconnect();
     return result;
 }
