@@ -110,6 +110,26 @@ export interface Transaction {
     _isDeleted: Boolean,
 }
 
+export interface AccountSummary {
+    _id?: String,
+    name: String,
+    type: AccountType,
+    imageUrl?: String,
+  }
+  
+export interface TransactionSummary {
+    _id?: String,
+    description: String,
+    amount: Number,
+    currencyCode: CurrencyCodes,
+    date: Date,
+    category?: Category,
+    type: TransactionType,
+    status: TransactionStatus,
+    ignored: Boolean,
+    account: AccountSummary
+  }
+
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
 }

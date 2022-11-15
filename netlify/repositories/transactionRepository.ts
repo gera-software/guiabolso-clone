@@ -1,7 +1,6 @@
 import { connect, disconnect } from "../config/database";
 import { Schema, model, Types } from 'mongoose';
-import { CurrencyCodes, Transaction, TransactionType } from '../types'
-import { TransactionStatus } from "pluggy-sdk";
+import { CurrencyCodes, Transaction, TransactionSummary, TransactionType } from '../types'
 
 const schema = new Schema<Transaction>({
     pluggyTransactionId: { type: String, required: false },
@@ -70,7 +69,8 @@ export async function fetchByAccount(id): Promise<Transaction[]> {
  * @param id 
  * @returns 
  */
-export async function fetchByUser(id, monthField, yearField): Promise<Transaction[]> {
+export async function fetchByUser(id, monthField, yearField): Promise<TransactionSummary[]> {
+    
     await connect();
 
     const year = parseInt(yearField)
@@ -79,7 +79,7 @@ export async function fetchByUser(id, monthField, yearField): Promise<Transactio
     const firstDay = new Date(`${year}-${month}-01`)
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
-        const result = await TransactionModel.aggregate([
+    const result = await TransactionModel.aggregate([
             { $match: { userId: new Types.ObjectId(id), _isDeleted: false, date: { $gte: firstDay, $lt: lastDay } } },
             { $lookup: { 
                 from: 'accounts', 
@@ -90,21 +90,25 @@ export async function fetchByUser(id, monthField, yearField): Promise<Transactio
             },
             { $unwind: { 'path': '$account' } },
             { $project: {
-                  'account': {
-                    'syncType': 0, 
-                    'pluggyAccountId': 0, 
-                    'balance': 0, 
-                    'currencyCode': 0, 
-                    'userId': 0, 
-                    'accountOwner': 0, 
-                    'bankData': 0, 
-                    'creditData': 0, 
-                    'connection': 0
-                  }
+                    _id: 1,
+                    description: 1,
+                    amount: 1,
+                    currencyCode: 1,
+                    date: 1,
+                    category: 1,
+                    type: 1,
+                    status: 1,
+                    ignored: 1,
+                    account: {
+                        _id: 1,
+                        name: 1,
+                        type: 1,
+                        imageUrl: 1
+                    }
                 }
             },
             { $sort: { date: -1 } }
-          ]);
+          ]) as TransactionSummary[];
 
     await disconnect();
     return result;
@@ -125,7 +129,7 @@ export async function create(transaction: Transaction | null): Promise<Transacti
 }
 
 /**
- * Replace one trasaction
+ * Replace one transaction
  * @param transaction 
  * @returns 
  */

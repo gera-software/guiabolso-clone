@@ -10,6 +10,9 @@
         </select>
     </div>
     <div class="container">
+      <pre>
+        {{transactions}}
+      </pre>
         <!-- <div class="transactions-container">
             <div
                 class="date-group"
@@ -50,8 +53,11 @@ import { ref, watch, computed } from "vue";
 import api from "../config/axios.js";
 import { onMounted } from "vue";
 import { groupBy } from "lodash";
+import { useRoute } from "vue-router";
 
-const selectedMonth = ref("11-2022");
+const route = useRoute()
+
+const selectedMonth = ref("");
 
 const monthOptions = ref([
     { text: "Janeiro/23", value: "01-2023" },
@@ -61,13 +67,84 @@ const monthOptions = ref([
     { text: "Setembro/22", value: "09-2022" },
 ]);
 
-watch(selectedMonth, async () => {
-    const [ year, month ] = selectedMonth.value.split('-')
-    console.log(year, month)
+onMounted(async () => {
+  const currentDate = new Date()
+  const year = currentDate.getFullYear()
+  const month = currentDate.getMonth() + 1
 
-    // await getTransactions(year, month)
+  selectedMonth.value = `${month.toString().padStart(2, '0')}-${year}`
+})
+
+watch(selectedMonth, async () => {
+  const [ month, year ] = selectedMonth.value.split('-')
+  const id = route.query.id?.toString() ?? ''
+  console.log(id, month, year)
+
+    await getTransactions(id, year, month)
 
 })
+
+interface Category {
+    _id?: String,
+    name: String,
+    iconName: String,
+    primaryColor: String
+}
+
+enum CurrencyCodes {
+    BRL = 'BRL',
+}
+
+enum TransactionType {
+    EXPENSE = 'EXPENSE',
+    INCOME = 'INCOME',
+}
+
+enum TransactionStatus {
+    PENDING = 'PENDING',
+    POSTED = 'POSTED',
+}
+
+enum AccountType {
+    WALLET = 'WALLET',
+    BANK = 'BANK',
+    CREDIT_CARD = 'CREDIT_CARD'
+}
+
+interface AccountSummary {
+  _id?: String,
+  name: String,
+  type: AccountType,
+  imageUrl?: String,
+}
+
+interface TransactionSummary {
+    _id?: String,
+    description: String,
+    amount: Number,
+    currencyCode: CurrencyCodes,
+    date: Date,
+    category?: Category,
+    type: TransactionType,
+    status: TransactionStatus,
+    ignored: Boolean,
+    account: AccountSummary
+}
+
+const transactions = ref<TransactionSummary[]>([])
+
+async function getTransactions(userId: String, year: String, month: String) {
+  return api.guiabolsoApi({
+    method: 'get',
+    url: `/transactions-fetch-by-user?id=${userId}&month=${month}&year=${year}`,
+  }).then(function (response) {
+    console.log(response.data)
+    transactions.value = response.data
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
 
 </script>
 
