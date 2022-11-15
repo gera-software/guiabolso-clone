@@ -1,6 +1,6 @@
 <template>
     <div class="circle" :style="{ color: color, 'border-color': color, fill: color }">
-        <component :is="props.icon"></component>
+        <component :is="props.icon+'Icon'"></component>
     </div>
 </template>
 <script setup lang="ts">

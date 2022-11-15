@@ -23,7 +23,7 @@
                     :key="transaction._id?.toString()"
                 >
                     <div class="col-1">
-                        <CategoryIcon icon="UncategorizedIcon" color="red" />
+                        <CategoryIcon :icon="transaction.category?.iconName" :color="transaction.category?.primaryColor" />
                         <div class="flex">
                             <span class="category">{{
                                 transaction.category?.name
@@ -37,7 +37,7 @@
                         <span class="account">{{
                             transaction.account.name
                         }}</span>
-                        <span class="value">R$ {{ transaction.amount }}</span>
+                        <span class="value">R$ {{ (+transaction.amount / 100).toFixed(2) }}</span>
                     </div>
                 </div>
             </div>
@@ -198,6 +198,7 @@ async function getTransactions(userId: String, year: String, month: String) {
     color: #404040;
     margin-left: 40px;
     border: none;
+    background-color: white;
 }
 
 .container {
