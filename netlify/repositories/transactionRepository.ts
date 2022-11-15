@@ -66,18 +66,21 @@ export async function fetchByAccount(id): Promise<Transaction[]> {
 }
 
 /**
- * Fetch all (not deleted) transactions by user id
+ * Fetch all (not deleted) transactions by user id in a given month
  * @param id 
  * @returns 
  */
-export async function fetchByUser(id): Promise<Transaction[]> {
+export async function fetchByUser(id, monthField, yearField): Promise<Transaction[]> {
     await connect();
-    // const result = await TransactionModel.find({ userId: id, _isDeleted: false })
-    //     .sort({'date': -1})
+
+    const year = parseInt(yearField)
+    const month = parseInt(monthField)
+
+    const firstDay = new Date(`${year}-${month}-01`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
         const result = await TransactionModel.aggregate([
-            // { $match: { _isDeleted: false, date: { $gte: firstDay, $lt: lastDay } } },
-            { $match: { _isDeleted: false } },
+            { $match: { userId: new Types.ObjectId(id), _isDeleted: false, date: { $gte: firstDay, $lt: lastDay } } },
             { $lookup: { 
                 from: 'accounts', 
                 localField: 'accountId', 
@@ -121,6 +124,11 @@ export async function create(transaction: Transaction | null): Promise<Transacti
     return result;
 }
 
+/**
+ * Replace one trasaction
+ * @param transaction 
+ * @returns 
+ */
 export async function updateOne(transaction: Transaction): Promise<Transaction | null> {
     await connect();
     const result = await TransactionModel.findOneAndReplace({ _id: transaction?._id }, transaction);

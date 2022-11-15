@@ -4,7 +4,10 @@ import { Transaction } from "../types";
 
 const handler :Handler = async (event, context) => {
     const userId = event.queryStringParameters?.id
-    const transactions: Transaction[] = await TransactionRepository.fetchByUser(userId)
+    const monthField = event.queryStringParameters?.month
+    const yearField = event.queryStringParameters?.yearField
+    
+    const transactions: Transaction[] = await TransactionRepository.fetchByUser(userId, monthField, yearField)
     
     return {
         statusCode: 200,
