@@ -1,7 +1,11 @@
 <template>
   <div class="app-bar">
     <BackButton/>
-    <h1>{{title}}</h1>
+    <div class="content">
+        <slot>
+            <h1>{{title}}</h1>
+        </slot>
+    </div>
   </div>
 </template>
 
@@ -9,7 +13,7 @@
 import BackButton from '@/components/BackButton.vue'
 
 defineProps<{
-    title: String
+    title?: String
 }>()
 </script>
 
@@ -27,11 +31,16 @@ defineProps<{
   z-index: 2;
 }
 
+.app-bar .content {
+    margin-left: 40px;
+}
+
 .app-bar h1 {
   margin: 0;
   font-weight: 600;
   font-size: 22px;
   color: #404040;
-  margin-left: 40px;
 }
+
+
 </style>

@@ -1,14 +1,12 @@
 <template>
-    <div class="app-bar">
-      <a @click="router.back()" class="icon">
-        <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
-      </a>
-        <select v-model="store.monthFilter">
-            <option v-for="option in store.monthOptions" :value="option.value">
-                {{ option.text }}
-            </option>
-        </select>
-    </div>
+  <AppBar>
+    <select class="app-bar-select" v-model="store.monthFilter">
+      <option v-for="option in store.monthOptions" :value="option.value">
+          {{ option.text }}
+      </option>
+    </select>
+  </AppBar>
+
     <div class="container">
       <TransactionList :transactions="transactions" />
     </div>
@@ -21,9 +19,7 @@ import { onMounted } from "vue";
 import TransactionList from "../components/TransactionList.vue";
 import { TransactionSummaryDTO } from "../config/types";
 import { useUserStore } from "../stores/store";
-import { useRouter } from "vue-router";
-
-const router = useRouter()
+import AppBar from '@/components/AppBar.vue'
 
 const store =  useUserStore()
 
@@ -64,29 +60,12 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.app-bar {
-    background-color: white;
-    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.05);
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 15px 20px;
-    position: fixed;
-    top: 0;
-    width: 100vw;
-    z-index: 2;
-}
 
-.app-bar .icon {
-    color: #f9386a;
-}
-
-.app-bar select {
+.app-bar-select {
     margin: 0;
     font-weight: 600;
     font-size: 22px;
     color: #404040;
-    margin-left: 40px;
     border: none;
     background-color: white;
 }
