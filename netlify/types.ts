@@ -116,7 +116,7 @@ export interface AccountSummary {
     type: AccountType,
     imageUrl?: String,
   }
-  
+
 export interface TransactionSummary {
     _id?: String,
     description: String,
