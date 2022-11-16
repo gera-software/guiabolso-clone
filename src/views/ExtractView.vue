@@ -18,12 +18,11 @@
 import { ref, watch, computed } from "vue";
 import api from "../config/axios.js";
 import { onMounted } from "vue";
-import { useRoute } from "vue-router";
 import TransactionList from "../components/TransactionList.vue";
 import { TransactionSummaryDTO } from "../config/types";
+import { useUserStore } from "../stores/store";
 
-
-const route = useRoute()
+const store =  useUserStore()
 
 const selectedMonth = ref("");
 
@@ -45,7 +44,7 @@ onMounted(async () => {
 
 watch(selectedMonth, async () => {
   const [ month, year ] = selectedMonth.value.split('-')
-  const id = route.query.id?.toString() ?? ''
+  const id = store.userId;
   console.log(id, month, year)
 
   await getTransactions(id, year, month)
