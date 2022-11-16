@@ -1,8 +1,8 @@
 <template>
     <div class="app-bar">
-        <router-link to="/" class="icon">
-            <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
-        </router-link>
+      <a @click="router.back()" class="icon">
+        <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
+      </a>
         <select v-model="store.monthFilter">
             <option v-for="option in store.monthOptions" :value="option.value">
                 {{ option.text }}
@@ -22,8 +22,9 @@ import { onMounted } from "vue";
 import TransactionList from "../components/TransactionList.vue";
 import { TransactionSummaryDTO } from "../config/types";
 import { useUserStore } from "../stores/store";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
+const router = useRouter()
 const route = useRoute()
 
 const store =  useUserStore()

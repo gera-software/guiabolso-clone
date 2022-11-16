@@ -1,28 +1,28 @@
 <template>
   <div class="app-bar">
-    <router-link to="/" class="icon">
+    <a @click="router.back()" class="icon">
       <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
-    </router-link>
+    </a>
     <h1>Contas e Cartões</h1>
   </div>
   <div class="container">
 
     <div class="card">
       <div class="card-header">Contas bancárias</div>
-      <div class="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()">
-        <img class="account-logo" :title="account.bankData?.institution.name.toString()" :src="account.imageUrl?.toString()" />
-        <div>
-          <div class="name">{{account.name}}</div>
-          <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
-          <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.connection?.lastUpdatedAt)).toLocaleString() }}</div>
-          <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
+        <div class="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()" @click="goToExtract(account._id?.toString())">
+          <img class="account-logo" :title="account.bankData?.institution.name.toString()" :src="account.imageUrl?.toString()" />
+          <div>
+            <div class="name">{{account.name}}</div>
+            <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
+            <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.connection?.lastUpdatedAt)).toLocaleString() }}</div>
+            <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
+          </div>
         </div>
-      </div>
     </div> 
 
     <div class="card">
       <div class="card-header">Cartões de Crédito</div>
-      <div class="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()">
+      <div class="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()" @click="goToExtract(account._id?.toString())">
         <img class="account-logo" :title="account.creditData?.institution.name.toString()" :src="account.imageUrl?.toString()" />
         <div>
           <div class="name">{{account.name}}</div>
@@ -35,7 +35,7 @@
 
     <div class="card">
       <div class="card-header">Carteiras</div>
-      <div class="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()">
+      <div class="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()" @click="goToExtract(account._id?.toString())">
         <div class="account-logo account-logo--wallet"><font-awesome-icon icon="fa-solid fa-wallet" /></div>
         <div>
           <div class="name">{{account.name}}</div>
@@ -56,6 +56,9 @@ import { onMounted } from 'vue'
 import { groupBy } from 'lodash'
 import { AccountDTO } from '../config/types';
 import { useUserStore } from '../stores/store';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const store =  useUserStore()
 
@@ -82,6 +85,15 @@ async function getMyAccounts(): Promise<AccountDTO[]> {
 onMounted(async () => {
   getMyAccounts()
 })
+
+function goToExtract(accountId: String | undefined) {
+  router.push({
+    name: 'extract-by-account',
+    params: {
+      id: accountId?.toString()
+    }
+  })
+}
 
 </script>
   
