@@ -83,6 +83,21 @@ export interface AccountDTO {
     creditData?: CreditData,
 }
 
+export interface AccountSummaryDTO {
+    _id?: String,
+    name: String,
+    imageUrl?: String,
+    syncType: AccountSyncType,
+    balance: Number,
+    currencyCode: CurrencyCodes,
+    type: AccountType,
+    userId: String,
+    connection?: {
+        lastUpdatedAt: Date,
+        status: ConnectionStatus,
+    },
+}
+
 export enum TransactionType {
     EXPENSE = 'EXPENSE',
     INCOME = 'INCOME',
@@ -110,7 +125,7 @@ export interface Transaction {
     _isDeleted: Boolean,
 }
 
-export interface AccountSummaryDTO {
+export interface AccountData {
     _id?: String,
     name: String,
     type: AccountType,
@@ -127,7 +142,7 @@ export interface TransactionSummaryDTO {
     type: TransactionType,
     status: TransactionStatus,
     ignored: Boolean,
-    account: AccountSummaryDTO
+    account: AccountData
   }
 
 export interface DataProvider {

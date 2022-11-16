@@ -1,12 +1,12 @@
 import { Handler } from "@netlify/functions";
 import * as AccountRepository from '../repositories/accountRepository'
-import { Account } from "../types";
+import { Account, AccountSummaryDTO } from "../types";
 
 const handler :Handler = async (event, context) => {
 
   const userId = event.queryStringParameters?.id
 
-    const accounts: Account[] = await AccountRepository.fetchByUserId(userId)
+    const accounts: AccountSummaryDTO[] = await AccountRepository.fetchByUserId(userId)
     
     return {
         statusCode: 200,

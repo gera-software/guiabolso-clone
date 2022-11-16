@@ -1,6 +1,6 @@
 import { connect, disconnect } from "../config/database";
 import { Schema, Types, model } from 'mongoose';
-import { Account } from '../types'
+import { Account, AccountSummaryDTO } from '../types'
 
 
 const schema = new Schema<Account>({
@@ -49,9 +49,26 @@ const schema = new Schema<Account>({
 
 const AccountModel = model<Account>('accounts', schema);
 
-export async function fetchByUserId(id): Promise<Account[]> {
+export async function fetchByUserId(id): Promise<AccountSummaryDTO[]> {
     await connect();
-    const result = await AccountModel.find({ userId: id });
+    const result = await AccountModel.aggregate([
+        { $match: { userId: new Types.ObjectId(id) } },
+        { $project: {
+                _id: 1,
+                name: 1,
+                imageUrl: 1,
+                syncType: 1,
+                balance: 1,
+                currencyCode: 1,
+                type: 1,
+                userId: 1,
+                connection: {
+                    lastUpdatedAt: 1,
+                    status: 1,
+                },
+            }
+        },
+    ]) as AccountSummaryDTO[];
     await disconnect();
     return result;
 }
