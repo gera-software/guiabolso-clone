@@ -91,41 +91,29 @@ onMounted(async () => {
 
 const form = ref({
     description: '',
-    ammount: -1000050,
+    ammount: 0,
     date: (new Date()).toISOString().split('T')[0], /* FIX bug wrong date is showing on debug*/
     accountId: '',
     categoryId: '',
     comment: '',
 })
 
+// TODO temporary fix!!!
+function fixDateBug(dateString: string): Date {
+    const date = new Date(dateString)
+    const start = date.toISOString().split('T')[0]
+    const end = (new Date()).toISOString().split('T')[1]
+    const isoDateString = start + 'T' + end
+    return new Date(isoDateString)
+}
 
-function handleSubmit() {
-    // {
-    //     "pluggyTransactionId": "dsaddasd",
-    //     "description": "Stringsdaasd",
-    //     "amount": -3000,
-    //     "currencyCode": "BRL",
-    //     "date": "2022/11/13",
-    //     "category": {
-    //         "_id": "6368226650320103b4aa108e",
-    //         "name": "Transporte",
-    //         "iconName": "ICON",
-    //         "primaryColor": "green"
-    //     },
-    //     "type": "EXPENSE",
-    //     "status": "POSTED",
-    //     "comment": "comentario",
-    //     "ignored": false,
-    //     "accountId": "6371717be128f3741973f5cb",
-    //     "userId": "6371717be128f3741973f5cb",
-    //     "_isDeleted": false
-    // }
 
+async function handleSubmit() {
     const payload: Transaction = {
         description: form.value.description,
         amount: form.value.ammount,
         currencyCode: CurrencyCodes.BRL,
-        date: new Date(form.value.date),
+        date: fixDateBug(form.value.date),
         category: categories.value.find(category => category._id === form.value.categoryId),
         type: form.value.ammount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
         status: TransactionStatus.POSTED,
@@ -136,8 +124,22 @@ function handleSubmit() {
         _isDeleted: false,
     }
 
-    console.log(payload)
+    await saveTransaction(payload)
 
+}
+
+async function saveTransaction(payload: Transaction): Promise<Transaction> {
+    console.log('save transaction')
+  return api.guiabolsoApi({
+    method: 'post',
+    url: `/transaction-create`,
+    data: payload,
+  }).then(function (response) {
+    console.log(response.data)
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
 }
 </script>
 
