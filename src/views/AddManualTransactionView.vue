@@ -8,7 +8,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Valor</label>
-                <input class="form-input" type="text" placeholder="0.00" required v-model="form.value">
+                <CurrencyInput class="form-input" required v-model="form.ammount" />
             </div>
             <div class="form-group">
                 <label class="form-label">Data</label>
@@ -16,14 +16,14 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Conta</label>
-                <select class="form-input" required v-model="form.account">
-                    <option v-for="account in accounts" :value="account">{{account.name}}</option>
+                <select class="form-input" required v-model="form.accountId">
+                    <option v-for="account in accounts" :value="account._id">{{account.name}}</option>
                 </select>
             </div>
             <div class="form-group">
                 <label class="form-label">Categoria</label>
-                <select class="form-input" required v-model="form.category">
-                    <option v-for="category in categories" :value="category">{{category.name}}</option>
+                <select class="form-input" required v-model="form.categoryId">
+                    <option v-for="category in categories" :value="category._id">{{category.name}}</option>
                 </select>
             </div>
             <div class="form-group">
@@ -42,8 +42,9 @@ import api from '../config/axios.js'
 import { ref, watch, computed  } from 'vue'
 import AppBar from '@/components/AppBar.vue'
 import { onMounted } from 'vue';
-import { AccountSummaryDTO, Category } from '../config/types';
+import { AccountSummaryDTO, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
 import { useUserStore } from '../stores/store';
+import CurrencyInput from '../components/CurrencyInput.vue'
 
 const store =  useUserStore()
 
@@ -55,7 +56,7 @@ async function getMyAccounts(): Promise<AccountSummaryDTO[]> {
     method: 'get',
     url: `/accounts-fetch?id=${store.userId}`,
   }).then(function (response) {
-    console.log(response.data)
+    // console.log(response.data)
     accounts.value = response.data
     return response.data
   }).catch(function (error) {
@@ -75,7 +76,7 @@ async function getCategories(): Promise<Category[]> {
     method: 'get',
     url: `/categories-fetch`,
   }).then(function (response) {
-      console.log(response.data)
+    //   console.log(response.data)
       categories.value = response.data
     return response.data
   }).catch(function (error) {
@@ -89,18 +90,54 @@ onMounted(async () => {
 
 
 const form = ref({
-    description: 'testando',
-    value: 50.78,
-    date: (new Date()).toISOString().split('T')[0],
-    account: 'sadsad',
-    category: 'sdasd',
-    comment: '#paz',
+    description: '',
+    ammount: -1000050,
+    date: (new Date()).toISOString().split('T')[0], /* FIX bug wrong date is showing on debug*/
+    accountId: '',
+    categoryId: '',
+    comment: '',
 })
 
 
-function handleSubmit(e: any) {
-    console.log(e)
-    console.log(form.value)
+function handleSubmit() {
+    // {
+    //     "pluggyTransactionId": "dsaddasd",
+    //     "description": "Stringsdaasd",
+    //     "amount": -3000,
+    //     "currencyCode": "BRL",
+    //     "date": "2022/11/13",
+    //     "category": {
+    //         "_id": "6368226650320103b4aa108e",
+    //         "name": "Transporte",
+    //         "iconName": "ICON",
+    //         "primaryColor": "green"
+    //     },
+    //     "type": "EXPENSE",
+    //     "status": "POSTED",
+    //     "comment": "comentario",
+    //     "ignored": false,
+    //     "accountId": "6371717be128f3741973f5cb",
+    //     "userId": "6371717be128f3741973f5cb",
+    //     "_isDeleted": false
+    // }
+
+    const payload: Transaction = {
+        description: form.value.description,
+        amount: form.value.ammount,
+        currencyCode: CurrencyCodes.BRL,
+        date: new Date(form.value.date),
+        category: categories.value.find(category => category._id === form.value.categoryId),
+        type: form.value.ammount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
+        status: TransactionStatus.POSTED,
+        comment: form.value.comment,
+        ignored: false,
+        accountId: form.value.accountId,
+        userId: store.userId,
+        _isDeleted: false,
+    }
+
+    console.log(payload)
+
 }
 </script>
 
@@ -140,7 +177,7 @@ function handleSubmit(e: any) {
     border-bottom: 1px solid black;
     background-color: transparent;
     padding: 8px 0;
-
+    width: 100%;
 }
 
 .button {
