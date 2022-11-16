@@ -16,11 +16,15 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Conta</label>
-                <input class="form-input" type="text" required v-model="form.account">
+                <select class="form-input" required v-model="form.account">
+                    <option v-for="account in accounts" :value="account">{{account.name}}</option>
+                </select>
             </div>
             <div class="form-group">
                 <label class="form-label">Categoria</label>
-                <input class="form-input" type="text" v-model="form.category">
+                <select class="form-input" required v-model="form.category">
+                    <option v-for="category in categories" :value="category">{{category.name}}</option>
+                </select>
             </div>
             <div class="form-group">
                 <label class="form-label">Comentários e #tags</label>
