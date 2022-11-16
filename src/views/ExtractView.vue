@@ -20,6 +20,7 @@ import api from "../config/axios.js";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import TransactionList from "../components/TransactionList.vue";
+import { TransactionSummaryDTO } from "../config/types";
 
 
 const route = useRoute()
@@ -51,54 +52,7 @@ watch(selectedMonth, async () => {
 
 })
 
-interface Category {
-    _id?: String,
-    name: String,
-    iconName: String,
-    primaryColor: String
-}
-
-enum CurrencyCodes {
-    BRL = 'BRL',
-}
-
-enum TransactionType {
-    EXPENSE = 'EXPENSE',
-    INCOME = 'INCOME',
-}
-
-enum TransactionStatus {
-    PENDING = 'PENDING',
-    POSTED = 'POSTED',
-}
-
-enum AccountType {
-    WALLET = 'WALLET',
-    BANK = 'BANK',
-    CREDIT_CARD = 'CREDIT_CARD'
-}
-
-interface AccountSummary {
-  _id?: String,
-  name: String,
-  type: AccountType,
-  imageUrl?: String,
-}
-
-interface TransactionSummary {
-    _id?: String,
-    description: String,
-    amount: Number,
-    currencyCode: CurrencyCodes,
-    date: Date,
-    category?: Category,
-    type: TransactionType,
-    status: TransactionStatus,
-    ignored: Boolean,
-    account: AccountSummary
-}
-
-const transactions = ref<TransactionSummary[]>([])
+const transactions = ref<TransactionSummaryDTO[]>([])
 
 async function getTransactions(userId: String, year: String, month: String) {
   transactions.value = await api.guiabolsoApi({
@@ -108,7 +62,7 @@ async function getTransactions(userId: String, year: String, month: String) {
     console.log(response.data)
     return response.data
   }).then(transactions => {
-    return transactions.map((transaction : TransactionSummary): TransactionSummary => { 
+    return transactions.map((transaction : TransactionSummaryDTO): TransactionSummaryDTO => { 
       transaction.date = new Date(transaction.date) 
       return transaction 
     })

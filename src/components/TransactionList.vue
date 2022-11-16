@@ -16,58 +16,10 @@
 </template>
 <script setup lang="ts">
 import TransactionSummary from "../components/TransactionSummary.vue";
+import { TransactionSummaryDTO } from "../config/types";
 
-
-interface Category {
-    _id?: String,
-    name: String,
-    iconName: String,
-    primaryColor: String
-}
-
-enum CurrencyCodes {
-    BRL = 'BRL',
-}
-
-enum TransactionType {
-    EXPENSE = 'EXPENSE',
-    INCOME = 'INCOME',
-}
-
-enum TransactionStatus {
-    PENDING = 'PENDING',
-    POSTED = 'POSTED',
-}
-
-enum AccountType {
-    WALLET = 'WALLET',
-    BANK = 'BANK',
-    CREDIT_CARD = 'CREDIT_CARD'
-}
-
-interface AccountSummary {
-  _id?: String,
-  name: String,
-  type: AccountType,
-  imageUrl?: String,
-}
-
-interface TransactionSummary {
-    _id?: String,
-    description: String,
-    amount: Number,
-    currencyCode: CurrencyCodes,
-    date: Date,
-    category?: Category,
-    type: TransactionType,
-    status: TransactionStatus,
-    ignored: Boolean,
-    account: AccountSummary
-}
-
-
-const props = defineProps<{
-    transactions: TransactionSummary[]
+defineProps<{
+    transactions: TransactionSummaryDTO[]
 }>()
 </script>
 <style scoped>

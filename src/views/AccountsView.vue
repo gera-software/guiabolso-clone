@@ -54,86 +54,15 @@ import { ref, watch, computed  } from 'vue'
 import api from '../config/axios.js'
 import { onMounted } from 'vue'
 import { groupBy } from 'lodash'
+import { AccountDTO } from '../config/types';
 
-interface Institution {
-    _id?: String,
-    pluggyConnectorId?: Number,
-    name: String,
-    imageUrl?: String,
-    primaryColor?: String,
-}
-
-enum AccountSyncType {
-    MANUAL = 'MANUAL',
-    AUTOMATIC = 'AUTOMATIC'
-} 
-
-enum AccountType {
-    WALLET = 'WALLET',
-    BANK = 'BANK',
-    CREDIT_CARD = 'CREDIT_CARD'
-}
-
-enum CurrencyCodes {
-    BRL = 'BRL',
-}
-
-interface AccountOwner {
-    name: String,
-    pluggyIdentityId?: String,
-    cpf?: String,
-}
-
-enum ConnectionStatus {
-    UPDATING = 'UPDATING',
-    LOGIN_ERROR = 'LOGIN_ERROR',
-    OUTDATED = 'OUTDATED',
-    WAITING_USER_INPUT = 'WAITING_USER_INPUT',
-    UPDATED = 'UPDATED',
-}
-
-interface Connection {
-    pluggyItemId: String,
-    lastUpdatedAt: Date,
-    status: ConnectionStatus,
-}
-
-interface BankData {
-    institution: Institution,
-} 
-
-interface CreditData {
-    institution: Institution,
-    brand: String,
-    creditLimit: Number,
-    availableCreditLimit: Number,
-    closeDate: Date,
-    dueDate: Date,
-}
-
-interface Account {
-    _id?: String,
-    name: String,
-    imageUrl?: String,
-    syncType: AccountSyncType,
-    pluggyAccountId?: String,
-    balance: Number,
-    currencyCode: CurrencyCodes,
-    type: AccountType,
-    userId: String,
-    accountOwner?: AccountOwner,
-    connection?: Connection,
-    bankData?: BankData,
-    creditData?: CreditData,
-}
-
-const accounts = ref<Account[]>([])
+const accounts = ref<AccountDTO[]>([])
 
 const accountsGroupedByType = computed(() => {
   return groupBy(accounts.value, (accounts) => accounts.type )
 });
 
-async function getMyAccounts(): Promise<Account[]> {
+async function getMyAccounts(): Promise<AccountDTO[]> {
     console.log('get my accounts')
   return api.guiabolsoApi({
     method: 'get',

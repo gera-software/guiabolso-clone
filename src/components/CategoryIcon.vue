@@ -1,13 +1,11 @@
 <template>
     <div class="circle" :style="{ color: color, 'border-color': color, fill: color }">
-        <component :is="props.icon+'Icon'"></component>
+        <component :is="icon+'Icon'"></component>
     </div>
 </template>
 <script setup lang="ts">
 
-const props = defineProps(['icon', 'color'])
-console.log(props.icon)
-console.log(props.color)
+defineProps(['icon', 'color'])
 
 </script>
 
