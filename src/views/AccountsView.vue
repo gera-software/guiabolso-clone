@@ -1,10 +1,5 @@
 <template>
-  <div class="app-bar">
-    <a @click="router.back()" class="icon">
-      <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
-    </a>
-    <h1>Contas e Cartões</h1>
-  </div>
+  <AppBar title="Contas e Cartões" />
   <div class="container">
 
     <div class="card">
@@ -32,10 +27,9 @@ import { onMounted } from 'vue'
 import { groupBy } from 'lodash'
 import { AccountSummaryDTO } from '../config/types';
 import { useUserStore } from '../stores/store';
-import { useRouter } from 'vue-router';
 import AccountSummary from '@/components/AccountSummary.vue';
+import AppBar from '@/components/AppBar.vue'
 
-const router = useRouter()
 
 const store =  useUserStore()
 
@@ -68,30 +62,7 @@ onMounted(async () => {
 </script>
   
 <style scoped>
-.app-bar {
-  background-color: white;
-  box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.05);
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 15px 20px;
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  z-index: 2;
-}
 
-.app-bar .icon {
-  color: #F9386A;
-}
-
-.app-bar h1 {
-  margin: 0;
-  font-weight: 600;
-  font-size: 22px;
-  color: #404040;
-  margin-left: 40px;
-}
 
 .container {
   margin-top: 60px;
