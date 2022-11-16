@@ -3,8 +3,8 @@
         <router-link to="/" class="icon">
             <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
         </router-link>
-        <select v-model="selectedMonth">
-            <option v-for="option in monthOptions" :value="option.value">
+        <select v-model="store.monthFilter">
+            <option v-for="option in store.monthOptions" :value="option.value">
                 {{ option.text }}
             </option>
         </select>
@@ -24,32 +24,13 @@ import { useUserStore } from "../stores/store";
 
 const store =  useUserStore()
 
-const selectedMonth = ref("");
-
-const monthOptions = ref([
-    { text: "Janeiro/23", value: "01-2023" },
-    { text: "Dezembro/22", value: "12-2022" },
-    { text: "Novembro/22", value: "11-2022" },
-    { text: "Outubro/22", value: "10-2022" },
-    { text: "Setembro/22", value: "09-2022" },
-]);
-
-onMounted(async () => {
-  const currentDate = new Date()
-  const year = currentDate.getFullYear()
-  const month = currentDate.getMonth() + 1
-
-  selectedMonth.value = `${month.toString().padStart(2, '0')}-${year}`
-})
-
-watch(selectedMonth, async () => {
-  const [ month, year ] = selectedMonth.value.split('-')
-  const id = store.userId;
-  console.log(id, month, year)
-
+store.$subscribe(async (mutation, state) => {
+  console.log('changed state', state.monthFilter)
+  const [ month, year ] = state.monthFilter.split('-')
+  const id = state.userId;
   await getTransactions(id, year, month)
-
 })
+
 
 const transactions = ref<TransactionSummaryDTO[]>([])
 
@@ -69,6 +50,13 @@ async function getTransactions(userId: String, year: String, month: String) {
     console.log(error.response?.data);
   })
 }
+
+onMounted(async () => {
+  console.log('changed state', store.monthFilter)
+  const [ month, year ] = store.monthFilter.split('-')
+  const id = store.userId;
+  await getTransactions(id, year, month)
+})
 
 </script>
 
