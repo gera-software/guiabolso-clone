@@ -8,7 +8,13 @@
   </AppBar>
 
     <div class="container">
-      <h2>Account:  {{route.params.id}}</h2>
+      <div class="account-info" v-if="account">
+        <img class="account-logo" :src="account.imageUrl?.toString()" />
+        <div>
+          <h2 class="title">{{account.bankData?.institution.name}}</h2>
+          <h3 class="subtitle">{{account.name}}</h3>
+        </div>
+      </div>
       <TransactionList :transactions="transactions" />
     </div>
 </template>
@@ -18,7 +24,7 @@ import { ref, watch, computed } from "vue";
 import api from "../config/axios.js";
 import { onMounted } from "vue";
 import TransactionList from "../components/TransactionList.vue";
-import { TransactionSummaryDTO } from "../config/types";
+import { AccountDTO, TransactionSummaryDTO } from "../config/types";
 import { useUserStore } from "../stores/store";
 import { useRoute } from "vue-router";
 import AppBar from '@/components/AppBar.vue'
@@ -56,11 +62,32 @@ async function getTransactionsByAccount(accountId: String, year: String, month: 
 }
 
 onMounted(async () => {
-  console.log("accountid", route.params.id)
-  console.log('changed state', store.monthFilter)
+  console.log('month filter', store.monthFilter)
   const [ month, year ] = store.monthFilter.split('-')
   const id = route.params.id.toString()
   await getTransactionsByAccount(id, year, month)
+})
+
+
+const account = ref<AccountDTO>()
+
+async function getAccount(accountId: String) {
+  account.value = await api.guiabolsoApi({
+    method: 'get',
+    url: `/account-get?id=${accountId}`
+  }).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+
+onMounted(async () => {
+  console.log("accountid", route.params.id)
+  const id = route.params.id;
+  await getAccount(id.toString())
 })
 
 </script>
@@ -78,6 +105,38 @@ onMounted(async () => {
 
 .container {
     margin-top: 60px;
+}
+
+
+.account-info {
+  padding: 20px 15px 0 15px;
+  display: flex;
+  align-items: center;
+}
+
+.account-info .account-logo {
+  border: 1px solid #F2F2F2;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  margin-right: 10px;
+}
+
+.account-info .title {
+  margin: 0;
+  font-family: 'Open Sans';
+  font-size: 14px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.account-info .subtitle {
+  margin: 0;
+  font-family: 'Open Sans';
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: normal;
+  color: #454545;
 }
 
 </style>
