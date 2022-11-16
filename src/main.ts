@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import router from './router'
+import { createPinia } from 'pinia'
 
 import IncomeBonusIcon from '@/components/icons/IncomeBonusIcon.vue'
 import IncomeLoanIcon from '@/components/icons/IncomeLoanIcon.vue'
@@ -58,9 +59,12 @@ library.add(faArrowsRotate)
 library.add(faBan)
 library.add(faUser)
 
+const pinia = createPinia()
+
 
 const app = createApp(App)
 app.use(router)
+app.use(pinia)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 

@@ -3,8 +3,10 @@ import * as AccountRepository from '../repositories/accountRepository'
 import { Account } from "../types";
 
 const handler :Handler = async (event, context) => {
-  // TODO hardcoded id
-    const accounts: Account[] = await AccountRepository.fetchByUserId('6371600bc4021d373d3ace59')
+
+  const userId = event.queryStringParameters?.id
+
+    const accounts: Account[] = await AccountRepository.fetchByUserId(userId)
     
     return {
         statusCode: 200,

@@ -55,6 +55,9 @@ import api from '../config/axios.js'
 import { onMounted } from 'vue'
 import { groupBy } from 'lodash'
 import { AccountDTO } from '../config/types';
+import { useUserStore } from '../stores/store';
+
+const store =  useUserStore()
 
 const accounts = ref<AccountDTO[]>([])
 
@@ -66,7 +69,7 @@ async function getMyAccounts(): Promise<AccountDTO[]> {
     console.log('get my accounts')
   return api.guiabolsoApi({
     method: 'get',
-    url: `/accounts-fetch`,
+    url: `/accounts-fetch?id=${store.userId}`,
   }).then(function (response) {
     // console.log(response.data)
     accounts.value = response.data
