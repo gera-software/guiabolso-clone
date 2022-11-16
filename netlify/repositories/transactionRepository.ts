@@ -50,8 +50,7 @@ export async function remove(id): Promise<Transaction | null> {
 }
 
 /**
- * Fetch all (not deleted) transactions by account id
- * TODO paginate results by month (temporarily limited to 20 last items)
+ * Fetch all (not deleted) transactions by account id in a given month
  * @param id 
  * @returns 
  */
@@ -65,7 +64,7 @@ export async function fetchByAccount(id, monthField, yearField): Promise<Transac
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
     const result = await TransactionModel.aggregate([
-            { $match: { _isDeleted: false, date: { $gte: firstDay, $lt: lastDay } } },
+            { $match: { accountId: new Types.ObjectId(id), _isDeleted: false, date: { $gte: firstDay, $lt: lastDay } } },
             { $lookup: { 
                 from: 'accounts', 
                 localField: 'accountId', 
