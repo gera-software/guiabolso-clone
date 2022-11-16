@@ -10,19 +10,7 @@
         </select>
     </div>
     <div class="container">
-      <div class="transactions-container">
-        <div v-for="(transaction, index) in transactions">
-          <div class="date-separator" v-if="index === 0 || transactions[index - 1].date.getDate() !== transaction.date.getDate()">
-            <div class="date">
-              <h2 class="day">{{ transaction.date.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2>
-              <div class="month">{{ transaction.date.toLocaleString('pt-BR', { month: 'short'}) }}</div>
-            </div>
-          </div>
-
-          <TransactionSummary :transaction="transaction"></TransactionSummary>
-        </div>
-
-      </div>
+      <TransactionList :transactions="transactions" />
     </div>
 </template>
 
@@ -31,7 +19,7 @@ import { ref, watch, computed } from "vue";
 import api from "../config/axios.js";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-import TransactionSummary from "../components/TransactionSummary.vue";
+import TransactionList from "../components/TransactionList.vue";
 
 
 const route = useRoute()
@@ -161,50 +149,6 @@ async function getTransactions(userId: String, year: String, month: String) {
 
 .container {
     margin-top: 60px;
-}
-
-.transactions-container {
-  padding: 15px;
-}
-
-/**
-Transaction
-*/
-
-.transactions-container .date-separator {
-  padding: 15px 0;
-  position: relative;
-}
-
-.transactions-container .date-separator::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 0;
-  left: 50px;
-  height: 1px;
-  background-color: #AAAAAA;
-}
-
-
-.transactions-container .date-separator .date {
-  text-align: center;
-  padding-right: 15px;
-  max-width: 60px;
-}
-
-.transactions-container .date-separator .day {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #AAAAAA;
-}
-.transactions-container .date-separator .month {
-    margin: 0;
-    font-size: 12px;
-    font-weight: 400;
-    color: #AAAAAA;
-    text-transform: uppercase;
 }
 
 </style>
