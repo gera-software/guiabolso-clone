@@ -1,5 +1,5 @@
 <template>
-    <AppBar title="Nova transação manual" />
+    <AppBar title="Detalhes da Transação" />
     <div class="container">
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
@@ -56,11 +56,44 @@ import { onMounted } from 'vue';
 import { AccountSummaryDTO, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
 import { useUserStore } from '../stores/store';
 import CurrencyInput from '../components/CurrencyInput.vue'
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter()
+const route = useRoute()
 
 const store =  useUserStore()
+
+const transaction = ref<Transaction>()
+
+async function getTransaction(id: string) {
+  return api.guiabolsoApi({
+    method: 'get',
+    url: `/transaction-get?id=${id}`,
+  }).then(function (response) {
+    console.log(response.data)
+    transaction.value = response.data
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+onMounted(async () => {
+  const transactionId = route.params.id.toString()
+  console.log(transactionId)
+  await getTransaction(transactionId)
+
+  if(transaction.value) {
+    form.value.description = transaction.value.description
+    form.value.amount = transaction.value.amount
+    form.value.date = dateToString(new Date(transaction.value.date))
+    form.value.accountId = transaction.value.accountId
+    form.value.categoryId = transaction.value.category?._id ?? ''
+    form.value.comment = transaction.value.comment ?? ''
+    form.value.ignored = transaction.value.ignored
+  }
+})
+
 
 const accounts = ref<AccountSummaryDTO[]>([])
 
@@ -141,34 +174,34 @@ const loading = ref(false)
 
 async function handleSubmit() {
   loading.value = true
-    const payload: Transaction = {
+    const payload = {
+        _id: transaction.value?._id,
         description: form.value.description,
         amount: form.value.amount,
-        currencyCode: CurrencyCodes.BRL,
+        // currencyCode: CurrencyCodes.BRL,
         date: stringToDate(form.value.date),
         category: categories.value.find(category => category._id === form.value.categoryId),
         type: form.value.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
-        status: TransactionStatus.POSTED,
+        // status: TransactionStatus.POSTED,
         comment: form.value.comment,
         ignored: form.value.ignored,
-        accountId: form.value.accountId,
-        userId: store.userId,
-        _isDeleted: false,
+        // accountId: form.value.accountId,
+        // userId: store.userId,
+        // _isDeleted: false,
     }
 
-    // console.log(payload)
-    await saveTransaction(payload)
+    console.log(payload)
+    await updateTransaction(payload)
     loading.value = false
-    // router.push({ name: 'extract'})
     router.back()
 
 }
 
-async function saveTransaction(payload: Transaction): Promise<Transaction> {
-    console.log('save transaction')
+async function updateTransaction(payload: Object): Promise<Transaction> {
+    console.log('update transaction')
   return api.guiabolsoApi({
     method: 'post',
-    url: `/transaction-create`,
+    url: `/transaction-update`,
     data: payload,
   }).then(function (response) {
     console.log(response.data)

@@ -167,10 +167,30 @@ export async function create(transaction: Transaction | null): Promise<Transacti
  * @param transaction 
  * @returns 
  */
-export async function updateOne(transaction: Transaction): Promise<Transaction | null> {
+export async function replaceOne(transaction: Transaction): Promise<Transaction | null> {
     await connect();
     const result = await TransactionModel.findOneAndReplace({ _id: transaction?._id }, transaction);
     await disconnect();
 
     return result;
+}
+
+export async function updateOne(transaction: Transaction): Promise<Transaction | null> {
+    await connect();
+    const doc = await TransactionModel.findById(transaction._id);
+
+    if(doc) {
+        doc.description = transaction.description
+        doc.amount = transaction.amount
+        doc.date = transaction.date
+        doc.category = transaction.category
+        doc.type = transaction.type
+        doc.comment = transaction.comment
+        doc.ignored = transaction.ignored
+        await doc.save();
+    }
+
+    await disconnect();
+
+    return doc;
 }

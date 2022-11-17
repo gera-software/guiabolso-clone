@@ -7,10 +7,10 @@ export interface Institution {
 }
 
 export interface Category {
-    _id?: String,
-    name: String,
-    iconName: String,
-    primaryColor: String
+    _id?: string,
+    name: string,
+    iconName: string,
+    primaryColor: string
 }
 
 export interface User {
@@ -109,20 +109,20 @@ export enum TransactionStatus {
 }
 
 export interface Transaction {
-    _id?: String,
-    pluggyTransactionId?: String,
-    description: String,
-    amount: Number,
+    _id?: string,
+    pluggyTransactionId?: string,
+    description: string,
+    amount: number,
     currencyCode: CurrencyCodes,
     date: Date,
     category?: Category,
     type: TransactionType,
     status: TransactionStatus,
-    comment?: String,
-    ignored: Boolean,
-    accountId: String,
-    userId: String,
-    _isDeleted: Boolean,
+    comment?: string,
+    ignored: boolean,
+    accountId: string,
+    userId: string,
+    _isDeleted: boolean,
 }
 
 export interface AccountData {
