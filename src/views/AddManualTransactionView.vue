@@ -91,20 +91,28 @@ onMounted(async () => {
 
 const form = ref({
     description: '',
-    ammount: 0,
-    date: (new Date()).toISOString().split('T')[0], /* FIX bug wrong date is showing on debug*/
+    ammount: 0, // multiplied by 100 to remove decimals
+    date: dateToString(new Date()),
     accountId: '',
     categoryId: '',
     comment: '',
 })
 
-// TODO temporary fix!!!
-function fixDateBug(dateString: string): Date {
-    const date = new Date(dateString)
-    const start = date.toISOString().split('T')[0]
-    const end = (new Date()).toISOString().split('T')[1]
-    const isoDateString = start + 'T' + end
-    return new Date(isoDateString)
+function dateToString(date: Date) : string {
+  return date.toISOString().split('T')[0]
+}
+
+function stringToDate(dateString: string): Date {
+    // const date = new Date(dateString)
+    // const start = date.toISOString().split('T')[0]
+    // const end = (new Date()).toISOString().split('T')[1]
+    // const isoDateString = start + 'T' + end
+    // return new Date(isoDateString)
+
+    const date = new Date()
+    const [ year, month, day ] = dateString.split('-')
+    date.setFullYear(+year, +month - 1, +day)
+    return date
 }
 
 
@@ -113,7 +121,7 @@ async function handleSubmit() {
         description: form.value.description,
         amount: form.value.ammount,
         currencyCode: CurrencyCodes.BRL,
-        date: fixDateBug(form.value.date),
+        date: stringToDate(form.value.date),
         category: categories.value.find(category => category._id === form.value.categoryId),
         type: form.value.ammount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
         status: TransactionStatus.POSTED,
