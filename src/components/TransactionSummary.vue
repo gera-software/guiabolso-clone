@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction">
+    <div class="transaction" :class="{ 'transaction--ignored': transaction.ignored }">
         <div class="col-1">
             <CategoryIcon :icon="transaction.category?.iconName" :color="transaction.category?.primaryColor" />
             <div class="flex">
@@ -34,6 +34,10 @@ defineProps<{
     display: flex;
     justify-content: space-between;
     padding: 15px 0;
+}
+
+.transaction--ignored {
+    opacity: .35;
 }
 
 .transaction .col-1 {

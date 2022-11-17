@@ -30,6 +30,13 @@
                 <label class="form-label">Comentários e #tags</label>
                 <input class="form-input" type="text" placeholder="Escreva seus comentários e #tags" v-model="form.comment">
             </div>
+            <div class="form-group columns">
+              <div>
+                <label class="form-label">Ignorar transação</label>
+                <p class="form-info">A transação não aparecerá nos gráficos ou planejamento</p>
+              </div>
+              <input type="checkbox" class="checkbox" v-model="form.ignored" />
+            </div>
             <div class="form-group">
                 <button type="submit" class="button" :disabled="loading">Salvar</button>
             </div>
@@ -99,6 +106,7 @@ const form = ref({
     accountId: '',
     categoryId: '',
     comment: '',
+    ignored: false,
 })
 
 function dateToString(date: Date) : string {
@@ -131,12 +139,13 @@ async function handleSubmit() {
         type: form.value.ammount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
         status: TransactionStatus.POSTED,
         comment: form.value.comment,
-        ignored: false,
+        ignored: form.value.ignored,
         accountId: form.value.accountId,
         userId: store.userId,
         _isDeleted: false,
     }
 
+    // console.log(payload)
     await saveTransaction(payload)
     loading.value = false
     router.push({ name: 'extract'})
@@ -170,6 +179,10 @@ async function saveTransaction(payload: Transaction): Promise<Transaction> {
     padding: 18px 15px;
     display: flex;
     flex-direction: column;
+}
+
+.form-group.columns {
+  flex-direction: row;
 }
 
 .form-group .form-label {
@@ -213,4 +226,16 @@ async function saveTransaction(payload: Transaction): Promise<Transaction> {
     opacity: .35;
 }
 
+.form-info {
+  color: #404040;
+  font-family: 'Open Sans';
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 5px 0;
+}
+
+.checkbox {
+  margin: 0 20px;
+}
 </style>
