@@ -5,14 +5,15 @@
     />
 </template>
   
-  <script  setup lang="ts">
+<script setup lang="ts">
   import { useCurrencyInput, CurrencyDisplay, ValueScaling } from 'vue-currency-input'
+  import { watch } from 'vue'
   
     const props = defineProps({
         modelValue: Number,
     })
 
-    const { inputRef } = useCurrencyInput({
+    const { inputRef, setValue  } = useCurrencyInput({
         locale: "pt-BR",
         currency: "BRL",
         currencyDisplay: CurrencyDisplay.symbol,
@@ -25,5 +26,12 @@
         useGrouping: true,
         accountingSign: false
     })
+
+    watch(
+      () => props.modelValue, // Vue 2: props.value
+      (value) => {
+        setValue(value ?? null)
+      }
+    )
   
   </script>

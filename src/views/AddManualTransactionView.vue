@@ -7,8 +7,10 @@
                 <input class="form-input" type="text" placeholder="Crie um nome para a transação" required v-model="form.description">
             </div>
             <div class="form-group">
-                <label class="form-label">Valor</label>
+                <label class="form-label">Valor {{form.ammount}}</label>
                 <CurrencyInput class="form-input" required v-model="form.ammount" />
+                <button @click="turnNegative" type="button">- R$</button>
+                <button @click="turnPositive" type="button">+ R$</button>
             </div>
             <div class="form-group">
                 <label class="form-label">Data</label>
@@ -97,6 +99,16 @@ async function getCategories(): Promise<Category[]> {
 onMounted(async () => {
     getCategories()
 })
+
+function turnNegative() {
+  form.value.ammount = Math.abs(form.value.ammount ?? 0) * -1
+  console.log('turn negative', form.value.ammount)
+}
+    
+function turnPositive() {
+  form.value.ammount = Math.abs(form.value.ammount ?? 0)
+  console.log('turn positive', form.value.ammount)
+}
 
 
 const form = ref({
