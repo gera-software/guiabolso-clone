@@ -65,7 +65,7 @@ onMounted(async () => {
 
 
 .container {
-  margin-top: 60px;
+  padding-top: 60px;
 }
 
 .card {

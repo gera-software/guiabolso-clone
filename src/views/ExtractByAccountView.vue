@@ -17,6 +17,9 @@
       </div>
       <TransactionList :transactions="transactions" />
     </div>
+    <FAB @click="handleClick">
+      <font-awesome-icon icon="fa-solid fa-plus" />
+    </FAB>
 </template>
 
 <script setup lang="ts">
@@ -28,6 +31,10 @@ import { AccountDTO, TransactionSummaryDTO } from "../config/types";
 import { useUserStore } from "../stores/store";
 import { useRoute } from "vue-router";
 import AppBar from '@/components/AppBar.vue'
+import FAB from "@/components/FAB.vue";
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 
 const route = useRoute()
@@ -90,6 +97,10 @@ onMounted(async () => {
   await getAccount(id.toString())
 })
 
+function handleClick() {
+    router.push({ name: 'add-transaction' })
+}
+
 </script>
 
 <style scoped>
@@ -104,7 +115,9 @@ onMounted(async () => {
 }
 
 .container {
-    margin-top: 60px;
+    padding-top: 60px;
+    margin-bottom: 80px;
+
 }
 
 

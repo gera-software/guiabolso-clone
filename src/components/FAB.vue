@@ -1,19 +1,10 @@
 <template>
-    <button class="fab" type="button" @click="handleClick">
-        <font-awesome-icon icon="fa-solid fa-plus" />
+    <button class="fab" type="button">
+        <slot>
+            icon
+        </slot>
     </button>
 </template>
-
-<script setup lang="ts">
-import { useRouter } from 'vue-router';
-
-const router = useRouter()
-
-function handleClick() {
-    router.push({ name: 'add-transaction' })
-}
-
-</script>
 
 <style scoped>
 .fab {
@@ -28,5 +19,6 @@ function handleClick() {
     bottom: 25px;
     right: 25px;
     font-size: 18px;
+    cursor: pointer;
 }
 </style>

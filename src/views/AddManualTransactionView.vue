@@ -182,7 +182,7 @@ async function saveTransaction(payload: Transaction): Promise<Transaction> {
 <style scoped>
 
 .container {
-  margin-top: 60px;
+  padding-top: 60px;
 }
 
 
