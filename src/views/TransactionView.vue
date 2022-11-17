@@ -1,6 +1,6 @@
 <template>
     <AppBar title="Detalhes da Transação" />
-    <div class="container" v-if="!isLoading">
+    <div class="container" v-if="!loading">
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
                 <label class="form-label">Nome da Transação</label>
@@ -44,6 +44,9 @@
             <div class="form-group">
                 <button type="submit" class="button" :disabled="loading">Salvar</button>
             </div>
+            <div class="form-group">
+                <button type="button" class="button button-outline" :disabled="loading" @click="handleClickExcluirTransacao">Excluir</button>
+            </div>
         </form>
     </div>
 </template>
@@ -65,16 +68,40 @@ const store =  useUserStore()
 
 const transaction = ref<Transaction>()
 
-const isLoading = ref(true)
+async function handleClickExcluirTransacao() {
+  const result = window.confirm('Deseja realmente excluir a transação?');
+  console.log('excluir', route.params.id.toString(), result)
+  if(result) {
+    await deleteTransaction(route.params.id.toString())
+    router.back()
+  }
+}
+
+
+async function deleteTransaction(id: string) {
+  loading.value = true
+  return api.guiabolsoApi({
+    method: 'get',
+    url: `/transaction-delete?id=${id}`,
+  }).then(function (response) {
+    console.log(response.data)
+    loading.value = false
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
 
 async function getTransaction(id: string) {
+  loading.value = true
   return api.guiabolsoApi({
     method: 'get',
     url: `/transaction-get?id=${id}`,
   }).then(function (response) {
     console.log(response.data)
     transaction.value = response.data
-    isLoading.value = false
+    loading.value = false
     return response.data
   }).catch(function (error) {
     console.log(error.response?.data);
@@ -272,6 +299,11 @@ async function updateTransaction(payload: Object): Promise<Transaction> {
     font-weight: 600;
     text-align: center;
     padding: 12px 16px;
+}
+
+.button.button-outline {
+  background-color: transparent;
+  color: #F9386A;
 }
 
 .button.button-toggle {
