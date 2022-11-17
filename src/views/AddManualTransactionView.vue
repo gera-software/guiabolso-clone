@@ -31,7 +31,7 @@
                 <input class="form-input" type="text" placeholder="Escreva seus comentários e #tags" v-model="form.comment">
             </div>
             <div class="form-group">
-                <button type="submit" class="button">Salvar</button>
+                <button type="submit" class="button" :disabled="loading">Salvar</button>
             </div>
         </form>
     </div>
@@ -45,6 +45,9 @@ import { onMounted } from 'vue';
 import { AccountSummaryDTO, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
 import { useUserStore } from '../stores/store';
 import CurrencyInput from '../components/CurrencyInput.vue'
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const store =  useUserStore()
 
@@ -115,8 +118,10 @@ function stringToDate(dateString: string): Date {
     return date
 }
 
+const loading = ref(false)
 
 async function handleSubmit() {
+  loading.value = true
     const payload: Transaction = {
         description: form.value.description,
         amount: form.value.ammount,
@@ -133,6 +138,8 @@ async function handleSubmit() {
     }
 
     await saveTransaction(payload)
+    loading.value = false
+    router.push({ name: 'extract'})
 
 }
 
@@ -202,7 +209,7 @@ async function saveTransaction(payload: Transaction): Promise<Transaction> {
     padding: 12px 16px;
 }
 
-.button.disabled {
+.button:disabled, .button.disabled {
     opacity: .35;
 }
 
