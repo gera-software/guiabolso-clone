@@ -7,10 +7,12 @@
                 <input class="form-input" type="text" placeholder="Crie um nome para a transação" required v-model="form.description">
             </div>
             <div class="form-group">
-                <label class="form-label">Valor {{form.ammount}}</label>
-                <CurrencyInput class="form-input" required v-model="form.ammount" />
-                <button @click="turnNegative" type="button">- R$</button>
-                <button @click="turnPositive" type="button">+ R$</button>
+                <label class="form-label">Valor</label>
+                <CurrencyInput class="form-input" required v-model="form.ammount" :class="{ 'input-red': form.ammount < 0 }"/>
+                <div class="inline-buttons">
+                  <button @click="turnNegative" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.ammount < 0 }">- R$</button>
+                  <button @click="turnPositive" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.ammount >= 0 }">+ R$</button>
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label">Data</label>
@@ -102,14 +104,11 @@ onMounted(async () => {
 
 function turnNegative() {
   form.value.ammount = Math.abs(form.value.ammount ?? 0) * -1
-  console.log('turn negative', form.value.ammount)
 }
     
 function turnPositive() {
   form.value.ammount = Math.abs(form.value.ammount ?? 0)
-  console.log('turn positive', form.value.ammount)
 }
-
 
 const form = ref({
     description: '',
@@ -208,7 +207,7 @@ async function saveTransaction(payload: Transaction): Promise<Transaction> {
 
 }
 
-.form-group .form-input {
+.form-input {
     /* background-color: blueviolet; */
     font-family: 'Open Sans';
     font-size: 20px;
@@ -222,6 +221,10 @@ async function saveTransaction(payload: Transaction): Promise<Transaction> {
     width: 100%;
 }
 
+.form-input.input-red {
+  color: red;
+}
+
 .button {
     background-color: #F9386A;
     color: white;
@@ -232,6 +235,18 @@ async function saveTransaction(payload: Transaction): Promise<Transaction> {
     font-weight: 600;
     text-align: center;
     padding: 12px 16px;
+}
+
+.button.button-toggle {
+  border: 1px solid black;
+  background-color: transparent;
+  color: black;
+}
+
+.button.button-toggle--active {
+  border: 1px solid black;
+  background-color: black;
+  color: white;
 }
 
 .button:disabled, .button.disabled {
@@ -249,5 +264,11 @@ async function saveTransaction(payload: Transaction): Promise<Transaction> {
 
 .checkbox {
   margin: 0 20px;
+}
+
+.inline-buttons {
+  padding-top: 20px;
+  display: flex;
+  gap: 10px;
 }
 </style>

@@ -30,7 +30,7 @@
     watch(
       () => props.modelValue, // Vue 2: props.value
       (value) => {
-        setValue(value ?? null)
+        setValue(value ?? 0)
       }
     )
   
