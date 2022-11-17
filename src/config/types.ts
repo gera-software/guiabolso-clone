@@ -133,15 +133,15 @@ export interface AccountData {
   }
   
 export interface TransactionSummaryDTO {
-    _id?: String,
-    description: String,
-    amount: Number,
+    _id?: string,
+    description: string,
+    amount: number,
     currencyCode: CurrencyCodes,
     date: Date,
     category?: Category,
     type: TransactionType,
     status: TransactionStatus,
-    ignored: Boolean,
+    ignored: boolean,
     account: AccountData
   }
 

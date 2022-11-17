@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction" :class="{ 'transaction--ignored': transaction.ignored }">
+    <div  tabindex="0" class="transaction" :class="{ 'transaction--ignored': transaction.ignored }" @click="showDetails(transaction._id ?? '')">
         <div class="col-1">
             <CategoryIcon :icon="transaction.category?.iconName" :color="transaction.category?.primaryColor" />
             <div class="flex">
@@ -22,10 +22,18 @@
 <script setup lang="ts">
 import CategoryIcon from '@/components/CategoryIcon.vue'
 import { TransactionSummaryDTO } from '../config/types';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 defineProps<{
     transaction: TransactionSummaryDTO
 }>()
+
+function showDetails(transactionId: string) {
+    console.log('showDetails', transactionId)
+    router.push({ name: 'transaction', params: { id: transactionId } })
+}
 
 </script>
 <style scoped>
@@ -34,6 +42,13 @@ defineProps<{
     display: flex;
     justify-content: space-between;
     padding: 15px 0;
+}
+
+.transaction:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.transaction:focus {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .transaction--ignored {
