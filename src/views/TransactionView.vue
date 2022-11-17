@@ -1,6 +1,6 @@
 <template>
     <AppBar title="Detalhes da Transação" />
-    <div class="container">
+    <div class="container" v-if="!isLoading">
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
                 <label class="form-label">Nome da Transação</label>
@@ -65,6 +65,8 @@ const store =  useUserStore()
 
 const transaction = ref<Transaction>()
 
+const isLoading = ref(true)
+
 async function getTransaction(id: string) {
   return api.guiabolsoApi({
     method: 'get',
@@ -72,6 +74,7 @@ async function getTransaction(id: string) {
   }).then(function (response) {
     console.log(response.data)
     transaction.value = response.data
+    isLoading.value = false
     return response.data
   }).catch(function (error) {
     console.log(error.response?.data);
