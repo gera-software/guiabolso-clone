@@ -159,7 +159,8 @@ async function handleSubmit() {
     // console.log(payload)
     await saveTransaction(payload)
     loading.value = false
-    router.push({ name: 'extract'})
+    // router.push({ name: 'extract'})
+    router.back()
 
 }
 

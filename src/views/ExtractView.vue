@@ -10,6 +10,7 @@
     <div class="container">
       <TransactionList :transactions="transactions" />
     </div>
+    <FAB></FAB>
 </template>
 
 <script setup lang="ts">
@@ -20,6 +21,7 @@ import TransactionList from "../components/TransactionList.vue";
 import { TransactionSummaryDTO } from "../config/types";
 import { useUserStore } from "../stores/store";
 import AppBar from '@/components/AppBar.vue'
+import FAB from "@/components/FAB.vue";
 
 const store =  useUserStore()
 
@@ -72,6 +74,7 @@ onMounted(async () => {
 
 .container {
     margin-top: 60px;
+    margin-bottom: 80px;
 }
 
 </style>
