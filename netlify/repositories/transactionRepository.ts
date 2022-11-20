@@ -1,6 +1,6 @@
 import { connect, disconnect } from "../config/database";
 import { Schema, model, Types } from 'mongoose';
-import { CurrencyCodes, Transaction, TransactionSummary, TransactionType } from '../types'
+import { AccountSyncType, CurrencyCodes, Transaction, TransactionSummary, TransactionType } from '../types'
 
 const schema = new Schema<Transaction>({
     pluggyTransactionId: { type: String, required: false },
@@ -15,6 +15,7 @@ const schema = new Schema<Transaction>({
         primaryColor: String
     },
     type: String,
+    syncType: String,
     status: String,
     comment: { type: String, required: false },
     ignored: Boolean,

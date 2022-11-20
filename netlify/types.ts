@@ -117,6 +117,7 @@ export interface Transaction {
     date: Date,
     category?: Category,
     type: TransactionType,
+    syncType: AccountSyncType,
     status: TransactionStatus,
     comment?: String,
     ignored: Boolean,

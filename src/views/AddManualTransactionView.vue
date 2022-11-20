@@ -21,7 +21,7 @@
             <div class="form-group">
                 <label class="form-label">Conta</label>
                 <select class="form-input" required v-model="form.accountId">
-                    <option v-for="account in accounts" :value="account._id">{{account.name}}</option>
+                    <option v-for="account in manualAccounts" :value="account._id">{{account.name}}</option>
                 </select>
             </div>
             <div class="form-group">
@@ -53,7 +53,7 @@ import api from '../config/axios.js'
 import { ref, watch, computed  } from 'vue'
 import AppBar from '@/components/AppBar.vue'
 import { onMounted } from 'vue';
-import { AccountSummaryDTO, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
+import { AccountSummaryDTO, AccountSyncType, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
 import { useUserStore } from '../stores/store';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { useRouter } from 'vue-router';
@@ -77,6 +77,10 @@ async function getMyAccounts(): Promise<AccountSummaryDTO[]> {
     console.log(error.response?.data);
   })
 }
+
+const manualAccounts = computed<AccountSummaryDTO[]>(() => {
+  return accounts.value.filter(account => account.syncType == 'MANUAL')
+})
 
 onMounted(async () => {
   getMyAccounts()
@@ -148,6 +152,7 @@ async function handleSubmit() {
         date: stringToDate(form.value.date),
         category: categories.value.find(category => category._id === form.value.categoryId),
         type: form.value.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
+        syncType: AccountSyncType.MANUAL,
         status: TransactionStatus.POSTED,
         comment: form.value.comment,
         ignored: form.value.ignored,

@@ -16,6 +16,7 @@ const handler: Handler = async (event, context) => {
     //         "primaryColor": "green"
     //     },
     //     "type": "EXPENSE",
+    //     "syncType": "MANUAL",
     //     "status": "POSTED",
     //     "comment": "comentario",
     //     "ignored": false,
