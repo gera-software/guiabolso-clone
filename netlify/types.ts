@@ -1,3 +1,5 @@
+import pluggy from 'pluggy-sdk'
+
 export interface Institution {
     _id?: String,
     pluggyConnectorId?: Number,
@@ -72,7 +74,7 @@ export interface Account {
     name: String,
     imageUrl?: String,
     syncType: AccountSyncType,
-    pluggyAccountId?: String,
+    pluggyAccountId?: string,
     balance: Number,
     currencyCode: CurrencyCodes,
     type: AccountType,
@@ -148,4 +150,5 @@ export interface TransactionSummary {
 
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
+    fetchTransactions(pluggyAccountId: string, from: string ): Promise<pluggy.Transaction[]> 
 }

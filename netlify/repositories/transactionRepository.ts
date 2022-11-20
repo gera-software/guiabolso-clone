@@ -195,3 +195,16 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
 
     return doc;
 }
+
+export async function batchUpdate(id, yearField, monthField) {
+    const year = parseInt(yearField)
+    const month = parseInt(monthField)
+
+    const firstDay = new Date(`${year}-${month}-01`)
+
+    TransactionModel.
+        find({ accountId: new Types.ObjectId(id), date: { $gte: firstDay } }).
+        cursor().
+        on('data', function(doc) { console.log(doc); }).
+        on('end', function() { console.log('Done!'); });
+}
