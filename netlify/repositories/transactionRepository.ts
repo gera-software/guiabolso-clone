@@ -199,15 +199,26 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
     return doc;
 }
 
-export async function batchUpdate(id, yearField, monthField) {
-    const year = parseInt(yearField)
-    const month = parseInt(monthField)
+export async function batchUpdate(transactions: Transaction[]) {
+    await connect();
+    console.log(transactions[0])
 
-    const firstDay = new Date(`${year}-${month}-01`)
+    const updateArray = transactions.map(transaction => ({
+        updateOne: {
+            filter: { pluggyTransactionId: transaction.pluggyTransactionId },
+            // If you were using the MongoDB driver directly, you'd need to do
+            // `update: { $set: { title: ... } }` but mongoose adds $set for
+            // you.
+            update: transaction,
+            upsert: true,
+          } 
+    }))
 
-    TransactionModel.
-        find({ accountId: new Types.ObjectId(id), date: { $gte: firstDay } }).
-        cursor().
-        on('data', function(doc) { console.log(doc); }).
-        on('end', function() { console.log('Done!'); });
+    await TransactionModel.bulkWrite(
+        updateArray
+      ).then(res => {
+        console.log(res);
+      });
+
+    await disconnect();
 }

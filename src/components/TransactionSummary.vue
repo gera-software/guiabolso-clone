@@ -1,10 +1,10 @@
 <template>
     <div  tabindex="0" class="transaction" :class="{ 'transaction--ignored': transaction.ignored }" @click="showDetails(transaction._id ?? '')">
         <div class="col-1">
-            <CategoryIcon :icon="transaction.category?.iconName" :color="transaction.category?.primaryColor" />
+            <CategoryIcon :icon="transaction.category?.iconName ?? 'Uncategorized'" :color="transaction.category?.primaryColor ?? '#F9386A'" />
             <div class="flex">
                 <span class="category">{{
-                    transaction.category?.name
+                    transaction.category?.name ?? 'Categorizar'
                 }}</span>
                 <span class="description">{{
                     transaction.description ? transaction.description : transaction.descriptionOriginal 
