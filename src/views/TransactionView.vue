@@ -117,7 +117,7 @@ onMounted(async () => {
   await getTransaction(transactionId)
 
   if(transaction.value) {
-    form.value.description = transaction.value.description
+    form.value.description = transaction.value.description || transaction.value.descriptionOriginal || ''
     form.value.amount = transaction.value.amount
     form.value.date = dateToString(new Date(transaction.value.date))
     form.value.accountId = transaction.value.accountId

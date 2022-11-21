@@ -5,6 +5,7 @@ import { AccountSyncType, CurrencyCodes, Transaction, TransactionSummary, Transa
 const schema = new Schema<Transaction>({
     pluggyTransactionId: { type: String, required: false },
     description: String,
+    descriptionOriginal: String,
     amount: Number,
     currencyCode: String,
     date: Date,
@@ -77,6 +78,7 @@ export async function fetchByAccount(id, monthField, yearField): Promise<Transac
             { $project: {
                     _id: 1,
                     description: 1,
+                    descriptionOriginal: 1,
                     amount: 1,
                     currencyCode: 1,
                     date: 1,
@@ -127,6 +129,7 @@ export async function fetchByUser(id, monthField, yearField): Promise<Transactio
             { $project: {
                     _id: 1,
                     description: 1,
+                    descriptionOriginal: 1,
                     amount: 1,
                     currencyCode: 1,
                     date: 1,

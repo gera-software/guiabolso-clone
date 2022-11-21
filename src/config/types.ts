@@ -111,7 +111,8 @@ export enum TransactionStatus {
 export interface Transaction {
     _id?: string,
     pluggyTransactionId?: string,
-    description: string,
+    description?: string,
+    descriptionOriginal?: string,
     amount: number,
     currencyCode: CurrencyCodes,
     date: Date,
@@ -135,7 +136,8 @@ export interface AccountData {
   
 export interface TransactionSummaryDTO {
     _id?: string,
-    description: string,
+    description?: string,
+    descriptionOriginal?: string,
     amount: number,
     currencyCode: CurrencyCodes,
     date: Date,

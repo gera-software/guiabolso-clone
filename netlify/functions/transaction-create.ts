@@ -6,6 +6,7 @@ const handler: Handler = async (event, context) => {
     // {
     //     "pluggyTransactionId": "dsaddasd",
     //     "description": "Stringsdaasd",
+    //     "descriptionOriginal": "",
     //     "amount": -3000,
     //     "currencyCode": "BRL",
     //     "date": "2022/11/13",

@@ -7,7 +7,7 @@
                     transaction.category?.name
                 }}</span>
                 <span class="description">{{
-                    transaction.description
+                    transaction.description ? transaction.description : transaction.descriptionOriginal 
                 }}</span>
             </div>
         </div>
