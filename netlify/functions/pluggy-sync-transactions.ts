@@ -3,6 +3,7 @@ import * as TransactionRepository from "../repositories/transactionRepository";
 import * as AccountRepository from "../repositories/accountRepository";
 import pluggy from 'pluggy-sdk'
 import PluggyDataProvider from '../config/pluggyDataProvider'
+import { AccountSyncType, CurrencyCodes, Transaction, TransactionType } from "../types";
 
 
 const handler :Handler = async (event, context) => {
@@ -16,15 +17,32 @@ const handler :Handler = async (event, context) => {
     const account = await AccountRepository.getById(accountId)
     console.log(account)
 
-    let transactions: pluggy.Transaction[] = [];
+    let pluggyTransactions: pluggy.Transaction[] = [];
+    let transactions: Transaction[] = []
 
     if(account) {
         const pluggyAccountId = account.pluggyAccountId ?? ''
     
         try {
             const provider = new PluggyDataProvider()
-            transactions = await provider.fetchTransactions(pluggyAccountId, from)
-            console.log(transactions.length)
+            pluggyTransactions = await provider.fetchTransactions(pluggyAccountId, from)
+            console.log(pluggyTransactions.length)
+
+            transactions = pluggyTransactions.map(transaction => ({
+                pluggyTransactionId: transaction.id,
+                syncType: AccountSyncType.AUTOMATIC,
+                descriptionOriginal: transaction.description,
+                amount: Math.trunc(transaction.amount * 100),
+                currencyCode: CurrencyCodes.BRL,
+                date: transaction.date,
+                type: transaction.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
+                status: transaction.status,
+                ignored: false,
+                _isDeleted: false,
+                accountId: account._id,
+                userId: account.userId,
+            }) as Transaction)
+
         } catch(err) {
             console.error(err)
             return {
