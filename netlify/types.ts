@@ -123,10 +123,10 @@ export interface Transaction {
     syncType: AccountSyncType,
     status: TransactionStatus,
     comment?: String,
-    ignored: Boolean,
+    ignored?: Boolean,
     accountId: String,
     userId: String,
-    _isDeleted: Boolean,
+    _isDeleted?: Boolean,
 }
 
 export interface AccountData {

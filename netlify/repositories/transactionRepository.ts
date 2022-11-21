@@ -34,7 +34,7 @@ const TransactionModel = model<Transaction>('transactions', schema);
  */
 export async function getById(id): Promise<Transaction | null> {
     await connect();
-    const result = await TransactionModel.findOne({ _id: id, _isDeleted: false });
+    const result = await TransactionModel.findOne({ _id: id, _isDeleted: { $ne: true } });
     await disconnect();
     return result;
 }
@@ -46,7 +46,7 @@ export async function getById(id): Promise<Transaction | null> {
  */
 export async function remove(id): Promise<Transaction | null> {
     await connect();
-    const result = await TransactionModel.findOneAndUpdate({ _id: id }, { _isDeleted: true });
+    const result = await TransactionModel.findOneAndUpdate({ _id: id }, { _isDeleted: { $ne: true } });
     await disconnect();
     return result;
 }
@@ -66,7 +66,7 @@ export async function fetchByAccount(id, monthField, yearField): Promise<Transac
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
     const result = await TransactionModel.aggregate([
-            { $match: { accountId: new Types.ObjectId(id), _isDeleted: false, date: { $gte: firstDay, $lt: lastDay } } },
+            { $match: { accountId: new Types.ObjectId(id), _isDeleted: { $ne: true } , date: { $gte: firstDay, $lt: lastDay } } },
             { $lookup: { 
                 from: 'accounts', 
                 localField: 'accountId', 
@@ -117,7 +117,7 @@ export async function fetchByUser(id, monthField, yearField): Promise<Transactio
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
     const result = await TransactionModel.aggregate([
-            { $match: { userId: new Types.ObjectId(id), _isDeleted: false, date: { $gte: firstDay, $lt: lastDay } } },
+            { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, date: { $gte: firstDay, $lt: lastDay } } },
             { $lookup: { 
                 from: 'accounts', 
                 localField: 'accountId', 

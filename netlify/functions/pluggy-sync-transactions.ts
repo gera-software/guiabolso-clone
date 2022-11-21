@@ -37,8 +37,8 @@ const handler :Handler = async (event, context) => {
                 date: transaction.date,
                 type: transaction.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
                 status: transaction.status,
-                ignored: false,
-                _isDeleted: false,
+                // ignored: false,
+                // _isDeleted: false,
                 accountId: account._id,
                 userId: account.userId,
             }) as Transaction)
