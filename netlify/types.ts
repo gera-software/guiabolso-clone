@@ -163,6 +163,7 @@ export interface Synchronization {
     syncStatus: string,
     createdAt: Date,
     lastSyncAt: Date,
+    userId: string,
 }
 
 export interface DataProvider {

@@ -1,5 +1,10 @@
 <template>
-  <AppBar title="Contas e Cartões" />
+  <AppBar>
+    <h1>Contas e Cartões</h1>
+    <button class="button" @click="requestSync">
+      <font-awesome-icon icon="fa-solid fa-arrows-rotate" />
+    </button>
+  </AppBar>
   <div class="container">
 
     <div class="card">
@@ -58,11 +63,38 @@ onMounted(async () => {
 })
 
 
+function requestSync() {
+  console.log('requested sync')
+  return api.guiabolsoApi({
+    method: 'get',
+    url: `/connectors-update?userId=${store.userId}`,
+  }).then(function (response) {
+    console.log(response.data)
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
 
 </script>
   
 <style scoped>
+.app-bar h1 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 22px;
+    color: #404040;
+}
 
+.app-bar .button {
+    color: #F9386A;
+    border: none;
+    margin: 0 10px;
+    padding: 7px;
+    background-color: transparent;
+    cursor: pointer;
+}
 
 .container {
   padding-top: 60px;
