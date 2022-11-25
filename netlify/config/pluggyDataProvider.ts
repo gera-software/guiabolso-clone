@@ -67,6 +67,17 @@ class PluggyDataProvider implements DataProvider {
 
         return transactions
     }
+
+    /**
+     * Request an item to start update process in background
+     * @param id 
+     * @returns 
+     */
+    async updateItem(id: string): Promise<pluggy.Item> {
+        console.log('[Pluggy] updateItems...')
+        return this.client
+            .updateItem(id)
+    }
 }
 
 export default PluggyDataProvider

@@ -27,3 +27,19 @@ export async function getById(id): Promise<Synchronization | null> {
     await disconnect();
     return result;
 }
+
+export async function updateOne(sync: Synchronization): Promise<Synchronization | null> {
+    await connect();
+    const doc = await SynchronizationModel.findById(sync._id);
+
+    if(doc) {
+        doc.itemStatus = sync.itemStatus
+        doc.lastSyncAt = sync.lastSyncAt
+        doc.syncStatus = sync.syncStatus
+        await doc.save();
+    }
+
+    await disconnect();
+
+    return doc;
+}

@@ -152,11 +152,18 @@ export interface TransactionSummaryDTO {
     account: AccountData
 }
 
+export enum SyncStatus {
+    PREPARING = 'PREPARING',
+    READY = 'READY',
+    IN_PROGRESS = 'IN_PROGRESS',
+    SYNCED = 'SYNCED',
+}
+
 export interface Synchronization {
     _id?: string,
     pluggyItemId: string,
     itemStatus: string,
-    syncStatus: string,
+    syncStatus: SyncStatus,
     createdAt: Date,
     lastSyncAt: Date,
     userId: string,

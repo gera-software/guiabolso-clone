@@ -1,6 +1,7 @@
 import { Handler } from "@netlify/functions";
+import PluggyDataProvider from "../config/pluggyDataProvider";
 import * as SynchronizationRepository from '../repositories/synchronizationRepository'
-import { Synchronization } from "../types";
+import { Synchronization, SyncStatus } from "../types";
 
 const handler :Handler = async (event, context) => {
  
@@ -9,8 +10,16 @@ const handler :Handler = async (event, context) => {
 
 
     const results: Synchronization[] = await SynchronizationRepository.fetchByUserId(userId)
+    
+    const dataProvider = new PluggyDataProvider()
+
     // TODO loop
-    results[0]
+    const item = await dataProvider.updateItem(results[0].pluggyItemId)
+    console.log(item)
+
+    results[0].itemStatus = item.status
+    results[0].syncStatus = SyncStatus.PREPARING
+    await SynchronizationRepository.updateOne(results[0])
 
 
 
