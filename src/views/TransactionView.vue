@@ -123,7 +123,7 @@ onMounted(async () => {
     form.value.accountId = transaction.value.accountId
     form.value.categoryId = transaction.value.category?._id ?? ''
     form.value.comment = transaction.value.comment ?? ''
-    form.value.ignored = transaction.value.ignored
+    form.value.ignored = !!transaction.value.ignored
   }
 })
 
