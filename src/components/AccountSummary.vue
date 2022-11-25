@@ -4,7 +4,7 @@
           <div>
             <div class="name">{{account.name}}</div>
             <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
-            <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.connection?.lastUpdatedAt)).toLocaleString() }}</div>
+            <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.sync?.lastSyncAt)).toLocaleString() }} <span class="badge" v-if="account.sync">{{account.sync.syncStatus}}</span> </div>
             <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
           </div>
         </div>
@@ -75,5 +75,12 @@ function goToExtract(accountId: String | undefined) {
   font-size: 30px;
   font-weight: 800;
   color: #404040;
+}
+
+.badge {
+  background: gray;
+  color: black;
+  padding: 0px 10px;
+  border-radius: 4px;
 }
 </style>

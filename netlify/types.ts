@@ -50,6 +50,9 @@ export enum ConnectionStatus {
     UPDATED = 'UPDATED',
 }
 
+/**
+ * @deprecated
+ */
 export interface Connection {
     pluggyItemId: String,
     lastUpdatedAt: Date,
@@ -80,7 +83,8 @@ export interface Account {
     type: AccountType,
     userId: String,
     accountOwner?: AccountOwner,
-    connection?: Connection,
+    syncId?: String,
+    sync?: Synchronization,
     bankData?: BankData,
     creditData?: CreditData,
 }
@@ -94,6 +98,8 @@ export interface AccountSummaryDTO {
     currencyCode: CurrencyCodes,
     type: AccountType,
     userId: String,
+    syncId?: String,
+    sync?: Synchronization,
     connection?: {
         lastUpdatedAt: Date,
         status: ConnectionStatus,
@@ -148,7 +154,16 @@ export interface TransactionSummary {
     status: TransactionStatus,
     ignored: Boolean,
     account: AccountData
-  }
+}
+
+export interface Synchronization {
+    _id?: string,
+    pluggyItemId: string,
+    itemStatus: string,
+    syncStatus: string,
+    createdAt: Date,
+    lastSyncAt: Date,
+}
 
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>

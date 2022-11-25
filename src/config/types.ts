@@ -77,6 +77,8 @@ export interface AccountDTO {
     currencyCode: CurrencyCodes,
     type: AccountType,
     userId: String,
+    syncId?: String,
+    sync?: Synchronization,
     accountOwner?: AccountOwner,
     connection?: Connection,
     bankData?: BankData,
@@ -92,6 +94,8 @@ export interface AccountSummaryDTO {
     currencyCode: CurrencyCodes,
     type: AccountType,
     userId: String,
+    syncId?: String,
+    sync?: Synchronization,
     connection?: {
         lastUpdatedAt: Date,
         status: ConnectionStatus,
@@ -146,8 +150,16 @@ export interface TransactionSummaryDTO {
     status: TransactionStatus,
     ignored: boolean,
     account: AccountData
-  }
+}
 
+export interface Synchronization {
+    _id?: string,
+    pluggyItemId: string,
+    itemStatus: string,
+    syncStatus: string,
+    createdAt: Date,
+    lastSyncAt: Date,
+}
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
 }

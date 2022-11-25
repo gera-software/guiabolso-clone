@@ -7,8 +7,6 @@ import { AccountSyncType, CurrencyCodes, Transaction, TransactionType } from "..
 
 
 const handler :Handler = async (event, context) => {
- 
-    console.log(event.queryStringParameters)
 
     const accountId = event.queryStringParameters?.accountId ?? ''
     // const pageSize = +(event.queryStringParameters?.pageSize ?? 20)
