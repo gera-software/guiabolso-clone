@@ -1,32 +1,47 @@
 <template>
-    <div class="card">
-        <div class="card-header">
-            <h2>Gastos do mês</h2>
-        </div>
-        <div class="card-body">
-            <div class="donut">
-                <svg class="donut-chart" :viewBox="`0 0 ${viewBox} ${viewBox}`">
-                    <path
-                        v-for="slice in donutSlices" :key="slice.label"
-                        :fill="slice.color"
-                        :d="slice.commands"
-                        :transform="`rotate(${slice.offset})`"
-                    >
-                        <title>{{slice.label}}</title>
-                    </path>
-                </svg>
-                <ul class="donut-legend">
-                    <li v-for="slice in donutSlices" :key="slice.label">
-                        <div class="color" :style="{ 'background-color': slice.color }"></div>
-                        <div class="label">{{ slice.label }}</div>
-                    </li>
-                </ul>
+    <AppBar>
+        <select class="app-bar-select" v-model="store.monthFilter">
+        <option v-for="option in store.monthOptions" :value="option.value">
+            {{ option.text }}
+        </option>
+        </select>
+    </AppBar>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2>Gastos do mês</h2> 
+                <span v-if="(donutSlices.length == 0)">Ainda não há transações</span>
+            </div>
+            <div class="card-body">
+                <div class="donut">
+                    <svg class="donut-chart" :viewBox="`0 0 ${viewBox} ${viewBox}`">
+                        <path
+                            v-for="slice in donutSlices" :key="slice.label"
+                            :fill="slice.color"
+                            :d="slice.commands"
+                            :transform="`rotate(${slice.offset})`"
+                        >
+                            <title>{{slice.label}}</title>
+                        </path>
+                    </svg>
+                    <ul class="donut-legend">
+                        <li v-for="slice in donutSlices" :key="slice.label">
+                            <div class="color" :style="{ 'background-color': slice.color }"></div>
+                            <div class="label">{{ slice.label }}</div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useUserStore } from '../stores/store';
+import api from "../config/axios.js";
+import AppBar from '@/components/AppBar.vue'
+
+
 
 export interface DonutSlice {
   percent: number;
@@ -104,40 +119,67 @@ interface DonutSliceWithCommands extends DonutSlice {
   }
 
 
-const data = ref<DonutSlice[]>([
-    {
-        percent: 45,
-        color: 'red',
-        label: 'Mercado',
-    },
-    {
-        percent: 25,
-        color: 'green',
-        label: 'Família / Filhos',
-    },
-    {
-        percent: 5,
-        color: 'blue',
-        label: 'TV / Internet / Telefone',
-    },
-    {
-        percent: 7,
-        color: 'pink',
-        label: 'Outras categorias',
-    }
-])
 
-const donutSlices = computed(() => {
-     return getSlicesWithCommandsAndOffsets(data.value, radius.value, viewBox.value, borderSize.value)
-})
+
+
 
 const viewBox = ref(100);
 const radius = ref(45);
 const borderSize = ref(30);
 
+const store =  useUserStore()
+
+store.$subscribe(async (mutation, state) => {
+  console.log('changed state', state.monthFilter)
+  const [ month, year ] = state.monthFilter.split('-')
+  const id = state.userId;
+  await getData(id, year, month)
+})
+
+const donutSlices = computed(() => {
+     return getSlicesWithCommandsAndOffsets(data.value, radius.value, viewBox.value, borderSize.value)
+})
+
+const data = ref<DonutSlice[]>([])
+
+
+
+async function getData(userId: String, year: String, month: String) {
+  data.value = await api.guiabolsoApi({
+    method: 'get',
+    url: `/highest-monthly-spending-chart?id=${userId}&month=${month}&year=${year}`,
+  }).then(function (response) {
+    console.log(response.data)
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+onMounted(async () => {
+  console.log('changed state', store.monthFilter)
+  const [ month, year ] = store.monthFilter.split('-')
+  const id = store.userId;
+  await getData(id, year, month)
+})
+
+
 </script>
 
 <style scoped>
+.app-bar-select {
+    margin: 0;
+    font-weight: 600;
+    font-size: 22px;
+    color: #404040;
+    border: none;
+    background-color: white;
+}
+
+.container {
+    padding-top: 60px;
+    padding-bottom: 80px;
+}
 
 .card {
   background-color: white;
@@ -163,10 +205,6 @@ const borderSize = ref(30);
 .donut {
     display: flex;
     gap: 10px;
-}
-
-.donut-chart {
-    /* max-width: 200px; */
 }
 
 .donut-chart path {
@@ -197,7 +235,7 @@ const borderSize = ref(30);
 .donut-legend .color {
     width: 1em;
     height: 1em;
-    background-color: gray;
+    background-color: #D9D9D9;
     border-radius: 100%;
     flex-shrink: 0;
 }
