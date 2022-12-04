@@ -1,29 +1,7 @@
 import { connect, disconnect } from "../config/database";
 import { Schema, model, Types } from 'mongoose';
 import { AccountSyncType, CurrencyCodes, Transaction, TransactionSummary, TransactionType } from '../types'
-
-const schema = new Schema<Transaction>({
-    pluggyTransactionId: { type: String, required: false },
-    description: String,
-    descriptionOriginal: String,
-    amount: Number,
-    currencyCode: String,
-    date: Date,
-    category: {
-        _id: Types.ObjectId,
-        name: String,
-        iconName: String,
-        primaryColor: String
-    },
-    type: String,
-    syncType: String,
-    status: String,
-    comment: { type: String, required: false },
-    ignored: Boolean,
-    accountId: Types.ObjectId,
-    userId: Types.ObjectId,
-    _isDeleted: Boolean,
-});
+import schema from "./schemas/transactionSchema";
 
 const TransactionModel = model<Transaction>('transactions', schema);
 
