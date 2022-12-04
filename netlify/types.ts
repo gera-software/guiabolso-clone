@@ -12,7 +12,8 @@ export interface Category {
     _id?: String,
     name: String,
     iconName: String,
-    primaryColor: String
+    primaryColor: String,
+    ignored?: Boolean,
 }
 
 export interface User {
