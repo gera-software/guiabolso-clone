@@ -15,6 +15,7 @@ const handler :Handler = async (event, context) => {
     
     const result: item[] = [];
 
+    // TODO ainda vai dar erro se houverem menos de 3 categorias!
     if(spendingsByCategories.length) {
         const first = spendingsByCategories.shift()
         result.push({
