@@ -8,20 +8,23 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Valor</label>
-                <CurrencyInput class="form-input" required v-model="form.amount" :class="{ 'input-red': form.amount < 0 }"/>
-                <div class="inline-buttons">
+                <CurrencyInput class="form-input" required :disabled="transaction?.syncType === 'AUTOMATIC'" v-model="form.amount" :class="{ 'input-red': form.amount < 0 }"/>
+                <div class="inline-buttons" v-if="transaction?.syncType === 'MANUAL'">
                   <button @click="turnNegative" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount < 0 }">- R$</button>
                   <button @click="turnPositive" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount >= 0 }">+ R$</button>
                 </div>
             </div>
             <div class="form-group">
                 <label class="form-label">Data</label>
-                <input class="form-input" type="date" required v-model="form.date">
+                <input class="form-input" type="date" required :disabled="transaction?.syncType === 'AUTOMATIC'" v-model="form.date">
             </div>
             <div class="form-group">
                 <label class="form-label">Conta</label>
-                <select class="form-input" required v-model="form.accountId">
+                <select v-if="transaction?.syncType == 'AUTOMATIC'" class="form-input" required disabled="true" v-model="form.accountId">
                     <option v-for="account in accounts" :value="account._id">{{account.name}}</option>
+                </select>
+                <select v-else class="form-input" required v-model="form.accountId">
+                    <option v-for="account in manualAccounts" :value="account._id">{{account.name}}</option>
                 </select>
             </div>
             <div class="form-group">
@@ -44,7 +47,7 @@
             <div class="form-group">
                 <button type="submit" class="button" :disabled="loading">Salvar</button>
             </div>
-            <div class="form-group">
+            <div class="form-group" v-if="transaction?.syncType === 'MANUAL'">
                 <button type="button" class="button button-outline" :disabled="loading" @click="handleClickExcluirTransacao">Excluir</button>
             </div>
         </form>
@@ -114,13 +117,13 @@ onMounted(async () => {
   await getTransaction(transactionId)
 
   if(transaction.value) {
-    form.value.description = transaction.value.description
+    form.value.description = transaction.value.description || transaction.value.descriptionOriginal || ''
     form.value.amount = transaction.value.amount
     form.value.date = dateToString(new Date(transaction.value.date))
     form.value.accountId = transaction.value.accountId
     form.value.categoryId = transaction.value.category?._id ?? ''
     form.value.comment = transaction.value.comment ?? ''
-    form.value.ignored = transaction.value.ignored
+    form.value.ignored = !!transaction.value.ignored
   }
 })
 
@@ -140,6 +143,10 @@ async function getMyAccounts(): Promise<AccountSummaryDTO[]> {
     console.log(error.response?.data);
   })
 }
+
+const manualAccounts = computed<AccountSummaryDTO[]>(() => {
+  return accounts.value.filter(account => account.syncType == 'MANUAL')
+})
 
 onMounted(async () => {
   getMyAccounts()
@@ -287,6 +294,9 @@ async function updateTransaction(payload: Object): Promise<Transaction> {
 
 .form-input.input-red {
   color: red;
+}
+.form-input:disabled {
+  opacity: .35;
 }
 
 .button {

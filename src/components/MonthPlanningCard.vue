@@ -1,0 +1,109 @@
+<template>
+    <div class="card">
+        <div class="card-header">
+            <h2>Planejamento do mês</h2>
+        </div>
+        <div class="card-body">
+          <h3 class="label">Renda</h3>
+          <h4 class="display">R$ {{incomes}}</h4>
+
+          <h3 class="label">Gastos</h3>
+          <h4 class="display">R$ {{expenses}}</h4>
+        </div>
+    </div>
+</template>
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { useUserStore } from '../stores/store';
+import api from "../config/axios.js";
+
+
+const store =  useUserStore()
+
+store.$subscribe(async (mutation, state) => {
+  console.log('changed state', state.monthFilter)
+  const [ month, year ] = state.monthFilter.split('-')
+  const id = state.userId;
+  await getData(id, year, month)
+})
+
+
+
+const data = ref<{
+  _id: string,
+  totalAmount: number,
+}[]>([])
+
+
+
+async function getData(userId: String, year: String, month: String) {
+  data.value = await api.guiabolsoApi({
+    method: 'get',
+    url: `/month-planning-chart?id=${userId}&month=${month}&year=${year}`,
+  }).then(function (response) {
+    console.log(response.data)
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+onMounted(async () => {
+  console.log('changed state', store.monthFilter)
+  const [ month, year ] = store.monthFilter.split('-')
+  const id = store.userId;
+  await getData(id, year, month)
+})
+
+const incomes = computed(() => {
+  const amount = data.value.find(item => item._id === 'INCOME')?.totalAmount ?? 0
+  return Math.abs((amount / 100)).toFixed(2)
+})
+
+const expenses = computed(() => {
+  const amount = data.value.find(item => item._id === 'EXPENSE')?.totalAmount ?? 0
+  return Math.abs((amount / 100)).toFixed(2)
+})
+
+
+</script>
+
+<style scoped>
+
+.card {
+  background-color: white;
+  margin: 30px 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+                       0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+                       0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+
+}
+
+.card-header {
+  margin-bottom: 15px;
+}
+.card-header h2 {
+  font-weight: 600;
+  color: #404040;
+  font-size: 22px;
+  margin: 0;
+}
+
+.label {
+  font-size: 1em;
+  color: #B2B2B2;
+  font-weight: normal;
+  margin: 0;
+}
+
+.display {
+  font-size: 1.6em;
+  color: #454545;
+  font-weight: 800;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+</style>

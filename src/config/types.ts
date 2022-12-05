@@ -10,7 +10,8 @@ export interface Category {
     _id?: string,
     name: string,
     iconName: string,
-    primaryColor: string
+    primaryColor: string,
+    ignored?: boolean,
 }
 
 export interface User {
@@ -77,6 +78,8 @@ export interface AccountDTO {
     currencyCode: CurrencyCodes,
     type: AccountType,
     userId: String,
+    syncId?: String,
+    sync?: Synchronization,
     accountOwner?: AccountOwner,
     connection?: Connection,
     bankData?: BankData,
@@ -92,6 +95,8 @@ export interface AccountSummaryDTO {
     currencyCode: CurrencyCodes,
     type: AccountType,
     userId: String,
+    syncId?: String,
+    sync?: Synchronization,
     connection?: {
         lastUpdatedAt: Date,
         status: ConnectionStatus,
@@ -111,18 +116,20 @@ export enum TransactionStatus {
 export interface Transaction {
     _id?: string,
     pluggyTransactionId?: string,
-    description: string,
+    description?: string,
+    descriptionOriginal?: string,
     amount: number,
     currencyCode: CurrencyCodes,
     date: Date,
     category?: Category,
     type: TransactionType,
+    syncType: AccountSyncType,
     status: TransactionStatus,
     comment?: string,
-    ignored: boolean,
+    ignored?: boolean,
     accountId: string,
     userId: string,
-    _isDeleted: boolean,
+    _isDeleted?: boolean,
 }
 
 export interface AccountData {
@@ -134,7 +141,8 @@ export interface AccountData {
   
 export interface TransactionSummaryDTO {
     _id?: string,
-    description: string,
+    description?: string,
+    descriptionOriginal?: string,
     amount: number,
     currencyCode: CurrencyCodes,
     date: Date,
@@ -143,8 +151,24 @@ export interface TransactionSummaryDTO {
     status: TransactionStatus,
     ignored: boolean,
     account: AccountData
-  }
+}
 
+export enum SyncStatus {
+    PREPARING = 'PREPARING',
+    READY = 'READY',
+    IN_PROGRESS = 'IN_PROGRESS',
+    SYNCED = 'SYNCED',
+}
+
+export interface Synchronization {
+    _id?: string,
+    pluggyItemId: string,
+    itemStatus: string,
+    syncStatus: SyncStatus,
+    createdAt: Date,
+    lastSyncAt: Date,
+    userId: string,
+}
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
 }

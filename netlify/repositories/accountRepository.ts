@@ -17,11 +17,7 @@ const schema = new Schema<Account>({
         pluggyIdentityId: { type: String, required: false },
         cpf: { type: String, required: false },
     },
-    connection: {
-        pluggyItemId: String,
-        lastUpdatedAt: Date,
-        status: String,
-    },
+    syncId: { type: Types.ObjectId, required: false },
     bankData: {
         institution: {
             _id: { type: Types.ObjectId, required: false },
@@ -53,6 +49,15 @@ export async function fetchByUserId(id): Promise<AccountSummaryDTO[]> {
     await connect();
     const result = await AccountModel.aggregate([
         { $match: { userId: new Types.ObjectId(id) } },
+        { $lookup: {
+                from: 'synchronizations',
+                localField: 'syncId',
+                foreignField: '_id',
+                as: 'sync',
+                
+            }
+        },
+        { $unwind: { path: '$sync', preserveNullAndEmptyArrays: true } },
         { $project: {
                 _id: 1,
                 name: 1,
@@ -62,6 +67,8 @@ export async function fetchByUserId(id): Promise<AccountSummaryDTO[]> {
                 currencyCode: 1,
                 type: 1,
                 userId: 1,
+                syncId: 1,
+                sync: 1,
                 connection: {
                     lastUpdatedAt: 1,
                     status: 1,

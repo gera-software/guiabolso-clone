@@ -50,10 +50,11 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
-import { faArrowLeftLong, faWallet, faArrowsRotate, faBan, faUser, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeftLong, faArrowRightLong, faWallet, faArrowsRotate, faBan, faUser, faPlus } from '@fortawesome/free-solid-svg-icons'
 /* add icons to the library */
 
 library.add(faArrowLeftLong)
+library.add(faArrowRightLong)
 library.add(faWallet)
 library.add(faArrowsRotate)
 library.add(faBan)

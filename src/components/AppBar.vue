@@ -33,6 +33,7 @@ defineProps<{
 
 .app-bar .content {
     margin-left: 40px;
+    display: flex;
 }
 
 .app-bar h1 {

@@ -1,3 +1,5 @@
+import pluggy from 'pluggy-sdk'
+
 export interface Institution {
     _id?: String,
     pluggyConnectorId?: Number,
@@ -10,7 +12,8 @@ export interface Category {
     _id?: String,
     name: String,
     iconName: String,
-    primaryColor: String
+    primaryColor: String,
+    ignored?: Boolean,
 }
 
 export interface User {
@@ -48,6 +51,9 @@ export enum ConnectionStatus {
     UPDATED = 'UPDATED',
 }
 
+/**
+ * @deprecated
+ */
 export interface Connection {
     pluggyItemId: String,
     lastUpdatedAt: Date,
@@ -72,13 +78,14 @@ export interface Account {
     name: String,
     imageUrl?: String,
     syncType: AccountSyncType,
-    pluggyAccountId?: String,
+    pluggyAccountId?: string,
     balance: Number,
     currencyCode: CurrencyCodes,
     type: AccountType,
     userId: String,
     accountOwner?: AccountOwner,
-    connection?: Connection,
+    syncId?: String,
+    sync?: Synchronization,
     bankData?: BankData,
     creditData?: CreditData,
 }
@@ -92,6 +99,8 @@ export interface AccountSummaryDTO {
     currencyCode: CurrencyCodes,
     type: AccountType,
     userId: String,
+    syncId?: String,
+    sync?: Synchronization,
     connection?: {
         lastUpdatedAt: Date,
         status: ConnectionStatus,
@@ -111,18 +120,20 @@ export enum TransactionStatus {
 export interface Transaction {
     _id?: String,
     pluggyTransactionId?: String,
-    description: String,
+    description?: String,
+    descriptionOriginal?: String,
     amount: Number,
     currencyCode: CurrencyCodes,
     date: Date,
     category?: Category,
     type: TransactionType,
+    syncType: AccountSyncType,
     status: TransactionStatus,
     comment?: String,
-    ignored: Boolean,
+    ignored?: Boolean,
     accountId: String,
     userId: String,
-    _isDeleted: Boolean,
+    _isDeleted?: Boolean,
 }
 
 export interface AccountData {
@@ -134,7 +145,8 @@ export interface AccountData {
 
 export interface TransactionSummary {
     _id?: String,
-    description: String,
+    description?: String,
+    descriptionOriginal?: String,
     amount: Number,
     currencyCode: CurrencyCodes,
     date: Date,
@@ -143,8 +155,26 @@ export interface TransactionSummary {
     status: TransactionStatus,
     ignored: Boolean,
     account: AccountData
-  }
+}
+
+export enum SyncStatus {
+    PREPARING = 'PREPARING',
+    READY = 'READY',
+    IN_PROGRESS = 'IN_PROGRESS',
+    SYNCED = 'SYNCED',
+}
+
+export interface Synchronization {
+    _id?: string,
+    pluggyItemId: string,
+    itemStatus: string,
+    syncStatus: SyncStatus,
+    createdAt: Date,
+    lastSyncAt: Date,
+    userId: string,
+}
 
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
+    fetchTransactions(pluggyAccountId: string, from: string ): Promise<pluggy.Transaction[]> 
 }

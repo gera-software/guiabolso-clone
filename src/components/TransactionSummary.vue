@@ -1,19 +1,19 @@
 <template>
     <div  tabindex="0" class="transaction" :class="{ 'transaction--ignored': transaction.ignored }" @click="showDetails(transaction._id ?? '')">
         <div class="col-1">
-            <CategoryIcon :icon="transaction.category?.iconName" :color="transaction.category?.primaryColor" />
+            <CategoryIcon :icon="transaction.category?.iconName ?? 'Uncategorized'" :color="transaction.category?.primaryColor ?? '#F9386A'" />
             <div class="flex">
                 <span class="category">{{
-                    transaction.category?.name
+                    transaction.category?.name ?? 'Categorizar'
                 }}</span>
                 <span class="description">{{
-                    transaction.description
+                    transaction.description ? transaction.description : transaction.descriptionOriginal 
                 }}</span>
             </div>
         </div>
         <div class="col-2">
-            <span class="account">{{
-                transaction.account.name
+            <span class="accountOrDate">{{
+                showDate ? transaction.date.toLocaleDateString() : transaction.account.name
             }}</span>
             <span class="value">R$ {{ (+transaction.amount / 100).toFixed(2) }}</span>
         </div>
@@ -27,7 +27,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 
 defineProps<{
-    transaction: TransactionSummaryDTO
+    transaction: TransactionSummaryDTO,
+    showDate?: boolean,
 }>()
 
 function showDetails(transactionId: string) {
@@ -92,7 +93,7 @@ function showDetails(transactionId: string) {
     color: #222222;
   }
 
-.transaction .account {
+.transaction .accountOrDate {
     font-size: .8em;
     color: #454545;
   }
