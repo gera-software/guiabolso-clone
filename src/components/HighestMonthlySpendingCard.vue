@@ -2,9 +2,12 @@
     <div class="card">
         <div class="card-header">
             <h2>Gastos do mês</h2> 
-            <span v-if="(donutSlices.length == 0)">Ainda não há transações</span>
+            <router-link :to="{ name: 'extract'}">
+              <font-awesome-icon icon="fa-solid fa-arrow-right-long" />
+            </router-link>
         </div>
         <div class="card-body">
+            <span v-if="(donutSlices.length == 0)">Ainda não há transações</span>
             <div class="donut">
                 <svg class="donut-chart" :viewBox="`0 0 ${viewBox} ${viewBox}`">
                     <path
@@ -169,12 +172,18 @@ onMounted(async () => {
 
 .card-header {
   margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .card-header h2 {
   font-weight: 600;
   color: #404040;
   font-size: 22px;
   margin: 0;
+}
+.card-header a {
+  color: #F9386A;
 }
 
 .donut {
