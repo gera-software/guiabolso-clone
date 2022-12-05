@@ -9,6 +9,7 @@
     <div class="container">
         <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
         <MonthPlanningCard></MonthPlanningCard>
+        <LastTransactionsCard></LastTransactionsCard>
     </div>
 </template>
 <script setup lang="ts">
@@ -16,6 +17,7 @@ import { useUserStore } from '../stores/store';
 import AppBar from '@/components/AppBar.vue'
 import HighestMonthlySpendingCard from '@/components/HighestMonthlySpendingCard.vue'
 import MonthPlanningCard from '@/components/MonthPlanningCard.vue'
+import LastTransactionsCard from '@/components/LastTransactionsCard.vue'
 
 const store =  useUserStore()
 

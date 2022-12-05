@@ -12,8 +12,8 @@
             </div>
         </div>
         <div class="col-2">
-            <span class="account">{{
-                transaction.account.name
+            <span class="accountOrDate">{{
+                showDate ? transaction.date.toLocaleDateString() : transaction.account.name
             }}</span>
             <span class="value">R$ {{ (+transaction.amount / 100).toFixed(2) }}</span>
         </div>
@@ -27,7 +27,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 
 defineProps<{
-    transaction: TransactionSummaryDTO
+    transaction: TransactionSummaryDTO,
+    showDate?: boolean,
 }>()
 
 function showDetails(transactionId: string) {
@@ -92,7 +93,7 @@ function showDetails(transactionId: string) {
     color: #222222;
   }
 
-.transaction .account {
+.transaction .accountOrDate {
     font-size: .8em;
     color: #454545;
   }
