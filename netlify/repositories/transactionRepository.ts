@@ -1,5 +1,5 @@
 import { connect, disconnect } from "../config/database";
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types, PipelineStage } from 'mongoose';
 import { AccountSyncType, CurrencyCodes, Transaction, TransactionSummary, TransactionType } from '../types'
 import schema from "./schemas/transactionSchema";
 
@@ -84,7 +84,7 @@ export async function fetchByAccount(id, monthField, yearField): Promise<Transac
  * @param id 
  * @returns 
  */
-export async function fetchByUser(id, monthField, yearField): Promise<TransactionSummary[]> {
+export async function fetchByUser(id, monthField, yearField, limit = 0): Promise<TransactionSummary[]> {
     
     await connect();
 
@@ -94,37 +94,45 @@ export async function fetchByUser(id, monthField, yearField): Promise<Transactio
     const firstDay = new Date(`${year}-${month}-01`)
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
-    const result = await TransactionModel.aggregate([
-            { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, date: { $gte: firstDay, $lt: lastDay } } },
-            { $lookup: { 
-                from: 'accounts', 
-                localField: 'accountId', 
-                foreignField: '_id', 
-                as: 'account' 
-                }
-            },
-            { $unwind: { 'path': '$account' } },
-            { $project: {
+
+    const pipeline: PipelineStage[] = []
+    pipeline.push(
+        { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, date: { $gte: firstDay, $lt: lastDay } } },
+        { $lookup: { 
+            from: 'accounts', 
+            localField: 'accountId', 
+            foreignField: '_id', 
+            as: 'account' 
+            }
+        },
+        { $unwind: { 'path': '$account' } },
+        { $project: {
+                _id: 1,
+                description: 1,
+                descriptionOriginal: 1,
+                amount: 1,
+                currencyCode: 1,
+                date: 1,
+                category: 1,
+                type: 1,
+                status: 1,
+                ignored: 1,
+                account: {
                     _id: 1,
-                    description: 1,
-                    descriptionOriginal: 1,
-                    amount: 1,
-                    currencyCode: 1,
-                    date: 1,
-                    category: 1,
+                    name: 1,
                     type: 1,
-                    status: 1,
-                    ignored: 1,
-                    account: {
-                        _id: 1,
-                        name: 1,
-                        type: 1,
-                        imageUrl: 1
-                    }
+                    imageUrl: 1
                 }
-            },
-            { $sort: { date: -1 } }
-          ]) as TransactionSummary[];
+            }
+        },
+        { $sort: { date: -1 } },
+    )
+
+    if(limit > 0) {
+        pipeline.push({ $limit: limit })
+    }
+
+    const result = await TransactionModel.aggregate(pipeline) as TransactionSummary[];
 
     await disconnect();
     return result;

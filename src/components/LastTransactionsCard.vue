@@ -4,7 +4,8 @@
             <h2>Últimas transações</h2> 
           </div>
         <div class="card-body">
-          <TransactionSummary :transaction="transaction" :showDate="true"></TransactionSummary>
+          <span v-if="(transactions.length == 0)">Ainda não há transações</span>
+          <TransactionSummary v-for="(transaction, index) in transactions" :transaction="transaction" :showDate="true"></TransactionSummary>
         </div>
     </div>
 </template>
@@ -15,31 +16,40 @@ import api from "../config/axios.js";
 import TransactionSummary from '@/components/TransactionSummary.vue'
 import { Category, CurrencyCodes, TransactionStatus, TransactionSummaryDTO, TransactionType, AccountData, AccountType } from '../config/types';
 
-const transaction = ref<TransactionSummaryDTO>({
-  _id: 'dad',
-  description: 'sdsdfsdf',
-  descriptionOriginal: 'dffsdf',
-  amount: 5000,
-  currencyCode: CurrencyCodes.BRL,
-  date: new Date(),
-  category: {
-    _id: 'asd',
-    name: 'outra categoria',
-    iconName: 'ICON',
-    primaryColor: 'dada',
-    ignored: false,
-  } as Category,
-    type: TransactionType.EXPENSE,
-    status: TransactionStatus.POSTED,
-    ignored: false,
-    account: {
-      _id: 'sad',
-      name: 'gimar 4354',
-      type: AccountType.BANK,
-      imageUrl: 'dad'
-    } as AccountData
+const store =  useUserStore()
+
+store.$subscribe(async (mutation, state) => {
+  console.log('changed state', state.monthFilter)
+  const [ month, year ] = state.monthFilter.split('-')
+  const id = state.userId;
+  await getTransactions(id, year, month)
 })
 
+const transactions = ref<TransactionSummaryDTO[]>([])
+
+async function getTransactions(userId: String, year: String, month: String) {
+  transactions.value = await api.guiabolsoApi({
+    method: 'get',
+    url: `/transactions-fetch-by-user?id=${userId}&month=${month}&year=${year}&limit=4`,
+  }).then(function (response) {
+    console.log(response.data)
+    return response.data
+  }).then(transactions => {
+    return transactions.map((transaction : TransactionSummaryDTO): TransactionSummaryDTO => { 
+      transaction.date = new Date(transaction.date) 
+      return transaction 
+    })
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+onMounted(async () => {
+  console.log('changed state', store.monthFilter)
+  const [ month, year ] = store.monthFilter.split('-')
+  const id = store.userId;
+  await getTransactions(id, year, month)
+})
 
 </script>
 
