@@ -29,3 +29,12 @@ export async function fetchByUser(id, monthField, yearField): Promise<CalendarBi
     await disconnect();
     return result;
 }
+
+export async function create(bill: CalendarBill | null): Promise<CalendarBill | null> {
+    await connect();
+    const doc = new CalendarBillModel(bill);
+    const result = await doc.save();
+    await disconnect();
+
+    return result;
+}

@@ -9,6 +9,9 @@
     <div class="container">
     <CalendarSummary v-for="bill in bills" :key="bill._id" :bill="bill"></CalendarSummary>
     </div>
+    <FAB @click="handleClick">
+      <font-awesome-icon icon="fa-solid fa-plus" />
+    </FAB>
 </template>
 
 <script setup lang="ts">
@@ -21,6 +24,7 @@ import { useUserStore } from '../stores/store';
 import AppBar from '@/components/AppBar.vue'
 import CalendarSummary from '@/components/CalendarSummary.vue'
 import { CalendarBill } from "../config/types";
+import FAB from "@/components/FAB.vue";
 
 
 const router = useRouter()
@@ -54,6 +58,10 @@ onMounted(async () => {
   const id = store.userId;
   await getBills(id, year, month)
 })
+
+function handleClick() {
+    router.push({ name: 'add-bill' })
+}
 
 
 </script>
