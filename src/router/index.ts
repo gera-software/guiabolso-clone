@@ -7,6 +7,7 @@ import AddManualTransactionView from '@/views/AddManualTransactionView.vue'
 import TransactionsView from '@/views/TransactionsView.vue'
 import TransactionView from '@/views/TransactionView.vue'
 import DashboardView from '@/views/DashboardView.vue'
+import CalendarView from '../views/CalendarView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,13 +48,18 @@ const router = createRouter({
     {
       path: '/transactions',
       name: 'transactions',
-      component: TransactionsView,
+      component: TransactionsView, // @deprecated
     },
     {
       path: '/transactions/:id',
       name: 'transaction',
       component: TransactionView,
     },
+    {
+      path: '/calendar',
+      name: 'calendar',
+      component: CalendarView,
+    }
   ]
 })
 
