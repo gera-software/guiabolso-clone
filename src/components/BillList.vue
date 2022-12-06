@@ -24,10 +24,6 @@ defineProps<{
 </script>
 <style scoped>
 
-.bills-container {
-padding: 15px;
-}
-
 .bills-container .date-separator {
 padding: 15px 0;
 position: relative;

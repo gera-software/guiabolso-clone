@@ -15,7 +15,7 @@ const schema = new Schema<CalendarBill>({
 
 const CalendarBillModel = model<CalendarBill>('bills', schema);
 
-export async function fetchByUser(id, monthField, yearField): Promise<CalendarBill[]> {
+export async function fetchByUser(id, monthField, yearField, limit = 0): Promise<CalendarBill[]> {
     await connect();
 
     const year = parseInt(yearField)
@@ -28,6 +28,7 @@ export async function fetchByUser(id, monthField, yearField): Promise<CalendarBi
     const result = await CalendarBillModel.find(
         { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, dueDate: { $gte: firstDay, $lt: lastDay } }
     ).sort({ dueDate: -1 })
+    .limit(limit)
 
     await disconnect();
     return result;

@@ -1,26 +1,58 @@
 <template>
-    <div class="calendar-summary" @click="handleClick(bill)" :class="bill.type">
-        <div class="row">
-            <span class="description">{{ bill.description }}</span>
-            <span class="badge" :class="{ 'PAYABLE': bill.type === 'PAYABLE', 'RECEIVABLE': bill.type === 'RECEIVABLE', 'ATRASADO': isAtrasado(bill) }">{{ getStatus(bill) }}</span>
+    <div class="card">
+        <div class="card-header">
+            <h2>Agenda</h2> 
+            <router-link :to="{ name: 'bills'}">
+              <font-awesome-icon icon="fa-solid fa-arrow-right-long" />
+            </router-link>
+          </div>
+        <div class="card-body">
+          <span v-if="(bills.length == 0)">Sua agenda está vazia</span>
+          <BillList :bills="bills"/>
         </div>
-        <span class="amount">R$ {{ (+bill.amount / 100).toFixed(2) }}</span>
     </div>
 </template>
 <script setup lang="ts">
-import { computed } from '@vue/reactivity';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
+import { useUserStore } from '../stores/store';
+import api from "../config/axios.js";
 import { BillStatus, BillType, CalendarBill } from '../config/types';
+import BillList from './BillList.vue';
 
-const router = useRouter()
+const store =  useUserStore()
 
-defineProps<{
-    bill: CalendarBill
-}>()
+store.$subscribe(async (mutation, state) => {
+  console.log('changed state', state.monthFilter)
+  const [ month, year ] = state.monthFilter.split('-')
+  const id = state.userId;
+  await getBills(id, year, month)
+})
 
-function handleClick(bill: CalendarBill) {
-    router.push({ name: 'bill', params: { id: bill._id }})
+const bills = ref<CalendarBill[]>([])
+
+async function getBills(userId: String, year: String, month: String) {
+  bills.value = await api.guiabolsoApi({
+    method: 'get',
+    url: `/bills-fetch-by-user?id=${userId}&month=${month}&year=${year}&limit=2`,
+  }).then(function (response) {
+    console.log(response.data)
+    return response.data
+  }).then(bills => {
+    return bills.map((transaction : CalendarBill): CalendarBill => { 
+      transaction.dueDate = new Date(transaction.dueDate) 
+      return transaction 
+    })
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
 }
+
+onMounted(async () => {
+  console.log('changed state', store.monthFilter)
+  const [ month, year ] = store.monthFilter.split('-')
+  const id = store.userId;
+  await getBills(id, year, month)
+})
 
 function isAtrasado(bill: CalendarBill) {
     if(bill.status === BillStatus.PAID) {
@@ -54,6 +86,34 @@ function getStatus(bill: CalendarBill) {
 </script>
 
 <style scoped>
+
+.card {
+  background-color: white;
+  margin: 30px 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+                       0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+                       0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+
+}
+
+.card-header {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-header h2 {
+  font-weight: 600;
+  color: #404040;
+  font-size: 22px;
+  margin: 0;
+}
+.card-header a {
+  color: #F9386A;
+}
+
 
 .calendar-summary {
     background-color: white;

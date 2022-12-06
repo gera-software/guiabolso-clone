@@ -87,6 +87,7 @@ function handleClick() {
 .container {
     padding-top: 60px;
     padding-bottom: 80px;
+    margin: 0 15px;
 }
 
 </style>
