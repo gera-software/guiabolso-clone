@@ -33,6 +33,9 @@
             <div class="form-group">
                 <button type="submit" class="button" :disabled="loading">Salvar</button>
             </div>
+            <div class="form-group">
+                <button type="button" class="button button-outline" :disabled="loading" @click="handleClickExcluirBill">Excluir</button>
+            </div>
         </form>
     </div>
 </template>
@@ -172,6 +175,29 @@ async function updateBill(payload: Object): Promise<CalendarBill> {
   })
 }
 
+async function handleClickExcluirBill() {
+  const result = window.confirm('Deseja realmente excluir a cobrança?');
+  console.log('excluir', route.params.id.toString(), result)
+  if(result) {
+    await deleteBill(route.params.id.toString())
+    router.back()
+  }
+}
+
+async function deleteBill(id: string) {
+  loading.value = true
+  return api.guiabolsoApi({
+    method: 'get',
+    url: `/bill-delete?id=${id}`,
+  }).then(function (response) {
+    console.log(response.data)
+    loading.value = false
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
 </script>
 
 
@@ -239,6 +265,11 @@ async function updateBill(payload: Object): Promise<CalendarBill> {
     font-weight: 600;
     text-align: center;
     padding: 12px 16px;
+}
+
+.button.button-outline {
+  background-color: transparent;
+  color: #F9386A;
 }
 
 .button:disabled, .button.disabled {

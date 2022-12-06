@@ -3,6 +3,7 @@ import { connect, disconnect } from "../config/database";
 import { CalendarBill } from "../types";
 
 const schema = new Schema<CalendarBill>({
+    _id: Types.ObjectId,
     dueDate: Date,
     description: String,
     amount: Number,
@@ -57,6 +58,20 @@ export async function updateOne(bill: CalendarBill): Promise<CalendarBill | null
         doc.amount = bill.amount
         doc.dueDate = bill.dueDate
         doc.status = bill.status
+        await doc.save();
+    }
+
+    await disconnect();
+
+    return doc;
+}
+
+export async function remove(id): Promise<CalendarBill | null> {
+    await connect();
+    const doc = await CalendarBillModel.findById(id);
+
+    if(doc) {
+        doc._isDeleted = true
         await doc.save();
     }
 
