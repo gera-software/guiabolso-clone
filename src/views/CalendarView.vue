@@ -31,6 +31,13 @@ const router = useRouter()
 
 const store =  useUserStore()
 
+store.$subscribe(async (mutation, state) => {
+  console.log('changed state', state.monthFilter)
+  const [ month, year ] = state.monthFilter.split('-')
+  const id = state.userId;
+  await getBills(id, year, month)
+})
+
 const bills = ref<CalendarBill[]>([])
 
 async function getBills(userId: String, year: String, month: String) {
