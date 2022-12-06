@@ -7,7 +7,7 @@
         </select>
     </AppBar>
     <div class="container">
-    <CalendarSummary v-for="bill in bills" :key="bill._id" :bill="bill"></CalendarSummary>
+      <BillList :bills="bills" />
     </div>
     <FAB @click="handleClick">
       <font-awesome-icon icon="fa-solid fa-plus" />
@@ -22,7 +22,7 @@ import { onMounted } from "vue";
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/store';
 import AppBar from '@/components/AppBar.vue'
-import CalendarSummary from '@/components/CalendarSummary.vue'
+import BillList from '@/components/BillList.vue'
 import { CalendarBill } from "../config/types";
 import FAB from "@/components/FAB.vue";
 
@@ -48,12 +48,12 @@ async function getBills(userId: String, year: String, month: String) {
     console.log(response.data)
     return response.data
   })
-//   .then(transactions => {
-//     return transactions.map((transaction : TransactionSummaryDTO): TransactionSummaryDTO => { 
-//       transaction.date = new Date(transaction.date) 
-//       return transaction 
-//     })
-//   })
+  .then(bills => {
+    return bills.map((bill : CalendarBill): CalendarBill => { 
+      bill.dueDate = new Date(bill.dueDate) 
+      return bill 
+    })
+  })
   .catch(function (error) {
     console.log(error.response?.data);
   })

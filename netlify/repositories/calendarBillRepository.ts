@@ -24,7 +24,9 @@ export async function fetchByUser(id, monthField, yearField): Promise<CalendarBi
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
     console.log(id, firstDay, lastDay)
-    const result = await CalendarBillModel.find({ userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, dueDate: { $gte: firstDay, $lt: lastDay } })
+    const result = await CalendarBillModel.find(
+        { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, dueDate: { $gte: firstDay, $lt: lastDay } }
+    ).sort({ dueDate: -1 })
 
     await disconnect();
     return result;
