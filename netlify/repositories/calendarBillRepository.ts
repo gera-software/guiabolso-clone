@@ -2,8 +2,8 @@ import { model, Schema, Types } from "mongoose";
 import { connect, disconnect } from "../config/database";
 import { CalendarBill } from "../types";
 
+// _id: Types.ObjectId,
 const schema = new Schema<CalendarBill>({
-    _id: Types.ObjectId,
     dueDate: Date,
     description: String,
     amount: Number,
