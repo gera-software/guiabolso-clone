@@ -9,6 +9,7 @@ import TransactionView from '@/views/TransactionView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import CalendarView from '../views/CalendarView.vue'
 import AddBillView from '../views/AddBillView.vue'
+import BillView from '../views/BillView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,6 +61,11 @@ const router = createRouter({
       path: '/bills',
       name: 'bills',
       component: CalendarView,
+    },
+    {
+      path: '/bills/:id',
+      name: 'bill',
+      component: BillView,
     },
     {
       path: '/add-bill',

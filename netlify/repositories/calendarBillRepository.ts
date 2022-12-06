@@ -38,3 +38,27 @@ export async function create(bill: CalendarBill | null): Promise<CalendarBill | 
 
     return result;
 }
+
+export async function getById(id): Promise<CalendarBill | null> {
+    await connect();
+    const result = await CalendarBillModel.findOne({ _id: id, _isDeleted: { $ne: true } });
+    await disconnect();
+    return result;
+}
+
+export async function updateOne(bill: CalendarBill): Promise<CalendarBill | null> {
+    await connect();
+    const doc = await CalendarBillModel.findById(bill._id);
+
+    if(doc) {
+        doc.description = bill.description
+        doc.amount = bill.amount
+        doc.dueDate = bill.dueDate
+        doc.status = bill.status
+        await doc.save();
+    }
+
+    await disconnect();
+
+    return doc;
+}

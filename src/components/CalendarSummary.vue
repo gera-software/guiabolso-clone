@@ -1,5 +1,5 @@
 <template>
-    <div class="calendar-summary" @click="handleClick" :class="bill.type">
+    <div class="calendar-summary" @click="handleClick(bill)" :class="bill.type">
         <div class="row">
             <span class="description">{{ bill.description }}</span>
             <span class="badge">{{ bill.status }}</span>
@@ -8,15 +8,17 @@
     </div>
 </template>
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import { CalendarBill } from '../config/types';
 
+const router = useRouter()
 
 defineProps<{
     bill: CalendarBill
 }>()
 
-function handleClick() {
-    console.log('clicked')
+function handleClick(bill: CalendarBill) {
+    router.push({ name: 'bill', params: { id: bill._id }})
 }
 
 </script>

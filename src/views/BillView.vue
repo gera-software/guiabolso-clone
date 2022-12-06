@@ -1,11 +1,11 @@
 <template>
-    <AppBar title="Novo item na agenda" />
-    <div class="container">
+    <AppBar title="Detalhes da cobrança" />
+    <div class="container" v-if="!loading">
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
                 <label class="form-label">Tipo</label>
-                <select class="form-input" required v-model="form.type">
-                    <option v-for="billType in types" :value="billType.value">{{billType.label}}</option>
+                <select class="form-input" required v-model="form.type" disabled>
+                    <option v-for="billType in types" :value="billType.value"> {{billType.label}} </option>
                 </select>
             </div>
             <div class="form-group">
@@ -22,7 +22,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Data</label>
-                <input class="form-input" type="date" required v-model="form.dueDate" :min="dateToString(new Date())">
+                <input class="form-input" type="date" required v-model="form.dueDate">
             </div>
             <div class="form-group">
                 <label class="form-label">Status</label>
@@ -36,19 +36,21 @@
         </form>
     </div>
 </template>
+
 <script setup lang="ts">
 import api from '../config/axios.js'
 import AppBar from '@/components/AppBar.vue'
-import { faSave } from '@fortawesome/free-solid-svg-icons';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { BillStatus, BillType, CalendarBill } from '../config/types';
+import { onMounted, ref } from 'vue';
 import { useUserStore } from '../stores/store';
-
-const router = useRouter()
+import { useRoute, useRouter } from 'vue-router';
 
 const store =  useUserStore()
+const router = useRouter()
+const route = useRoute()
+
+
 
 const types = [ 
     {
@@ -90,39 +92,77 @@ function stringToDate(dateString: string): Date {
     return date
 }
 
+const bill = ref<CalendarBill>()
+
 const form = ref({
     dueDate: dateToString(new Date()),
     description: '',
     amount: 0, // multiplied by 100 to remove decimals
-    status: 'WAITING',
-    type: 'PAYABLE',
+    status: '',
+    type: '',
     userId: '',
     _isDeleted: false,
+})
+
+async function getBill(id: string) {
+  loading.value = true
+  return api.guiabolsoApi({
+    method: 'get',
+    url: `/bill-get?id=${id}`,
+  }).then(function (response) {
+    console.log(response.data)
+    bill.value = response.data
+    loading.value = false
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+
+onMounted(async () => {
+  const billId = route.params.id.toString()
+  console.log(billId)
+  await getBill(billId)
+
+  if(bill.value) {
+    form.value.description = bill.value.description
+    form.value.amount = Math.abs(bill.value.amount),
+    form.value.dueDate = dateToString(new Date(bill.value.dueDate))
+    form.value.userId = bill.value.userId
+    form.value.status = bill.value.status
+    form.value.type = bill.value.type
+    form.value._isDeleted = bill.value._isDeleted
+  }
 })
 
 const loading = ref(false)
 
 async function handleSubmit() {
-    loading.value = true
-    const payload: CalendarBill = {
+  loading.value = true
+  const payload = {
+        _id: bill.value?._id,
         description: form.value.description,
         amount: form.value.type === BillType.PAYABLE ? Math.abs(form.value.amount) * -1 : Math.abs(form.value.amount),
         dueDate: stringToDate(form.value.dueDate),
-        type: form.value.type as BillType,
+        // type: form.value.type as BillType,
         status: form.value.status as BillStatus,
-        _isDeleted: false,
-        userId: store.userId
+        // _isDeleted: false,
+        // userId: store.userId
     }
-    await save(payload)
+
+    console.log(payload)
+    await updateBill(payload)
     loading.value = false
     router.back()
+
 }
 
-async function save(payload: CalendarBill): Promise<CalendarBill> {
-    console.log('save')
+async function updateBill(payload: Object): Promise<CalendarBill> {
+    console.log('update bill')
   return api.guiabolsoApi({
     method: 'post',
-    url: `/bill-create`,
+    url: `/bill-update`,
     data: payload,
   }).then(function (response) {
     console.log(response.data)
@@ -133,6 +173,7 @@ async function save(payload: CalendarBill): Promise<CalendarBill> {
 }
 
 </script>
+
 
 <style scoped>
 .container {
