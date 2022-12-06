@@ -2,7 +2,7 @@
     <div class="calendar-summary" @click="handleClick(bill)" :class="bill.type">
         <div class="row">
             <span class="description">{{ bill.description }}</span>
-            <span class="badge" :class="{ 'PAYABLE': bill.type === 'PAYABLE', 'RECEIVABLE': bill.type === 'RECEIVABLE' }">{{ getStatus(bill) }}</span>
+            <span class="badge" :class="{ 'PAYABLE': bill.type === 'PAYABLE', 'RECEIVABLE': bill.type === 'RECEIVABLE', 'ATRASADO': isAtrasado(bill) }">{{ getStatus(bill) }}</span>
         </div>
         <span class="amount">R$ {{ (+bill.amount / 100).toFixed(2) }}</span>
     </div>
@@ -22,19 +22,32 @@ function handleClick(bill: CalendarBill) {
     router.push({ name: 'bill', params: { id: bill._id }})
 }
 
-function getStatus(bill: CalendarBill) {
-    if(bill.type === BillType.PAYABLE) {
-        return  bill.status === BillStatus.WAITING ?  'a pagar' : 'pago'
-    } else {
-        return  bill.status === BillStatus.WAITING ?  'a receber' : 'recebido'
+function isAtrasado(bill: CalendarBill) {
+    if(bill.status === BillStatus.PAID) {
+        return false
     }
+    
+    const dueDateWithoutTime = bill.dueDate.setHours(0, 0, 0, 0)
+    const nowDateWithoutTime = (new Date()).setHours(0, 0, 0, 0)
+
+    return (dueDateWithoutTime <= nowDateWithoutTime)
 }
 
-function getStatusColor(bill: CalendarBill) {
-    if(bill.type === BillType.PAYABLE) {
-        return  bill.status === BillStatus.WAITING ?  'a pagar' : 'pago'
+function getStatus(bill: CalendarBill) {
+    
+    if(bill.status === BillStatus.PAID) {
+        return  bill.type === BillType.PAYABLE ?  'pago' : 'recebido'
     } else {
-        return  bill.status === BillStatus.WAITING ?  'a receber' : 'recebido'
+        const dueDateWithoutTime = bill.dueDate.setHours(0, 0, 0, 0)
+        const nowDateWithoutTime = (new Date()).setHours(0, 0, 0, 0)
+        console.log(dueDateWithoutTime, nowDateWithoutTime, dueDateWithoutTime > nowDateWithoutTime )
+
+        if(isAtrasado(bill)) {
+            return 'atrasado'
+        } else {
+            return  bill.type === BillType.PAYABLE ?  'a pagar' : 'a receber'
+        }
+
     }
 }
 
@@ -99,6 +112,9 @@ function getStatusColor(bill: CalendarBill) {
 }
 .calendar-summary .badge.RECEIVABLE {
     background-color: #00BD6E;
+}
+.calendar-summary .badge.ATRASADO {
+    background-color: #ED4A4A;
 }
 
 </style>
