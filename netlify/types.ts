@@ -174,6 +174,28 @@ export interface Synchronization {
     userId: string,
 }
 
+export enum BillStatus {
+    PAID = 'PAID',
+    WAITING = 'WAITING'
+}
+
+export enum BillType {
+    PAYABLE = 'PAYABLE',
+    RECEIVABLE = 'RECEIVABLE',
+}
+
+export interface CalendarBill {
+    _id?: string,
+    dueDate: Date,
+    description: string,
+    amount: number,
+    status: BillStatus,
+    type: BillType,
+    userId: string,
+    _isDeleted: boolean,
+}
+
+
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
     fetchTransactions(pluggyAccountId: string, from: string ): Promise<pluggy.Transaction[]> 
