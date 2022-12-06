@@ -24,7 +24,7 @@ export async function getById(id): Promise<Transaction | null> {
  */
 export async function remove(id): Promise<Transaction | null> {
     await connect();
-    const result = await TransactionModel.findOneAndUpdate({ _id: id }, { _isDeleted: { $ne: true } });
+    const result = await TransactionModel.findOneAndUpdate({ _id: id }, { _isDeleted: true });
     await disconnect();
     return result;
 }

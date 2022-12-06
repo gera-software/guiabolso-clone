@@ -1,0 +1,180 @@
+<template>
+    <div class="card">
+        <div class="card-header">
+            <h2>Agenda</h2> 
+            <router-link :to="{ name: 'bills'}">
+              <font-awesome-icon icon="fa-solid fa-arrow-right-long" />
+            </router-link>
+          </div>
+        <div class="card-body">
+          <span v-if="(bills.length == 0)">Sua agenda está vazia</span>
+          <BillList :bills="bills"/>
+        </div>
+    </div>
+</template>
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { useUserStore } from '../stores/store';
+import api from "../config/axios.js";
+import { BillStatus, BillType, CalendarBill } from '../config/types';
+import BillList from './BillList.vue';
+
+const store =  useUserStore()
+
+store.$subscribe(async (mutation, state) => {
+  console.log('changed state', state.monthFilter)
+  const [ month, year ] = state.monthFilter.split('-')
+  const id = state.userId;
+  await getBills(id, year, month)
+})
+
+const bills = ref<CalendarBill[]>([])
+
+async function getBills(userId: String, year: String, month: String) {
+  bills.value = await api.guiabolsoApi({
+    method: 'get',
+    url: `/bills-fetch-by-user?id=${userId}&month=${month}&year=${year}&limit=2`,
+  }).then(function (response) {
+    console.log(response.data)
+    return response.data
+  }).then(bills => {
+    return bills.map((transaction : CalendarBill): CalendarBill => { 
+      transaction.dueDate = new Date(transaction.dueDate) 
+      return transaction 
+    })
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+onMounted(async () => {
+  console.log('changed state', store.monthFilter)
+  const [ month, year ] = store.monthFilter.split('-')
+  const id = store.userId;
+  await getBills(id, year, month)
+})
+
+function isAtrasado(bill: CalendarBill) {
+    if(bill.status === BillStatus.PAID) {
+        return false
+    }
+    
+    const dueDateWithoutTime = bill.dueDate.setHours(0, 0, 0, 0)
+    const nowDateWithoutTime = (new Date()).setHours(0, 0, 0, 0)
+
+    return (dueDateWithoutTime <= nowDateWithoutTime)
+}
+
+function getStatus(bill: CalendarBill) {
+    
+    if(bill.status === BillStatus.PAID) {
+        return  bill.type === BillType.PAYABLE ?  'pago' : 'recebido'
+    } else {
+        const dueDateWithoutTime = bill.dueDate.setHours(0, 0, 0, 0)
+        const nowDateWithoutTime = (new Date()).setHours(0, 0, 0, 0)
+        console.log(dueDateWithoutTime, nowDateWithoutTime, dueDateWithoutTime > nowDateWithoutTime )
+
+        if(isAtrasado(bill)) {
+            return 'atrasado'
+        } else {
+            return  bill.type === BillType.PAYABLE ?  'a pagar' : 'a receber'
+        }
+
+    }
+}
+
+</script>
+
+<style scoped>
+
+.card {
+  background-color: white;
+  margin: 30px 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+                       0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+                       0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+
+}
+
+.card-header {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-header h2 {
+  font-weight: 600;
+  color: #404040;
+  font-size: 22px;
+  margin: 0;
+}
+.card-header a {
+  color: #F9386A;
+}
+
+
+.calendar-summary {
+    background-color: white;
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+                       0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+                       0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+    border-left: 5px solid gray;
+    padding: 15px 15px;
+    gap: 8px;
+}
+
+.calendar-summary.PAYABLE {
+    border-color: #5B64DE;
+}
+
+.calendar-summary.RECEIVABLE {
+    border-color: #00BD6E;
+}
+
+.calendar-summary .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.calendar-summary .description {
+    font-size: 1em;
+    color: #454545;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.calendar-summary .amount {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #222222;
+}
+
+.calendar-summary .badge {
+    font-size: .7em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    background-color: gray;
+    border-radius: 10px;
+    padding: 2px 15px;
+    width: fit-content;
+}
+.calendar-summary .badge.PAYABLE {
+    background-color: #5B64DE;
+}
+.calendar-summary .badge.RECEIVABLE {
+    background-color: #00BD6E;
+}
+.calendar-summary .badge.ATRASADO {
+    background-color: #ED4A4A;
+}
+
+</style>
