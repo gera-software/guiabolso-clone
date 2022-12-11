@@ -14,8 +14,23 @@
 
 <script setup lang="ts">
 import api from "../config/axios.js";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useUserStore } from '../stores/store';
+
+const props = defineProps({
+    transactionType: String
+})
+
+watch(() => props.transactionType, async (newValue) => {
+      console.log(
+        "Watch props.selected function called with args:",
+        newValue
+      );
+
+    const [ month, year ] = store.monthFilter.split('-')
+    const id = store.userId;
+    await getBarChartData(id, year, month, props.transactionType)
+});
 
 const store =  useUserStore()
 
@@ -23,7 +38,7 @@ store.$subscribe(async (mutation, state) => {
   console.log('changed state', state.monthFilter)
   const [ month, year ] = state.monthFilter.split('-')
   const id = state.userId;
-  await getBarChartData(id, year, month)
+  await getBarChartData(id, year, month, props.transactionType)
 })
 
 type Item = {
@@ -41,10 +56,11 @@ function convertToLocalPercent(percent: number) {
 
 const data = ref<Item[]>([])
 
-async function getBarChartData(userId: String, year: String, month: String) {
+async function getBarChartData(userId: String, year: String, month: String, transactionType: string | undefined) {
+    console.log('get', props.transactionType)
   data.value = await api.guiabolsoApi({
     method: 'get',
-    url: `/monthly-spending-by-categories?id=${userId}&month=${month}&year=${year}`,
+    url: `/monthly-spending-by-categories?id=${userId}&month=${month}&year=${year}&transactionType=${props.transactionType}`,
   }).then(function (response) {
     console.log(response.data)
     return response.data
@@ -58,7 +74,7 @@ onMounted(async () => {
   console.log('changed state', store.monthFilter)
   const [ month, year ] = store.monthFilter.split('-')
   const id = store.userId;
-  await getBarChartData(id, year, month)
+  await getBarChartData(id, year, month, props.transactionType)
 })
 
 </script>

@@ -84,7 +84,7 @@ export async function fetchByAccount(id, monthField, yearField): Promise<Transac
  * @param id 
  * @returns 
  */
-export async function fetchByUser(id, monthField, yearField, limit = 0): Promise<TransactionSummary[]> {
+export async function fetchByUser(id, monthField, yearField, limit = 0, transactionType = 'ALL'): Promise<TransactionSummary[]> {
     
     await connect();
 
@@ -94,10 +94,17 @@ export async function fetchByUser(id, monthField, yearField, limit = 0): Promise
     const firstDay = new Date(`${year}-${month}-01`)
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
+    const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
     const pipeline: PipelineStage[] = []
     pipeline.push(
-        { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, date: { $gte: firstDay, $lt: lastDay } } },
+        { $match: { 
+            userId: new Types.ObjectId(id), 
+            _isDeleted: { $ne: true }, 
+            date: { $gte: firstDay, $lt: lastDay },
+            type: { $in: types },
+         }
+        },
         { $lookup: { 
             from: 'accounts', 
             localField: 'accountId', 
@@ -215,7 +222,7 @@ interface SpendingByCategory {
     totalAmount: number,
 }
 
-export async function fetchSpendingsByCategories(id, monthField, yearField): Promise<SpendingByCategory[]> {
+export async function fetchSpendingsByCategories(id, monthField, yearField, transactionType): Promise<SpendingByCategory[]> {
     await connect();
     const year = parseInt(yearField)
     const month = parseInt(monthField)
@@ -223,8 +230,18 @@ export async function fetchSpendingsByCategories(id, monthField, yearField): Pro
     const firstDay = new Date(`${year}-${month}-01`)
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
+    const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
+
     const result = await TransactionModel.aggregate([
-            { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, ignored: { $ne: true }, "category.ignored": false , date: { $gte: firstDay, $lt: lastDay } } },
+            { $match: { 
+                userId: new Types.ObjectId(id), 
+                _isDeleted: { $ne: true }, 
+                ignored: { $ne: true }, 
+                "category.ignored": false , 
+                date: { $gte: firstDay, $lt: lastDay },
+                type: { $in: types }, 
+                } 
+            },
             {
                 $group :
                   {
