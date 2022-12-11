@@ -7,8 +7,9 @@ const handler :Handler = async (event, context) => {
     const monthField = event.queryStringParameters?.month
     const yearField = event.queryStringParameters?.year
     const limit = +(event.queryStringParameters?.limit ?? 0)
+    const transactionType = event.queryStringParameters?.transactionType ?? 'ALL'
 
-    const transactions: TransactionSummary[] = await TransactionRepository.fetchByUser(userId, monthField, yearField, limit)
+    const transactions: TransactionSummary[] = await TransactionRepository.fetchByUser(userId, monthField, yearField, limit, transactionType)
     
     return {
         statusCode: 200,

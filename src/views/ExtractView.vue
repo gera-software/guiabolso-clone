@@ -5,9 +5,17 @@
           {{ option.text }}
       </option>
     </select>
+
+    <template #extra>
+      <div class="filter-bar">
+        <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.INCOME}" @click="toggleIncomeFilter(TransactionType.INCOME)">Rendas</button>
+        <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.EXPENSE}" @click="toggleIncomeFilter(TransactionType.EXPENSE)">Gastos</button>
+      </div>
+    </template>
   </AppBar>
 
     <div class="container">
+      <SpendingsBarChart :transactionType="transactionTypeFilter"/>
       <TransactionList :transactions="transactions" />
     </div>
     <FAB @click="handleClick">
@@ -19,12 +27,14 @@
 import { ref, watch, computed } from "vue";
 import api from "../config/axios.js";
 import { onMounted } from "vue";
+import SpendingsBarChart from "../components/SpendingsBarChart.vue";
 import TransactionList from "../components/TransactionList.vue";
-import { TransactionSummaryDTO } from "../config/types";
+import { TransactionSummaryDTO, TransactionType } from "../config/types";
 import { useUserStore } from "../stores/store";
 import AppBar from '@/components/AppBar.vue'
 import FAB from "@/components/FAB.vue";
 import { useRouter } from 'vue-router';
+
 
 const router = useRouter()
 
@@ -44,7 +54,7 @@ const transactions = ref<TransactionSummaryDTO[]>([])
 async function getTransactions(userId: String, year: String, month: String) {
   transactions.value = await api.guiabolsoApi({
     method: 'get',
-    url: `/transactions-fetch-by-user?id=${userId}&month=${month}&year=${year}`,
+    url: `/transactions-fetch-by-user?id=${userId}&month=${month}&year=${year}&transactionType=${transactionTypeFilter.value}`,
   }).then(function (response) {
     console.log(response.data)
     return response.data
@@ -65,8 +75,31 @@ onMounted(async () => {
   await getTransactions(id, year, month)
 })
 
+
+
+
+type TransactionFilter = TransactionType | 'ALL'
+
+const transactionTypeFilter = ref<TransactionFilter>('ALL')
+
+watch(transactionTypeFilter, async (newValue) => {
+      console.log('changed state', newValue)
+      const [ month, year ] = store.monthFilter.split('-')
+      const id = store.userId;
+      await getTransactions(id, year, month)
+});
+
 function handleClick() {
     router.push({ name: 'add-transaction' })
+}
+
+function toggleIncomeFilter(type: TransactionFilter) {
+  if(transactionTypeFilter.value == type)
+  {
+    transactionTypeFilter.value = 'ALL'
+  } else {
+    transactionTypeFilter.value = type
+  }
 }
 
 </script>
@@ -83,8 +116,28 @@ function handleClick() {
 }
 
 .container {
-    padding-top: 60px;
+    padding-top: 124px;
     padding-bottom: 80px;
+}
+
+.filter-bar {
+  padding: 15px 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.filter-bar .button-toggle {
+  border-radius: 8px;
+  border: 1px solid #A9A9A9;
+  color: #A9A9A9;
+  background-color: transparent;
+  padding: 10px 15px;
+}
+
+.filter-bar .button-toggle.button-toggle--active {
+  border: 1px solid #F92A64;
+  background-color: #FFF5F8;
+  color: #F92A64;
 }
 
 </style>

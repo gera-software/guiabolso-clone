@@ -1,11 +1,16 @@
 <template>
   <div class="app-bar">
-    <BackButton/>
-    <div class="content">
-        <slot>
-            <h1>{{title}}</h1>
-        </slot>
+    <div class="container">
+      <BackButton/>
+      <div class="content">
+          <slot>
+              <h1>{{title}}</h1>
+          </slot>
+      </div>
     </div>
+ 
+    <slot name="extra">
+    </slot>
   </div>
 </template>
 
@@ -22,13 +27,21 @@ defineProps<{
   background-color: white;
   box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.05);
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 15px 20px;
+  flex-direction: column;
+  /* justify-content: flex-start;
+  align-items: center; */
+  /* padding: 15px 20px; */
   position: fixed;
   top: 0;
   width: 100vw;
   z-index: 2;
+}
+
+.app-bar .container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 15px 20px;
 }
 
 .app-bar .content {

@@ -1,6 +1,6 @@
 import { connect, disconnect } from "../config/database";
 import { Schema, model, Types, PipelineStage } from 'mongoose';
-import { AccountSyncType, CurrencyCodes, Transaction, TransactionSummary, TransactionType } from '../types'
+import { AccountSyncType, Category, CurrencyCodes, Transaction, TransactionSummary, TransactionType } from '../types'
 import schema from "./schemas/transactionSchema";
 
 const TransactionModel = model<Transaction>('transactions', schema);
@@ -34,7 +34,7 @@ export async function remove(id): Promise<Transaction | null> {
  * @param id 
  * @returns 
  */
-export async function fetchByAccount(id, monthField, yearField): Promise<TransactionSummary[]> {
+export async function fetchByAccount(id, monthField, yearField, transactionType = 'ALL'): Promise<TransactionSummary[]> {
     await connect();
 
     const year = parseInt(yearField)
@@ -42,9 +42,17 @@ export async function fetchByAccount(id, monthField, yearField): Promise<Transac
 
     const firstDay = new Date(`${year}-${month}-01`)
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+    
+    const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
     const result = await TransactionModel.aggregate([
-            { $match: { accountId: new Types.ObjectId(id), _isDeleted: { $ne: true } , date: { $gte: firstDay, $lt: lastDay } } },
+            { $match: { 
+                accountId: new Types.ObjectId(id), 
+                _isDeleted: { $ne: true }, 
+                date: { $gte: firstDay, $lt: lastDay },
+                type: { $in: types },
+              }
+            },
             { $lookup: { 
                 from: 'accounts', 
                 localField: 'accountId', 
@@ -84,7 +92,7 @@ export async function fetchByAccount(id, monthField, yearField): Promise<Transac
  * @param id 
  * @returns 
  */
-export async function fetchByUser(id, monthField, yearField, limit = 0): Promise<TransactionSummary[]> {
+export async function fetchByUser(id, monthField, yearField, limit = 0, transactionType = 'ALL'): Promise<TransactionSummary[]> {
     
     await connect();
 
@@ -94,10 +102,17 @@ export async function fetchByUser(id, monthField, yearField, limit = 0): Promise
     const firstDay = new Date(`${year}-${month}-01`)
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
 
+    const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
     const pipeline: PipelineStage[] = []
     pipeline.push(
-        { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, date: { $gte: firstDay, $lt: lastDay } } },
+        { $match: { 
+            userId: new Types.ObjectId(id), 
+            _isDeleted: { $ne: true }, 
+            date: { $gte: firstDay, $lt: lastDay },
+            type: { $in: types },
+         }
+        },
         { $lookup: { 
             from: 'accounts', 
             localField: 'accountId', 
@@ -207,4 +222,50 @@ export async function batchUpdate(transactions: Transaction[]) {
       });
 
     await disconnect();
+}
+
+interface SpendingByCategory {
+    _id: string,
+    category: Category,
+    totalAmount: number,
+}
+
+export async function fetchSpendingsByCategories(id, monthField, yearField, transactionType): Promise<SpendingByCategory[]> {
+    await connect();
+    const year = parseInt(yearField)
+    const month = parseInt(monthField)
+
+    const firstDay = new Date(`${year}-${month}-01`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+
+    const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
+
+    const result = await TransactionModel.aggregate([
+            { $match: { 
+                userId: new Types.ObjectId(id), 
+                _isDeleted: { $ne: true }, 
+                ignored: { $ne: true }, 
+                "category.ignored": false , 
+                date: { $gte: firstDay, $lt: lastDay },
+                type: { $in: types }, 
+                } 
+            },
+            {
+                $group :
+                  {
+                    _id : "$category._id",
+                    category: { $first: "$category" },
+                    totalAmount: { $sum: "$amount" }
+                  }
+            },
+            {
+                $set: {
+                    totalAmount: { $abs: "$totalAmount" }
+                }
+            },
+            { $sort: { totalAmount: -1 } }
+          ]) as SpendingByCategory[];
+    
+    await disconnect();
+    return result;
 }
