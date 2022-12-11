@@ -1,6 +1,6 @@
 import { connect, disconnect } from "../config/database";
 import { Schema, model, Types, PipelineStage } from 'mongoose';
-import { AccountSyncType, CurrencyCodes, Transaction, TransactionSummary, TransactionType } from '../types'
+import { AccountSyncType, Category, CurrencyCodes, Transaction, TransactionSummary, TransactionType } from '../types'
 import schema from "./schemas/transactionSchema";
 
 const TransactionModel = model<Transaction>('transactions', schema);
@@ -207,4 +207,40 @@ export async function batchUpdate(transactions: Transaction[]) {
       });
 
     await disconnect();
+}
+
+interface SpendingByCategory {
+    _id: string,
+    category: Category,
+    totalAmount: number,
+}
+
+export async function fetchSpendingsByCategories(id, monthField, yearField): Promise<SpendingByCategory[]> {
+    await connect();
+    const year = parseInt(yearField)
+    const month = parseInt(monthField)
+
+    const firstDay = new Date(`${year}-${month}-01`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+
+    const result = await TransactionModel.aggregate([
+            { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, ignored: { $ne: true }, "category.ignored": false , date: { $gte: firstDay, $lt: lastDay } } },
+            {
+                $group :
+                  {
+                    _id : "$category._id",
+                    category: { $first: "$category" },
+                    totalAmount: { $sum: "$amount" }
+                  }
+            },
+            {
+                $set: {
+                    totalAmount: { $abs: "$totalAmount" }
+                }
+            },
+            { $sort: { totalAmount: -1 } }
+          ]) as SpendingByCategory[];
+    
+    await disconnect();
+    return result;
 }

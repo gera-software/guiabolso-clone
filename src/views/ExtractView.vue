@@ -8,6 +8,7 @@
   </AppBar>
 
     <div class="container">
+      <SpendingsBarChart />
       <TransactionList :transactions="transactions" />
     </div>
     <FAB @click="handleClick">
@@ -19,12 +20,14 @@
 import { ref, watch, computed } from "vue";
 import api from "../config/axios.js";
 import { onMounted } from "vue";
+import SpendingsBarChart from "../components/SpendingsBarChart.vue";
 import TransactionList from "../components/TransactionList.vue";
 import { TransactionSummaryDTO } from "../config/types";
 import { useUserStore } from "../stores/store";
 import AppBar from '@/components/AppBar.vue'
 import FAB from "@/components/FAB.vue";
 import { useRouter } from 'vue-router';
+
 
 const router = useRouter()
 
