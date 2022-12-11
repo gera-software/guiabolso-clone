@@ -1,70 +1,66 @@
 <template>
     <div class="barchart">
         <div class="chartarea">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
+            <div class="bar" v-for="item in data" :style="{ height: convertToLocalPercent(item.percent) + '%', backgroundColor: item.primaryColor.toString() }"></div>
         </div>
         <div class="y-labels">
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
-            </div>
-            <div class="label">
-                <span>R$ 91234</span> 
-                <LifestyleFamilyIcon class="icon"></LifestyleFamilyIcon>
+            <div class="label" v-for="item in data" :style="{ color: item.primaryColor.toString(), fill: item.primaryColor.toString() }" :title="item.name.toString()">
+                <span>R$ {{ (+item.amount / 100).toFixed(0) }}</span>
+                <component :is="item.iconName+'Icon'" class="icon"></component>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import LifestyleFamilyIcon from '@/components/icons/LifestyleFamilyIcon.vue'
+import api from "../config/axios.js";
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '../stores/store';
+
+const store =  useUserStore()
+
+store.$subscribe(async (mutation, state) => {
+  console.log('changed state', state.monthFilter)
+  const [ month, year ] = state.monthFilter.split('-')
+  const id = state.userId;
+  await getBarChartData(id, year, month)
+})
+
+type Item = {
+    _id: String,
+    name: String,
+    iconName: String, 
+    primaryColor: String,
+    amount: number,
+    percent: number,
+} 
+
+function convertToLocalPercent(percent: number) {
+    return 100 * percent / (data.value[0].percent)
+}
+
+const data = ref<Item[]>([])
+
+async function getBarChartData(userId: String, year: String, month: String) {
+  data.value = await api.guiabolsoApi({
+    method: 'get',
+    url: `/monthly-spending-by-categories?id=${userId}&month=${month}&year=${year}`,
+  }).then(function (response) {
+    console.log(response.data)
+    return response.data
+  })
+  .catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+onMounted(async () => {
+  console.log('changed state', store.monthFilter)
+  const [ month, year ] = store.monthFilter.split('-')
+  const id = store.userId;
+  await getBarChartData(id, year, month)
+})
+
 </script>
 
 <style scoped>
@@ -86,10 +82,9 @@ import LifestyleFamilyIcon from '@/components/icons/LifestyleFamilyIcon.vue'
 
 .barchart .bar {
     content: '';
-    height: 30%;
+    height: 100%;
     width: 44px;
     background-color: #E8E8E8;
-;
     margin: 0 20px;
     flex-shrink: 0;
     /* border: 1px solid white; */
