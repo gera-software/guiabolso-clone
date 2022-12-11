@@ -34,7 +34,7 @@ export async function remove(id): Promise<Transaction | null> {
  * @param id 
  * @returns 
  */
-export async function fetchByAccount(id, monthField, yearField): Promise<TransactionSummary[]> {
+export async function fetchByAccount(id, monthField, yearField, transactionType = 'ALL'): Promise<TransactionSummary[]> {
     await connect();
 
     const year = parseInt(yearField)
@@ -42,9 +42,17 @@ export async function fetchByAccount(id, monthField, yearField): Promise<Transac
 
     const firstDay = new Date(`${year}-${month}-01`)
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+    
+    const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
     const result = await TransactionModel.aggregate([
-            { $match: { accountId: new Types.ObjectId(id), _isDeleted: { $ne: true } , date: { $gte: firstDay, $lt: lastDay } } },
+            { $match: { 
+                accountId: new Types.ObjectId(id), 
+                _isDeleted: { $ne: true }, 
+                date: { $gte: firstDay, $lt: lastDay },
+                type: { $in: types },
+              }
+            },
             { $lookup: { 
                 from: 'accounts', 
                 localField: 'accountId', 

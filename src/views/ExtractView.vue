@@ -138,7 +138,6 @@ function toggleIncomeFilter(type: TransactionFilter) {
   border: 1px solid #F92A64;
   background-color: #FFF5F8;
   color: #F92A64;
-;
 }
 
 </style>
