@@ -222,7 +222,7 @@ async function handleSubmit() {
         // status: TransactionStatus.POSTED,
         comment: form.value.comment,
         ignored: form.value.ignored,
-        // accountId: form.value.accountId,
+        accountId: form.value.accountId,
         // userId: store.userId,
         // _isDeleted: false,
     }
