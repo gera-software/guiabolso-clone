@@ -189,6 +189,7 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
         doc.amount = transaction.amount
         doc.date = transaction.date
         doc.category = transaction.category
+        doc.accountId = transaction.accountId
         doc.type = transaction.type
         doc.comment = transaction.comment
         doc.ignored = transaction.ignored
