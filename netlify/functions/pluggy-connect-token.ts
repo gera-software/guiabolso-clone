@@ -3,9 +3,11 @@ import PluggyDataProvider from "../config/pluggyDataProvider";
 
 const handler :Handler = async (event, context) => {
 
+    const itemId = event.queryStringParameters?.itemId
+
     const dataProvider = new PluggyDataProvider()
 
-    const connectToken = await dataProvider.createConnectToken()
+    const connectToken = await dataProvider.createConnectToken(itemId)
 
     // console.log(connectToken)
 
