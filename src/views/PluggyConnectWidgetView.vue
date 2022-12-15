@@ -29,7 +29,6 @@ async function getConnectToken() {
 
 async function openPluggyConnectWidget() {
     const accessToken: string = await getConnectToken()
-    // console.log('accessToken', accessToken)
 
     // configure the Pluggy Connect widget instance
     const pluggyConnect = new pluggy.default.PluggyConnect({
