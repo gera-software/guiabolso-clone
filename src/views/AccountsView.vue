@@ -22,6 +22,7 @@
       <AccountSummary :account="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()" />
     </div>
 
+    <button @click="openPluggyConnectWidget">add item</button>
   </div>
 </template>
 
@@ -74,6 +75,48 @@ function requestSync() {
   }).catch(function (error) {
     console.log(error.response?.data);
   })
+}
+
+
+async function getConnectToken(itemId?: string | undefined) {
+    return api.guiabolsoApi({
+        method: 'get',
+        url: '/pluggy-connect-token',
+        params: {
+            itemId: itemId ?? ''
+        }
+    }).then((response) => {
+        // console.log(response)
+        return response.data.accessToken
+    })
+}
+
+
+async function openPluggyConnectWidget() {
+    const accessToken: string = await getConnectToken()
+
+    // configure the Pluggy Connect widget instance
+    // @ts-ignore
+    const pluggyConnect = new PluggyConnect({
+    connectToken: accessToken,
+    // updateItem: existingItemIdToUpdate, // by specifying the Item id to update here, Pluggy Connect will attempt to trigger an update on it, and/or prompt credentials request if needed.
+    includeSandbox: true, // note: not needed in production
+    onSuccess: (itemData: Object) => {
+        // TODO: Implement logic for successful connection
+        // The following line is an example, it should be removed when implemented.
+        console.log('Yay! Pluggy connect success!', itemData);
+        //@ts-ignore
+        // item.value = itemData.item
+    },
+    onError: (error: Object) => {
+        // TODO: Implement logic for error on connection
+        // The following line is an example, it should be removed when implemented.
+        console.error('Whoops! Pluggy Connect error... ', error);
+    },
+    });
+
+    // Open Pluggy Connect widget
+    pluggyConnect.init();
 }
 
 
