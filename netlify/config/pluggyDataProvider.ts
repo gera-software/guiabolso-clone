@@ -11,6 +11,10 @@ class PluggyDataProvider implements DataProvider {
         });
     }
 
+    async createConnectToken() {
+        return this.client.createConnectToken()
+    }
+
     async fetchInstitutions(): Promise<Institution[]> {
         console.log('[Pluggy] fetchInstitutions...')
         return this.client
