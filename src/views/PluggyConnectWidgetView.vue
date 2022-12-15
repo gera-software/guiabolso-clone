@@ -1,0 +1,60 @@
+<template>
+    pluggy connect
+
+    <button @click="openPluggyConnectWidget">Connect new account</button>
+    <pre>
+        {{item}}
+    </pre>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import api from '../config/axios.js'
+// @ts-ignore Import module
+import * as pluggy from '../config/pluggy-connect.js'
+
+
+const item = ref<Object>({})
+
+
+async function getConnectToken() {
+    return api.guiabolsoApi({
+        method: 'get',
+        url: '/pluggy-connect-token',
+    }).then((response) => {
+        // console.log(response)
+        return response.data.accessToken
+    })
+}
+
+async function openPluggyConnectWidget() {
+    const accessToken: string = await getConnectToken()
+    // console.log('accessToken', accessToken)
+
+    // configure the Pluggy Connect widget instance
+    const pluggyConnect = new pluggy.default.PluggyConnect({
+    connectToken: accessToken,
+    // updateItem: existingItemIdToUpdate, // by specifying the Item id to update here, Pluggy Connect will attempt to trigger an update on it, and/or prompt credentials request if needed.
+    includeSandbox: true, // note: not needed in production
+    onSuccess: (itemData: Object) => {
+        // TODO: Implement logic for successful connection
+        // The following line is an example, it should be removed when implemented.
+        console.log('Yay! Pluggy connect success!', itemData);
+        item.value = itemData
+    },
+    onError: (error: Object) => {
+        // TODO: Implement logic for error on connection
+        // The following line is an example, it should be removed when implemented.
+        console.error('Whoops! Pluggy Connect error... ', error);
+    },
+    });
+
+    // Open Pluggy Connect widget
+    pluggyConnect.init();
+}
+
+onMounted(async () => {
+
+})
+
+</script>

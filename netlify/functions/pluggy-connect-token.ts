@@ -7,7 +7,7 @@ const handler :Handler = async (event, context) => {
 
     const connectToken = await dataProvider.createConnectToken()
 
-    console.log(connectToken)
+    // console.log(connectToken)
 
     return {
         statusCode: 200,
