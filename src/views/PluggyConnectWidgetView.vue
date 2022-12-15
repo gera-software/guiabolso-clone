@@ -1,4 +1,5 @@
 <template>
+    <!-- <component is="script" src="https://cdn.pluggy.ai/pluggy-connect/v2.3.1/pluggy-connect.js" async></component> -->
     pluggy connect
 
     <button @click="openPluggyConnectWidget">Connect new account</button>
@@ -11,7 +12,7 @@
 import { ref, onMounted } from 'vue';
 import api from '../config/axios.js'
 // @ts-ignore Import module
-import * as pluggy from '../config/pluggy-connect.js'
+// import * as pluggy from '../config/pluggy-connect.js'
 
 
 const item = ref<Object>({})
@@ -31,7 +32,8 @@ async function openPluggyConnectWidget() {
     const accessToken: string = await getConnectToken()
 
     // configure the Pluggy Connect widget instance
-    const pluggyConnect = new pluggy.default.PluggyConnect({
+    // @ts-ignore
+    const pluggyConnect = new PluggyConnect({
     connectToken: accessToken,
     // updateItem: existingItemIdToUpdate, // by specifying the Item id to update here, Pluggy Connect will attempt to trigger an update on it, and/or prompt credentials request if needed.
     includeSandbox: true, // note: not needed in production
