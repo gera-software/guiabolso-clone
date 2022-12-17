@@ -3,17 +3,24 @@
     <div class="container">
         <ul class="institutions-list">
             <li v-for="institution in institutions" :key="institution._id?.toString()">
-                <img class="institution-logo" :src="institution.imageUrl?.toString()" />
-
-                {{institution.name}}
-                {{institution.type}}
-                {{institution.pluggyConnectorId}}
+                <div class="institution">
+                    <img class="institution-logo" :src="institution.imageUrl?.toString()" />
+                    <div>
+                        {{institution.name}}
+                    </div>
+                </div>
             </li>
         </ul>
 
-        Não encontrou seu banco?
-        Quer registrar gastos manualmente?
-        Conta manual
+        <p>
+            Não encontrou seu banco ou quer registrar gastos manualmente?
+        </p>
+        <div class="institution">
+            <img class="institution-logo" src="@/assets/ManualAccountIcon.svg" />
+            <div>
+                Conta manual
+            </div>
+        </div>
     </div>
 </template>
 
@@ -47,6 +54,7 @@ onMounted(async () => {
 <style scoped>
 .container {
   padding-top: 60px;
+  margin: 0 15px;
 }
 
 .institutions-list {
@@ -56,10 +64,17 @@ onMounted(async () => {
 }
 
 .institutions-list li {
-    padding: 15px;
+    padding: 15px 0;
 }
 
-.institutions-list .institution-logo {
+.institution {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #111111
+}
+
+.institution .institution-logo {
     border: 1px solid #F2F2F2;
     width: 50px;
     height: 50px;
