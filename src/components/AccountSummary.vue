@@ -69,6 +69,9 @@ async function updatePluggyConnectWidget(itemId: string | undefined) {
         // The following line is an example, it should be removed when implemented.
         console.error('Whoops! Pluggy Connect error... ', error);
     },
+    onEvent: (object: Object) => {
+      console.log(object)
+    } 
     });
 
     // Open Pluggy Connect widget
