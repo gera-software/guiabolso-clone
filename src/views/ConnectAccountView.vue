@@ -58,6 +58,7 @@ onMounted(async () => {
 .container {
   padding-top: 60px;
   margin: 0 15px;
+  padding-bottom: 40px;
 }
 
 .institutions-list {
