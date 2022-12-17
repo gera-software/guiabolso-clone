@@ -1,6 +1,9 @@
 <template>
     <AppBar title="Conexão de conta" />
     <div class="container">
+        <p>
+            Escolha uma instituição para conectar
+        </p>
         <ul class="institutions-list">
             <li v-for="institution in institutions" :key="institution._id?.toString()">
                 <div class="institution">
@@ -15,12 +18,12 @@
         <p>
             Não encontrou seu banco ou quer registrar gastos manualmente?
         </p>
-        <div class="institution">
+        <router-link class="institution" :to="{ name: 'accounts-connect-manual'}">
             <img class="institution-logo" src="@/assets/ManualAccountIcon.svg" />
             <div>
                 Conta manual
             </div>
-        </div>
+        </router-link>
     </div>
 </template>
 
@@ -71,7 +74,8 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     font-weight: 600;
-    color: #111111
+    color: #111111;
+    text-decoration: none;
 }
 
 .institution .institution-logo {
