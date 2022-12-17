@@ -117,6 +117,7 @@ async function openPluggyConnectWidget() {
     // @ts-ignore
     const pluggyConnect = new PluggyConnect({
     connectToken: accessToken,
+    connectorTypes: ['PERSONAL_BANK'],
     // updateItem: existingItemIdToUpdate, // by specifying the Item id to update here, Pluggy Connect will attempt to trigger an update on it, and/or prompt credentials request if needed.
     includeSandbox: true, // note: not needed in production
     onSuccess: (itemData: Object) => {

@@ -1,5 +1,5 @@
 import pluggy from "pluggy-sdk"
-import { DataProvider, Institution } from '../types'
+import { DataProvider, Institution, InstitutionType } from '../types'
 
 class PluggyDataProvider implements DataProvider {
     private client : pluggy.PluggyClient
@@ -15,6 +15,10 @@ class PluggyDataProvider implements DataProvider {
         return this.client.createConnectToken(itemId)
     }
 
+    /**
+     * Retorna apenas os conectores online disponíveis para conexão no momento
+     * @returns 
+     */
     async fetchInstitutions(): Promise<Institution[]> {
         console.log('[Pluggy] fetchInstitutions...')
         return this.client
@@ -26,6 +30,7 @@ class PluggyDataProvider implements DataProvider {
                         name: connector.name,
                         imageUrl: connector.imageUrl,
                         primaryColor: "#" + connector.primaryColor,
+                        type: connector.type as InstitutionType,
                     }));
                 })
     }

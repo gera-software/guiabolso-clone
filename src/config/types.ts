@@ -1,9 +1,16 @@
+export enum InstitutionType {
+    PERSONAL_BANK = 'PERSONAL_BANK',
+    BUSINESS_BANK = 'BUSINESS_BANK',
+    INVESTMENT = 'INVESTMENT',
+}
+
 export interface Institution {
     _id?: String,
     pluggyConnectorId?: Number,
     name: String,
     imageUrl?: String,
     primaryColor?: String,
+    type: InstitutionType,
 }
 
 export interface Category {
