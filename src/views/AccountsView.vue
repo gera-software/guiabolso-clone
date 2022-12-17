@@ -8,17 +8,35 @@
   <div class="container">
 
     <div class="card">
-      <div class="card-header">Contas bancárias</div>
+      <div class="card-header">
+        Contas bancárias
+        <button class="button" title="Adicionar conta bancária" @click="addBankAccount">
+          <font-awesome-icon icon="fa-solid fa-plus" />
+        </button>
+      </div>
+      <div v-if="!accountsGroupedByType.BANK">Você não tem nenhuma conta bancária!</div>
       <AccountSummary :account="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()" />
     </div> 
 
     <div class="card">
-      <div class="card-header">Cartões de Crédito</div>
+      <div class="card-header">
+        Cartões de Crédito
+        <button class="button" title="Adicionar cartão de crédito" @click="addCreditCard">
+          <font-awesome-icon icon="fa-solid fa-plus" />
+        </button>
+      </div>
+      <div v-if="!accountsGroupedByType.CREDIT_CARD">Você não tem nenhum cartão de crédito!</div>
       <AccountSummary :account="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()" />
     </div> 
 
     <div class="card">
-      <div class="card-header">Carteiras</div>
+      <div class="card-header">
+        Carteiras
+        <button class="button" title="Adicionar carteira manual" @click="addWallet">
+          <font-awesome-icon icon="fa-solid fa-plus" />
+        </button>
+      </div>
+      <div v-if="!accountsGroupedByType.WALLET">Você não tem nenhuma carteira manual!</div>
       <AccountSummary :account="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()" />
     </div>
 
@@ -122,6 +140,16 @@ async function openPluggyConnectWidget() {
     pluggyConnect.init();
 }
 
+function addBankAccount() {
+  console.log('TODO adicionar conta bancaria')
+}
+function addCreditCard() {
+  console.log('TODO adicionar credit card')
+}
+function addWallet() {
+  console.log('TODO adicionar wallet')
+}
+
 
 </script>
   
@@ -133,7 +161,7 @@ async function openPluggyConnectWidget() {
     color: #404040;
 }
 
-.app-bar .button {
+.button {
     color: #F9386A;
     border: none;
     margin: 0 10px;
