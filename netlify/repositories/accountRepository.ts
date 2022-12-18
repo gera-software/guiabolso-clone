@@ -8,6 +8,7 @@ const schema = new Schema<Account>({
     imageUrl: { type: String, required: false },
     syncType: String,
     pluggyAccountId: { type: String, required: false },
+    initialBalance: { type: Number, required: false },
     balance: Number,
     currencyCode: String,
     type: String,

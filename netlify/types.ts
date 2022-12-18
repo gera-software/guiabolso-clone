@@ -86,6 +86,7 @@ export interface Account {
     imageUrl?: String,
     syncType: AccountSyncType,
     pluggyAccountId?: string,
+    initialBalance?: Number,
     balance: Number,
     currencyCode: CurrencyCodes,
     type: AccountType,

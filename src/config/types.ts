@@ -81,6 +81,7 @@ export interface AccountDTO {
     imageUrl?: String,
     syncType: AccountSyncType,
     pluggyAccountId?: String,
+    initialBalance?: Number,
     balance: Number,
     currencyCode: CurrencyCodes,
     type: AccountType,

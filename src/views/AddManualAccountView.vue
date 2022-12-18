@@ -69,6 +69,7 @@ async function handleSubmit() {
     const payload = {
         name: form.value.name,
         type: form.value.type,
+        initialBalance: form.value.amount,
         balance: form.value.amount,
         userId: store.userId,
         imageUrl: '/src/assets/ManualAccountIcon.svg',
