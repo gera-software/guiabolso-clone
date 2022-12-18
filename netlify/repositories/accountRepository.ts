@@ -86,3 +86,17 @@ export async function getById(id): Promise<Account | null> {
     await disconnect();
     return result;
 }
+
+/**
+ * Creates a account
+ * @param account 
+ * @returns 
+ */
+export async function create(account: Account | null): Promise<Account | null> {
+    await connect();
+    const doc = new AccountModel(account);
+    const result = await doc.save();
+    await disconnect();
+
+    return result;
+}
