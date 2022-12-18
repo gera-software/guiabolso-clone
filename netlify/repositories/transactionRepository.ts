@@ -201,6 +201,26 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
     return doc;
 }
 
+export async function findOneAndUpdate(transaction: Transaction): Promise<Transaction | null> {
+    await connect();
+    const filter = { _id: new Types.ObjectId(transaction._id?.toString()) }
+    const update = {
+        description: transaction.description,
+        amount: transaction.amount,
+        date: transaction.date,
+        category: transaction.category,
+        accountId: transaction.accountId,
+        type: transaction.type,
+        comment: transaction.comment,
+        ignored: transaction.ignored,
+    }
+    const doc = await TransactionModel.findOneAndUpdate(filter, update );
+
+    await disconnect();
+
+    return doc;
+}
+
 export async function batchUpdate(transactions: Transaction[]) {
     await connect();
     console.log(transactions[0])
