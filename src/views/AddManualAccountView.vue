@@ -75,6 +75,7 @@ async function handleSubmit() {
         imageUrl: '/src/assets/ManualAccountIcon.svg',
         syncType: AccountSyncType.MANUAL,
         currencyCode: CurrencyCodes.BRL,
+        _isDeleted: false,
     }
 
     console.log(payload)

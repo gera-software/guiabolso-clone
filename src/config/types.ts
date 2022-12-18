@@ -92,6 +92,7 @@ export interface AccountDTO {
     connection?: Connection,
     bankData?: BankData,
     creditData?: CreditData,
+    _isDeleted?: Boolean,
 }
 
 export interface AccountSummaryDTO {
@@ -109,6 +110,7 @@ export interface AccountSummaryDTO {
         lastUpdatedAt: Date,
         status: ConnectionStatus,
     },
+    _isDeleted?: Boolean,
 }
 
 export enum TransactionType {

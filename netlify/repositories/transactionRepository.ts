@@ -19,7 +19,7 @@ export async function getById(id): Promise<Transaction | null> {
 
 /**
  * Logical deletion of a transaction
- * @param id 
+ * @param id
  * @returns 
  */
 export async function remove(id): Promise<Transaction | null> {

@@ -41,7 +41,8 @@ const schema = new Schema<Account>({
         availableCreditLimit: Number,
         closeDate: Date,
         dueDate: Date,
-    }
+    },
+    _isDeleted: { type: Boolean, required: false },
 });
 
 const AccountModel = model<Account>('accounts', schema);
@@ -49,7 +50,7 @@ const AccountModel = model<Account>('accounts', schema);
 export async function fetchByUserId(id): Promise<AccountSummaryDTO[]> {
     await connect();
     const result = await AccountModel.aggregate([
-        { $match: { userId: new Types.ObjectId(id) } },
+        { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true } } },
         { $lookup: {
                 from: 'synchronizations',
                 localField: 'syncId',
