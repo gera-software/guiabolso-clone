@@ -20,6 +20,14 @@ body {
 }
 
 /**
+Dialogs
+*/
+body.overflow--hidden {
+  overflow-y: hidden;
+}
+
+
+/**
 Animations on transitions
 
 */

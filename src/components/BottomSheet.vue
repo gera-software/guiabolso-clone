@@ -2,7 +2,6 @@
     <div class="overlay" v-if="modelValue" @click="closeBottomSheet"></div>
     <Transition name="slideup">
         <div class="bottom-sheet" v-if="modelValue">
-            <span @click="closeBottomSheet">Click to close</span>
             <slot>
                 Bottom sheet
             </slot>
@@ -11,11 +10,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
     modelValue: String
 }>()
+
+watch(() => props.modelValue, (newValue, oldValue) => {
+    console.log(newValue)
+     document.body.classList.toggle('overflow--hidden', !!newValue)
+
+})
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -38,14 +43,17 @@ function closeBottomSheet() {
 }
 
 .bottom-sheet {
-    background-color: pink;
-    padding: 30px;
+    background-color: white;
+    /* padding: 30px; */
     position: fixed;
     bottom: 0;
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
     z-index: 15;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
 }
+
 
 </style>

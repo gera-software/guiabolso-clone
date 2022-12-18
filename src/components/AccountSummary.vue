@@ -17,8 +17,19 @@
         </div>
         <Teleport to="body">
             <BottomSheet v-model="isBottomSheetOpen">
-              {{account}}
-              <button @click="() => isBottomSheetOpen = false">close</button>
+              <div class="bottom-sheet__header">
+                <h2 class="title">{{account.name}}</h2>
+                <button class="icon-button" @click="() => isBottomSheetOpen = false">
+                    <font-awesome-icon icon="fa-solid fa-xmark" />
+                </button>
+              </div>
+              <div class="bottom-sheet__body">
+                <ul class="menu-options">
+                  <li>
+                    Excluir conta
+                  </li>
+                </ul>
+              </div>
             </BottomSheet>
         </Teleport>
 
@@ -165,18 +176,53 @@ function openMoreDialog(e: Event) {
   color: #404040;
 }
 
-.account .icon-button {
+.badge {
+  background: gray;
+  color: black;
+  padding: 0px 10px;
+  border-radius: 4px;
+}
+
+.icon-button {
     color: #F9386A;
     border: none;
     background-color: transparent;
     font-size: 18px;
 }
 
-.badge {
-  background: gray;
-  color: black;
-  padding: 0px 10px;
-  border-radius: 4px;
+/**
+Bottom sheet
+ */
+
+.bottom-sheet__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 30px;
+}
+
+.title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 18px;
+  color: #404040;
+}
+
+.bottom-sheet__body {
+  margin: 30px;
+  margin-top: 0;
+}
+
+.menu-options {
+  /* background-color: red; */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-options li {
+  border-top: 1px solid #F2F2F2;
+  padding: 15px;
 }
 
 </style>
