@@ -1,5 +1,5 @@
 import { connect, disconnect } from "../config/database";
-import { Schema, Types, model } from 'mongoose';
+import { Schema, Types, model, Document } from 'mongoose';
 import { Account, AccountSummaryDTO } from '../types'
 
 
@@ -113,4 +113,32 @@ export async function remove(id): Promise<Account | null> {
     const result = await AccountModel.findOneAndUpdate({ _id: id }, { _isDeleted: true });
     await disconnect();
     return result;
+}
+
+export async function addToBalance(accountId: string, amount: number = 0): Promise<Account | null> {
+    console.log('add to balance', amount)
+    await connect();
+    const doc =  await AccountModel.findById(accountId);
+
+    if(doc) {
+        doc.balance = doc.balance.valueOf() + amount
+        await doc.save();
+    }
+    await disconnect();
+
+    return doc;
+}
+
+export async function subtractFromBalance(accountId: string, amount: number = 0): Promise<Account | null> {
+    console.log('subtract from balance', amount)
+    await connect();
+    const doc =  await AccountModel.findById(accountId);
+
+    if(doc) {
+        doc.balance = doc.balance.valueOf() - amount
+        await doc.save();
+    }
+    await disconnect();
+
+    return doc;
 }
