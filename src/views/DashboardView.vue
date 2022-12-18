@@ -7,6 +7,9 @@
         </select>
     </AppBar>
     <div class="container">
+        <div class="totalBalance">
+            <router-link :to="{ name: 'accounts'}">Ir para contas e cartões</router-link>
+        </div>
         <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
         <MonthPlanningCard></MonthPlanningCard>
         <LastTransactionsCard></LastTransactionsCard>
@@ -97,6 +100,10 @@ const store =  useUserStore()
     background-color: #D9D9D9;
     border-radius: 100%;
     flex-shrink: 0;
+}
+
+.totalBalance {
+    margin: 20px;
 }
 
 
