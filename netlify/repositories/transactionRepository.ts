@@ -19,7 +19,7 @@ export async function getById(id): Promise<Transaction | null> {
 
 /**
  * Logical deletion of a transaction
- * @param id 
+ * @param id
  * @returns 
  */
 export async function remove(id): Promise<Transaction | null> {
@@ -195,6 +195,26 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
         doc.ignored = transaction.ignored
         await doc.save();
     }
+
+    await disconnect();
+
+    return doc;
+}
+
+export async function findOneAndUpdate(transaction: Transaction): Promise<Transaction | null> {
+    await connect();
+    const filter = { _id: new Types.ObjectId(transaction._id?.toString()) }
+    const update = {
+        description: transaction.description,
+        amount: transaction.amount,
+        date: transaction.date,
+        category: transaction.category,
+        accountId: transaction.accountId,
+        type: transaction.type,
+        comment: transaction.comment,
+        ignored: transaction.ignored,
+    }
+    const doc = await TransactionModel.findOneAndUpdate(filter, update );
 
     await disconnect();
 

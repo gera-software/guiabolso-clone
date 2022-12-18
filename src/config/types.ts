@@ -1,9 +1,16 @@
+export enum InstitutionType {
+    PERSONAL_BANK = 'PERSONAL_BANK',
+    BUSINESS_BANK = 'BUSINESS_BANK',
+    INVESTMENT = 'INVESTMENT',
+}
+
 export interface Institution {
     _id?: String,
     pluggyConnectorId?: Number,
     name: String,
     imageUrl?: String,
     primaryColor?: String,
+    type: InstitutionType,
 }
 
 export interface Category {
@@ -74,6 +81,7 @@ export interface AccountDTO {
     imageUrl?: String,
     syncType: AccountSyncType,
     pluggyAccountId?: String,
+    initialBalance?: Number,
     balance: Number,
     currencyCode: CurrencyCodes,
     type: AccountType,
@@ -84,6 +92,7 @@ export interface AccountDTO {
     connection?: Connection,
     bankData?: BankData,
     creditData?: CreditData,
+    _isDeleted?: Boolean,
 }
 
 export interface AccountSummaryDTO {
@@ -101,6 +110,7 @@ export interface AccountSummaryDTO {
         lastUpdatedAt: Date,
         status: ConnectionStatus,
     },
+    _isDeleted?: Boolean,
 }
 
 export enum TransactionType {

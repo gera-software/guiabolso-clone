@@ -1,5 +1,6 @@
 import { Handler } from "@netlify/functions";
 import mongoose from 'mongoose';
+// @deprecated
 
 const InstitutionSchema = new mongoose.Schema({
     pluggyConnectorId: Number,

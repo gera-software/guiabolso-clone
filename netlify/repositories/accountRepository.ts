@@ -1,5 +1,5 @@
 import { connect, disconnect } from "../config/database";
-import { Schema, Types, model } from 'mongoose';
+import { Schema, Types, model, Document } from 'mongoose';
 import { Account, AccountSummaryDTO } from '../types'
 
 
@@ -8,6 +8,7 @@ const schema = new Schema<Account>({
     imageUrl: { type: String, required: false },
     syncType: String,
     pluggyAccountId: { type: String, required: false },
+    initialBalance: { type: Number, required: false },
     balance: Number,
     currencyCode: String,
     type: String,
@@ -40,7 +41,8 @@ const schema = new Schema<Account>({
         availableCreditLimit: Number,
         closeDate: Date,
         dueDate: Date,
-    }
+    },
+    _isDeleted: { type: Boolean, required: false },
 });
 
 const AccountModel = model<Account>('accounts', schema);
@@ -48,7 +50,7 @@ const AccountModel = model<Account>('accounts', schema);
 export async function fetchByUserId(id): Promise<AccountSummaryDTO[]> {
     await connect();
     const result = await AccountModel.aggregate([
-        { $match: { userId: new Types.ObjectId(id) } },
+        { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true } } },
         { $lookup: {
                 from: 'synchronizations',
                 localField: 'syncId',
@@ -85,4 +87,58 @@ export async function getById(id): Promise<Account | null> {
     const result = await AccountModel.findById(id);
     await disconnect();
     return result;
+}
+
+/**
+ * Creates a account
+ * @param account 
+ * @returns 
+ */
+export async function create(account: Account | null): Promise<Account | null> {
+    await connect();
+    const doc = new AccountModel(account);
+    const result = await doc.save();
+    await disconnect();
+
+    return result;
+}
+
+/**
+ * Logical deletion of a account
+ * @param id
+ * @returns 
+ */
+export async function remove(id): Promise<Account | null> {
+    await connect();
+    const result = await AccountModel.findOneAndUpdate({ _id: id }, { _isDeleted: true });
+    await disconnect();
+    return result;
+}
+
+export async function addToBalance(accountId: string, amount: number = 0): Promise<Account | null> {
+    console.log('add to balance', amount)
+    await connect();
+    const doc =  await AccountModel.findById(accountId);
+
+    if(doc) {
+        doc.balance = doc.balance.valueOf() + amount
+        await doc.save();
+    }
+    await disconnect();
+
+    return doc;
+}
+
+export async function subtractFromBalance(accountId: string, amount: number = 0): Promise<Account | null> {
+    console.log('subtract from balance', amount)
+    await connect();
+    const doc =  await AccountModel.findById(accountId);
+
+    if(doc) {
+        doc.balance = doc.balance.valueOf() - amount
+        await doc.save();
+    }
+    await disconnect();
+
+    return doc;
 }
