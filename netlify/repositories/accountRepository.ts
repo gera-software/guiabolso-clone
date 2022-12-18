@@ -115,13 +115,27 @@ export async function remove(id): Promise<Account | null> {
     return result;
 }
 
-export async function addToBalance(accountId: string, amount: number): Promise<Account | null> {
+export async function addToBalance(accountId: string, amount: number = 0): Promise<Account | null> {
     console.log('add to balance', amount)
     await connect();
     const doc =  await AccountModel.findById(accountId);
 
     if(doc) {
         doc.balance = doc.balance.valueOf() + amount
+        await doc.save();
+    }
+    await disconnect();
+
+    return doc;
+}
+
+export async function subtractFromBalance(accountId: string, amount: number = 0): Promise<Account | null> {
+    console.log('subtract from balance', amount)
+    await connect();
+    const doc =  await AccountModel.findById(accountId);
+
+    if(doc) {
+        doc.balance = doc.balance.valueOf() - amount
         await doc.save();
     }
     await disconnect();
