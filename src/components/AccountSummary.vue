@@ -1,24 +1,45 @@
 <template>
         <div class="account" @click="goToExtract(account._id?.toString())">
-          <img class="account-logo" :src="account.imageUrl?.toString()" />
-          <div>
-            <div class="name">{{account.name}}</div>
-            <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
-            <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.sync?.lastSyncAt)).toLocaleString() }} <span class="badge" v-if="account.sync">{{account.sync.syncStatus}}</span> </div>
-            <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
-            <!-- <pre>{{account.sync}}</pre> -->
-            <button @click="updateItem(account.sync?.pluggyItemId, $event)">update</button>
+          <div class="col-1">
+            <img class="account-logo" :src="account.imageUrl?.toString()" />
+            <div>
+              <div class="name">{{account.name}}</div>
+              <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
+              <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.sync?.lastSyncAt)).toLocaleString() }} <span class="badge" v-if="account.sync">{{account.sync.syncStatus}}</span> </div>
+              <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
+              <!-- <pre>{{account.sync}}</pre> -->
+              <button @click="updateItem(account.sync?.pluggyItemId, $event)">update</button>
+            </div>
           </div>
+          <button class="icon-button" @click="openMoreDialog(account, $event)">
+            <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
+          </button>
         </div>
+
+        <Teleport to="body">
+            <BottomSheet :isBottomSheetOpen="isBottomSheetOpen" @close-bottom-sheet="closeModal">
+              {{account}}
+              <button @click="() => isBottomSheetOpen = false">close</button>
+            </BottomSheet>
+        </Teleport>
+
+
 </template>
 <script setup lang="ts">
 import { AccountSummaryDTO } from '../config/types';
 import { useRouter } from 'vue-router';
 import api from '../config/axios.js'
+import BottomSheet from '@/components/BottomSheet.vue'
+import { ref } from 'vue';
 
 defineProps<{
     account: AccountSummaryDTO
 }>()
+
+function closeModal(e: any) {
+  console.log('fehcar o modal')
+  isBottomSheetOpen.value = false
+}
 
 const router = useRouter()
 
@@ -83,6 +104,14 @@ async function updateItem(itemId: string | undefined, event: Event) {
   await updatePluggyConnectWidget(itemId)
 }
 
+const isBottomSheetOpen = ref(false)
+
+function openMoreDialog(account: AccountSummaryDTO, e: Event) {
+  e.stopPropagation()
+  isBottomSheetOpen.value = true
+  console.log('more', account)
+}
+
 </script>
 <style scoped>
 
@@ -90,6 +119,12 @@ async function updateItem(itemId: string | undefined, event: Event) {
   /* background-color: #F9386A; */
   border-bottom: 1px solid #F2F2F2;
   padding: 15px 0px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between
+}
+
+.account .col-1 {
   display: flex;
 }
 
@@ -132,10 +167,18 @@ async function updateItem(itemId: string | undefined, event: Event) {
   color: #404040;
 }
 
+.account .icon-button {
+    color: #F9386A;
+    border: none;
+    background-color: transparent;
+    font-size: 18px;
+}
+
 .badge {
   background: gray;
   color: black;
   padding: 0px 10px;
   border-radius: 4px;
 }
+
 </style>

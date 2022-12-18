@@ -19,5 +19,23 @@ body {
   min-height: 100vh;
 }
 
+/**
+Animations on transitions
+
+*/
+
+.slideup-enter-active,
+.slideup-leave-active {
+  /* transition: opacity 3s ease; */
+  transition: transform .3s ease;
+  transform: translateY(0%);
+}
+
+.slideup-enter-from,
+.slideup-leave-to {
+  transform: translateY(100%);
+  /* opacity: 0; */
+}
+
 
 
