@@ -102,3 +102,15 @@ export async function create(account: Account | null): Promise<Account | null> {
 
     return result;
 }
+
+/**
+ * Logical deletion of a account
+ * @param id
+ * @returns 
+ */
+export async function remove(id): Promise<Account | null> {
+    await connect();
+    const result = await AccountModel.findOneAndUpdate({ _id: id }, { _isDeleted: true });
+    await disconnect();
+    return result;
+}

@@ -17,9 +17,7 @@ const props = defineProps<{
 }>()
 
 watch(() => props.modelValue, (newValue, oldValue) => {
-    console.log(newValue)
      document.body.classList.toggle('overflow--hidden', !!newValue)
-
 })
 
 const emit = defineEmits(['update:modelValue'])

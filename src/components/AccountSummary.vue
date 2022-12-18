@@ -25,7 +25,7 @@
               </div>
               <div class="bottom-sheet__body">
                 <ul class="menu-options">
-                  <li>
+                  <li @click="handleClickDeleteAccount">
                     Excluir conta
                   </li>
                 </ul>
@@ -42,7 +42,7 @@ import api from '../config/axios.js'
 import BottomSheet from '@/components/BottomSheet.vue'
 import { ref } from 'vue';
 
-defineProps<{
+const props = defineProps<{
     account: AccountSummaryDTO
 }>()
 
@@ -119,6 +119,30 @@ const isBottomSheetOpen = ref(false)
 function openMoreDialog(e: Event) {
   e.stopPropagation()
   isBottomSheetOpen.value = true
+}
+
+const loading = ref(false)
+
+async function handleClickDeleteAccount() {
+  const result = window.confirm(`Deseja realmente excluir a conta ${props.account.name}?`);
+  if(result) {
+    await deleteAccount(''+ props.account._id)
+    router.go(0)
+  }
+}
+
+async function deleteAccount(id: string) {
+  loading.value = true
+  return api.guiabolsoApi({
+    method: 'get',
+    url: `/account-delete?id=${id}`,
+  }).then(function (response) {
+    console.log(response.data)
+    loading.value = false
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
 }
 
 </script>
