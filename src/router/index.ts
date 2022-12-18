@@ -10,6 +10,9 @@ import DashboardView from '@/views/DashboardView.vue'
 import CalendarView from '../views/CalendarView.vue'
 import AddBillView from '../views/AddBillView.vue'
 import BillView from '../views/BillView.vue'
+import PluggyConnectWidgetView from '../views/PluggyConnectWidgetView.vue'
+import ConnectAccountView from '../views/ConnectAccountView.vue'
+import AddManualAccountView from '../views/AddManualAccountView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +34,16 @@ const router = createRouter({
       path: '/accounts',
       name: 'accounts',
       component: AccountsView,
+    },
+    {
+      path: '/accounts/connect',
+      name: 'accounts-connect',
+      component: ConnectAccountView,
+    },
+    {
+      path: '/accounts/connect/manual',
+      name: 'accounts-connect-manual',
+      component: AddManualAccountView,
     },
     {
       path: '/extract',
@@ -71,6 +84,11 @@ const router = createRouter({
       path: '/add-bill',
       name: 'add-bill',
       component: AddBillView,
+    },
+    {
+      path: '/pluggy-connect',
+      name: 'pluggy-connect',
+      component: PluggyConnectWidgetView, // @deprecated
     },
   ]
 })

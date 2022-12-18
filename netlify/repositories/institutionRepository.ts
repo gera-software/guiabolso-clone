@@ -7,6 +7,7 @@ const schema = new Schema<Institution>({
     name: String,
     imageUrl: { type: String, required: false },
     primaryColor: { type: String, required: false },
+    type: String,
 });
 
 const InstitutionModel = model<Institution>('institutions', schema);
