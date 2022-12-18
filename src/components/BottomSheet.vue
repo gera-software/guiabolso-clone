@@ -1,7 +1,7 @@
 <template>
-    <!-- <div class="overlay" v-if="isBottomSheetOpen" @click="closeBottomSheet"></div> -->
+    <div class="overlay" v-if="modelValue" @click="closeBottomSheet"></div>
     <Transition name="slideup">
-        <div class="bottom-sheet" v-if="isBottomSheetOpen">
+        <div class="bottom-sheet" v-if="modelValue">
             <span @click="closeBottomSheet">Click to close</span>
             <slot>
                 Bottom sheet
@@ -11,15 +11,17 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(['close-bottom-sheet'])
+import { ref } from 'vue';
 
 const props = defineProps<{
-    isBottomSheetOpen: boolean
+    modelValue: String
 }>()
+
+const emit = defineEmits(['update:modelValue'])
 
 
 function closeBottomSheet() {
-    emit('close-bottom-sheet')
+    emit('update:modelValue', false)
 }
 </script>
 

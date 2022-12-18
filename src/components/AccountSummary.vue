@@ -11,13 +11,12 @@
               <button @click="updateItem(account.sync?.pluggyItemId, $event)">update</button>
             </div>
           </div>
-          <button class="icon-button" @click="openMoreDialog(account, $event)">
+          <button class="icon-button" @click="openMoreDialog">
             <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
           </button>
         </div>
-
         <Teleport to="body">
-            <BottomSheet :isBottomSheetOpen="isBottomSheetOpen" @close-bottom-sheet="closeModal">
+            <BottomSheet v-model="isBottomSheetOpen">
               {{account}}
               <button @click="() => isBottomSheetOpen = false">close</button>
             </BottomSheet>
@@ -36,10 +35,10 @@ defineProps<{
     account: AccountSummaryDTO
 }>()
 
-function closeModal(e: any) {
-  console.log('fehcar o modal')
-  isBottomSheetOpen.value = false
-}
+// function closeModal(e: any) {
+//   console.log('fehcar o modal')
+//   isBottomSheetOpen.value = false
+// }
 
 const router = useRouter()
 
@@ -106,10 +105,9 @@ async function updateItem(itemId: string | undefined, event: Event) {
 
 const isBottomSheetOpen = ref(false)
 
-function openMoreDialog(account: AccountSummaryDTO, e: Event) {
+function openMoreDialog(e: Event) {
   e.stopPropagation()
   isBottomSheetOpen.value = true
-  console.log('more', account)
 }
 
 </script>
