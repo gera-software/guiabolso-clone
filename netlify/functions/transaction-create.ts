@@ -1,5 +1,6 @@
 import { Handler } from "@netlify/functions";
 import * as TransactionRepository from "../repositories/transactionRepository";
+import * as AccountRepository from "../repositories/accountRepository";
 import { Transaction, CurrencyCodes, TransactionType, TransactionStatus } from "../types";
 
 const handler: Handler = async (event, context) => {
@@ -35,6 +36,8 @@ const handler: Handler = async (event, context) => {
     let doc: Transaction | null;
     try {
         doc = await TransactionRepository.create(transaction);
+        const account = await AccountRepository.addToBalance(transaction.accountId.toString(), transaction.amount.valueOf());
+        console.log(account)
     } catch (err) {
         return {
             statusCode: 500,
