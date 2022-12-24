@@ -1,4 +1,4 @@
-import { Handler } from "@netlify/functions";
+import { Handler, HandlerContext, HandlerEvent } from "@netlify/functions";
 import * as DashboardRepository from '../repositories/dashboardRepository'
 
 type item = {
@@ -7,7 +7,10 @@ type item = {
     amount: number,
 } 
 
-const handler :Handler = async (event, context) => {
+const handler :Handler = async (event: HandlerEvent, context: HandlerContext) => {
+    //@ts-ignore
+    const { identity, user } = context.clientContext;
+    console.log(user)
     const userId = event.queryStringParameters?.id
     const monthField = event.queryStringParameters?.month
     const yearField = event.queryStringParameters?.year

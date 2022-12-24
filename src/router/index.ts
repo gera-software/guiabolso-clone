@@ -13,6 +13,7 @@ import BillView from '../views/BillView.vue'
 import PluggyConnectWidgetView from '../views/PluggyConnectWidgetView.vue'
 import ConnectAccountView from '../views/ConnectAccountView.vue'
 import AddManualAccountView from '../views/AddManualAccountView.vue'
+import LoginView from '../views/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'login',
+      component: LoginView,
+    },
+    {
+      path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
     },
