@@ -14,7 +14,8 @@
         <MonthPlanningCard></MonthPlanningCard>
         <LastTransactionsCard></LastTransactionsCard>
         <CalendarBillsCard></CalendarBillsCard>
-        <button @click="handleLogout">Logout</button>
+
+        <button class="button button-outline" @click="handleLogout">Logout</button>
     </div>
 </template>
 <script setup lang="ts">
@@ -123,5 +124,20 @@ function handleLogout() {
     margin: 20px;
 }
 
+.button {
+    background-color: #F9386A;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Open Sans';
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 16px;
+}
 
+.button.button-outline {
+  background-color: transparent;
+  color: #F9386A;
+}
 </style>
