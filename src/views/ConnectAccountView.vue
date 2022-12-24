@@ -6,7 +6,7 @@
         </p>
         <ul class="institutions-list">
             <li v-for="institution in institutions" :key="institution._id?.toString()">
-                <div class="institution">
+                <div class="institution breve">
                     <img class="institution-logo" :src="institution.imageUrl?.toString()" />
                     <div>
                         {{institution.name}}
@@ -86,4 +86,23 @@ onMounted(async () => {
     border-radius: 100%;
     margin-right: 10px;
 }
-</style>
+
+.institution.breve {
+    color: #11111167;
+}
+.institution.breve .institution-logo {
+    opacity: .5;
+}
+
+.institution.breve::after {
+    content: 'em breve';
+    background-color: #FFC969;
+    color: white;
+    border-radius: 8px;
+    padding: 2px 7px;
+    text-transform: uppercase;
+    font-size: .6em;
+    font-weight: 600;
+    margin-left: 10px;
+}
+ </style>
