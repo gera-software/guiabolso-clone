@@ -14,6 +14,11 @@ import PluggyConnectWidgetView from '../views/PluggyConnectWidgetView.vue'
 import ConnectAccountView from '../views/ConnectAccountView.vue'
 import AddManualAccountView from '../views/AddManualAccountView.vue'
 import LoginView from '../views/LoginView.vue'
+import { useNetlifyIdentity } from '../composables/useNetlifyIdentity.js'
+
+
+const { getUser } = useNetlifyIdentity()
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -97,6 +102,21 @@ const router = createRouter({
       component: PluggyConnectWidgetView, // @deprecated
     },
   ]
+})
+
+function isAuthenticated() {
+  return getUser()
+}
+
+router.beforeEach((to, from) => {
+  // ...
+  // explicitly return false to cancel the navigation
+
+  // return false
+    console.log(to.name, isAuthenticated())
+  if(!isAuthenticated() && to.name !== 'login') {
+    return { name: 'login' }
+  }
 })
 
 export default router

@@ -1,31 +1,38 @@
 <template>
-    login
+  <button @click="openNetlifyModal">Login</button>
     <router-link :to="{ name: 'dashboard' }">Dashboard</router-link>
 </template>
 <script setup lang="ts">
 
-import netlifyIdentity from 'netlify-identity-widget';
 import { onMounted } from 'vue';
+import { useNetlifyIdentity } from '@/composables/useNetlifyIdentity.js'
+import { useRouter } from 'vue-router';
 
-onMounted(()=> {
-    // @ts-ignore
-    netlifyIdentity.on('init', user => console.log('init', user));
-    // @ts-ignore
-    netlifyIdentity.on('login', user => console.log('login', user));
-    netlifyIdentity.on('logout', () => console.log('Logged out'));
-    // @ts-ignore
-    netlifyIdentity.on('error', err => console.error('Error', err));
-    netlifyIdentity.on('open', () => console.log('Widget opened'));
-    netlifyIdentity.on('close', () => console.log('Widget closed'));
+const { onOpen, onLogin, openModal, closeModal, getUser } = useNetlifyIdentity()
 
-    netlifyIdentity.init({
-      // container: '#netlify-modal', // defaults to document.body
-      locale: 'en' // defaults to 'en'
-    });
-    
-    netlifyIdentity.open(); // open the modal
+const router = useRouter()
 
+onOpen((user: any) => {
+  console.log('onOpen', user)
+})
 
+onLogin((user: any) => {
+  const { id, email, token, user_metadata } = user
+  console.log('onLogin', id, email, token, user_metadata)
+  closeModal()
+  router.push({ name: 'dashboard' })
+})
+
+function openNetlifyModal() {
+  openModal()
+
+}
+
+onMounted(() => {
+  const user = getUser()
+  if(user) {
+    router.push({ name: 'dashboard' })
+  }
 })
 
 </script>

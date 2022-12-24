@@ -14,6 +14,7 @@
         <MonthPlanningCard></MonthPlanningCard>
         <LastTransactionsCard></LastTransactionsCard>
         <CalendarBillsCard></CalendarBillsCard>
+        <button @click="handleLogout">Logout</button>
     </div>
 </template>
 <script setup lang="ts">
@@ -23,8 +24,24 @@ import HighestMonthlySpendingCard from '@/components/HighestMonthlySpendingCard.
 import MonthPlanningCard from '@/components/MonthPlanningCard.vue'
 import LastTransactionsCard from '@/components/LastTransactionsCard.vue'
 import CalendarBillsCard from '@/components/CalendarBillsCard.vue'
+import { useNetlifyIdentity } from '@/composables/useNetlifyIdentity.js'
+import { useRouter } from 'vue-router';
+
+
+const { onLogout, logout } = useNetlifyIdentity()
+
+const router = useRouter()
+
+onLogout(() => {
+  console.log('onLogout')
+  router.push({ name: 'login' })
+})
 
 const store =  useUserStore()
+
+function handleLogout() {
+    logout()
+}
 
 </script>
 
