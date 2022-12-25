@@ -151,7 +151,7 @@ async function handleSubmit() {
         // type: form.value.type as BillType,
         status: form.value.status as BillStatus,
         // _isDeleted: false,
-        // userId: store.userId
+        // userId: store.user._id
     }
 
     console.log(payload)

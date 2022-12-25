@@ -71,7 +71,7 @@ async function handleSubmit() {
         type: form.value.type,
         initialBalance: form.value.amount,
         balance: form.value.amount,
-        userId: store.userId,
+        userId: store.user._id,
         imageUrl: '/src/assets/ManualAccountIcon.svg',
         syncType: AccountSyncType.MANUAL,
         currencyCode: CurrencyCodes.BRL,

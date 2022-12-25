@@ -25,7 +25,7 @@ import HighestMonthlySpendingCard from '@/components/HighestMonthlySpendingCard.
 import MonthPlanningCard from '@/components/MonthPlanningCard.vue'
 import LastTransactionsCard from '@/components/LastTransactionsCard.vue'
 import CalendarBillsCard from '@/components/CalendarBillsCard.vue'
-import { useNetlifyIdentity } from '@/composables/useNetlifyIdentity.js'
+import { useNetlifyIdentity } from '../composables/useNetlifyIdentity'
 import { useRouter } from 'vue-router';
 
 

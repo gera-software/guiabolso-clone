@@ -17,17 +17,17 @@ netlifyIdentity.init({
 
 export function useNetlifyIdentity() {
 
-    function onOpen(callback) {
+    function onOpen(callback: any) {
         // @ts-ignore
         netlifyIdentity.on('open', user => callback(user));
     }
 
-    function onLogin(callback) {
+    function onLogin(callback: any) {
         // @ts-ignore
         netlifyIdentity.on('login', user => callback(user));
     }
 
-    function onLogout(callback) {
+    function onLogout(callback: any) {
         // @ts-ignore
         netlifyIdentity.on('logout', callback);
     }

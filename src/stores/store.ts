@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', {
 
     state: () => {
         return {
-            userId: import.meta.env.VITE_DEFAULT_USER_ID,
+            user: { _id: import.meta.env.VITE_DEFAULT_USER_ID },
             monthFilter: selectedMonth,
             monthOptions: [
                 { text: "Dezembro/22", value: "12-2022" },

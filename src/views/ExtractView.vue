@@ -44,7 +44,7 @@ const store =  useUserStore()
 store.$subscribe(async (mutation, state) => {
   console.log('changed state', state.monthFilter)
   const [ month, year ] = state.monthFilter.split('-')
-  const id = state.userId;
+  const id = state.user._id;
   await getTransactions(id, year, month)
 })
 
@@ -71,7 +71,7 @@ async function getTransactions(userId: String, year: String, month: String) {
 onMounted(async () => {
   console.log('changed state', store.monthFilter)
   const [ month, year ] = store.monthFilter.split('-')
-  const id = store.userId;
+  const id = store.user._id;
   await getTransactions(id, year, month)
 })
 
@@ -85,7 +85,7 @@ const transactionTypeFilter = ref<TransactionFilter>('ALL')
 watch(transactionTypeFilter, async (newValue) => {
       console.log('changed state', newValue)
       const [ month, year ] = store.monthFilter.split('-')
-      const id = store.userId;
+      const id = store.user._id;
       await getTransactions(id, year, month)
 });
 
