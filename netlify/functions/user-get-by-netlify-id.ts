@@ -3,12 +3,21 @@ import * as UserRepository from '../repositories/userRepository'
 import { User } from "../types";
 
 const handler :Handler = async (event, context) => {
-    const id = event.queryStringParameters?.netlifyId
+    const netlifyId = event.queryStringParameters?.netlifyId ?? ''
+    const email = decodeURIComponent(event.queryStringParameters?.email ?? '')
+    const name = event.queryStringParameters?.name ?? ''
 
-    console.log(id)
+    console.log(netlifyId, email, name)
   
-    // TODO hardcoded id
-    const user: User | null = await UserRepository.getByNetlifyId(id)
+    let user: User | null = await UserRepository.getByNetlifyId(netlifyId)
+
+    if(!user) {
+        user = await UserRepository.create({
+            name,
+            email,
+            netlifyId,
+        })
+    }
     
     return {
         statusCode: 200,

@@ -23,3 +23,17 @@ export async function getByNetlifyId(id): Promise<User | null> {
     await disconnect();
     return result;
 }
+
+/**
+ * Creates a user
+ * @returns 
+ */
+export async function create(user: User ): Promise<User | null> {
+    await connect();
+    const doc = new UserModel(user);
+    const result = await doc.save();
+    await disconnect();
+
+    return result;
+}
+

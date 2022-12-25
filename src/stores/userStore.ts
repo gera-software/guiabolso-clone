@@ -75,7 +75,7 @@ export const useUserStore = defineStore('user', () => {
     async function getUserByNetlifyId(u: any) {
         return api.guiabolsoApi({
           method: 'get',
-          url: `/user-get-by-netlify-id?netlifyId=${u.id}`,
+          url: encodeURI(`/user-get-by-netlify-id?netlifyId=${u.id}&email=${encodeURIComponent(u.email)}&name=${u.user_metadata.full_name}`),
         }).then(function (response) {
           return {
             ...response.data,
