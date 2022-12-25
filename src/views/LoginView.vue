@@ -9,9 +9,19 @@
 </template>
 <script setup lang="ts">
 
+import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 
+const router = useRouter()
+
 const userStore = useUserStore()
+
+userStore.$subscribe((mutation, state) => {
+  console.log('MUTATED STATE', state)
+  if(state._id) {
+    router.push({ name: 'dashboard'})
+  }
+})
 
 function openNetlifyModal() {
   userStore.openModal()

@@ -34,6 +34,13 @@ const router = useRouter()
 
 const userStore =  useUserStore()
 
+userStore.$subscribe((mutation, state) => {
+  console.log('MUTATED STATE', state)
+  if(!state._id) {
+    router.push({ name: 'login'})
+  }
+})
+
 const monthFilterStore = useMonthFilterStore()
 
 
