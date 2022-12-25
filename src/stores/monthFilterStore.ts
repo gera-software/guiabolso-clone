@@ -6,11 +6,10 @@ const month = currentDate.getMonth() + 1
 
 const selectedMonth = `${month.toString().padStart(2, '0')}-${year}`
 
-export const useUserStore = defineStore('user', {
+export const useMonthFilterStore = defineStore('monthFilter', {
 
     state: () => {
         return {
-            user: { _id: import.meta.env.VITE_DEFAULT_USER_ID },
             monthFilter: selectedMonth,
             monthOptions: [
                 { text: "Dezembro/22", value: "12-2022" },
@@ -64,14 +63,7 @@ export const useUserStore = defineStore('user', {
                 { text: "Março/19", value: "03-2019" },
                 { text: "Fevereiro/19", value: "02-2019" },
                 { text: "Janeiro/19", value: "01-2019" },
-
-
-                // { text: "Janeiro/23", value: "01-2023" },
-                // { text: "Dezembro/22", value: "12-2022" },
-                // { text: "Novembro/22", value: "11-2022" },
-                // { text: "Outubro/22", value: "10-2022" },
-                // { text: "Setembro/22", value: "09-2022" },
             ],
         }
-    }
+    },
 })

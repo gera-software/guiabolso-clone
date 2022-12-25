@@ -1,7 +1,7 @@
 <template>
     <AppBar>
-        <select class="app-bar-select" v-model="store.monthFilter">
-        <option v-for="option in store.monthOptions" :value="option.value">
+        <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
+        <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
             {{ option.text }}
         </option>
         </select>
@@ -10,16 +10,17 @@
         <div class="totalBalance">
             <router-link :to="{ name: 'accounts'}">Ir para contas e cartões</router-link>
         </div>
-        <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
+        {{ userStore.$state }}
+        <!-- <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
         <MonthPlanningCard></MonthPlanningCard>
         <LastTransactionsCard></LastTransactionsCard>
-        <CalendarBillsCard></CalendarBillsCard>
+        <CalendarBillsCard></CalendarBillsCard> -->
 
         <button class="button button-outline" @click="handleLogout">Logout</button>
     </div>
 </template>
 <script setup lang="ts">
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 import AppBar from '@/components/AppBar.vue'
 import HighestMonthlySpendingCard from '@/components/HighestMonthlySpendingCard.vue'
 import MonthPlanningCard from '@/components/MonthPlanningCard.vue'
@@ -27,6 +28,7 @@ import LastTransactionsCard from '@/components/LastTransactionsCard.vue'
 import CalendarBillsCard from '@/components/CalendarBillsCard.vue'
 import { useNetlifyIdentity } from '../composables/useNetlifyIdentity'
 import { useRouter } from 'vue-router';
+import { useMonthFilterStore } from '../stores/monthFilterStore';
 
 
 const { onLogout, logout } = useNetlifyIdentity()
@@ -38,7 +40,10 @@ onLogout(() => {
   router.push({ name: 'login' })
 })
 
-const store =  useUserStore()
+const userStore =  useUserStore()
+
+const monthFilterStore = useMonthFilterStore()
+
 
 function handleLogout() {
     logout()

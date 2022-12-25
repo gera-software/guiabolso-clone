@@ -1,4 +1,6 @@
 import netlifyIdentity from 'netlify-identity-widget';
+import { useUserStore } from '../stores/userStore';
+
 
 // @ts-ignore
 netlifyIdentity.on('init', user => console.log('init', user));
@@ -22,6 +24,10 @@ export function useNetlifyIdentity() {
         netlifyIdentity.on('open', user => callback(user));
     }
 
+    function onClose(callback: any) {
+        netlifyIdentity.on('close', () => callback);
+    }
+
     function onLogin(callback: any) {
         // @ts-ignore
         netlifyIdentity.on('login', user => callback(user));
@@ -30,6 +36,8 @@ export function useNetlifyIdentity() {
     function onLogout(callback: any) {
         // @ts-ignore
         netlifyIdentity.on('logout', callback);
+        const userStore = useUserStore()
+        userStore.logout()
     }
 
 
@@ -59,6 +67,7 @@ export function useNetlifyIdentity() {
         getUser,
         logout,
         onOpen,
+        onClose,
         onLogin,
         onLogout,
     }

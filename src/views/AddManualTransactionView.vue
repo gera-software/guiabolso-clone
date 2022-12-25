@@ -54,13 +54,13 @@ import { ref, watch, computed  } from 'vue'
 import AppBar from '@/components/AppBar.vue'
 import { onMounted } from 'vue';
 import { AccountSummaryDTO, AccountSyncType, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
 
-const store =  useUserStore()
+const userStore =  useUserStore()
 
 const accounts = ref<AccountSummaryDTO[]>([])
 
@@ -68,7 +68,7 @@ async function getMyAccounts(): Promise<AccountSummaryDTO[]> {
     console.log('get my accounts')
   return api.guiabolsoApi({
     method: 'get',
-    url: `/accounts-fetch?id=${store.user._id}`,
+    url: `/accounts-fetch?id=${userStore._id}`,
   }).then(function (response) {
     // console.log(response.data)
     accounts.value = response.data
@@ -157,7 +157,7 @@ async function handleSubmit() {
         comment: form.value.comment,
         ignored: form.value.ignored,
         accountId: form.value.accountId,
-        userId: store.user._id,
+        userId: userStore._id,
         _isDeleted: false,
     }
 

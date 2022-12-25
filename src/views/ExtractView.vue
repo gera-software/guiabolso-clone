@@ -1,7 +1,7 @@
 <template>
   <AppBar>
-    <select class="app-bar-select" v-model="store.monthFilter">
-      <option v-for="option in store.monthOptions" :value="option.value">
+    <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
+      <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
           {{ option.text }}
       </option>
     </select>
@@ -30,21 +30,24 @@ import { onMounted } from "vue";
 import SpendingsBarChart from "../components/SpendingsBarChart.vue";
 import TransactionList from "../components/TransactionList.vue";
 import { TransactionSummaryDTO, TransactionType } from "../config/types";
-import { useUserStore } from "../stores/store";
+import { useUserStore } from "../stores/userStore";
 import AppBar from '@/components/AppBar.vue'
 import FAB from "@/components/FAB.vue";
 import { useRouter } from 'vue-router';
+import { useMonthFilterStore } from '../stores/monthFilterStore';
 
 
 const router = useRouter()
 
 
-const store =  useUserStore()
+const userStore =  useUserStore()
+const monthFilterStore = useMonthFilterStore()
 
-store.$subscribe(async (mutation, state) => {
+
+monthFilterStore.$subscribe(async (mutation, state) => {
   console.log('changed state', state.monthFilter)
   const [ month, year ] = state.monthFilter.split('-')
-  const id = state.user._id;
+  const id = userStore._id
   await getTransactions(id, year, month)
 })
 
@@ -69,9 +72,9 @@ async function getTransactions(userId: String, year: String, month: String) {
 }
 
 onMounted(async () => {
-  console.log('changed state', store.monthFilter)
-  const [ month, year ] = store.monthFilter.split('-')
-  const id = store.user._id;
+  console.log('changed state', monthFilterStore.monthFilter)
+  const [ month, year ] = monthFilterStore.monthFilter.split('-')
+  const id = userStore._id;
   await getTransactions(id, year, month)
 })
 
@@ -84,8 +87,8 @@ const transactionTypeFilter = ref<TransactionFilter>('ALL')
 
 watch(transactionTypeFilter, async (newValue) => {
       console.log('changed state', newValue)
-      const [ month, year ] = store.monthFilter.split('-')
-      const id = store.user._id;
+      const [ month, year ] = monthFilterStore.monthFilter.split('-')
+      const id = userStore._id;
       await getTransactions(id, year, month)
 });
 

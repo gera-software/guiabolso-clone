@@ -1,7 +1,7 @@
 <template>
     <AppBar>
-        <select class="app-bar-select" v-model="store.monthFilter">
-        <option v-for="option in store.monthOptions" :value="option.value">
+        <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
+        <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
             Agenda de {{ option.text }}
         </option>
         </select>
@@ -20,21 +20,24 @@ import api from "../config/axios.js";
 import { onMounted } from "vue";
 
 import { useRouter } from 'vue-router';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 import AppBar from '@/components/AppBar.vue'
 import BillList from '@/components/BillList.vue'
 import { CalendarBill } from "../config/types";
 import FAB from "@/components/FAB.vue";
+import { useMonthFilterStore } from '../stores/monthFilterStore';
+
 
 
 const router = useRouter()
 
-const store =  useUserStore()
+const userStore =  useUserStore()
+const monthFilterStore = useMonthFilterStore()
 
-store.$subscribe(async (mutation, state) => {
+monthFilterStore.$subscribe(async (mutation, state) => {
   console.log('changed state', state.monthFilter)
   const [ month, year ] = state.monthFilter.split('-')
-  const id = state.user._id;
+  const id = userStore._id
   await getBills(id, year, month)
 })
 
@@ -60,9 +63,9 @@ async function getBills(userId: String, year: String, month: String) {
 }
 
 onMounted(async () => {
-  console.log('changed state', store.monthFilter)
-  const [ month, year ] = store.monthFilter.split('-')
-  const id = store.user._id;
+  console.log('changed state', monthFilterStore.monthFilter)
+  const [ month, year ] = monthFilterStore.monthFilter.split('-')
+  const id = userStore._id;
   await getBills(id, year, month)
 })
 

@@ -14,16 +14,19 @@
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 import api from "../config/axios.js";
+import { useMonthFilterStore } from '../stores/monthFilterStore';
 
 
-const store =  useUserStore()
+const userStore =  useUserStore()
+const monthFilterStore = useMonthFilterStore()
 
-store.$subscribe(async (mutation, state) => {
+
+monthFilterStore.$subscribe(async (mutation, state) => {
   console.log('changed state', state.monthFilter)
   const [ month, year ] = state.monthFilter.split('-')
-  const id = state.user._id;
+  const id = userStore._id
   await getData(id, year, month)
 })
 
@@ -49,9 +52,9 @@ async function getData(userId: String, year: String, month: String) {
 }
 
 onMounted(async () => {
-  console.log('changed state', store.monthFilter)
-  const [ month, year ] = store.monthFilter.split('-')
-  const id = store.user._id;
+  console.log('changed state', monthFilterStore.monthFilter)
+  const [ month, year ] = monthFilterStore.monthFilter.split('-')
+  const id = userStore._id;
   await getData(id, year, month)
 })
 

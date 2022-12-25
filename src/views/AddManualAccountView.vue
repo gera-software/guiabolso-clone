@@ -32,12 +32,12 @@
 import AppBar from '@/components/AppBar.vue'
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { ref } from 'vue';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 import { AccountDTO, AccountSyncType, CurrencyCodes } from '../config/types';
 import api from '../config/axios.js'
 import { useRouter } from 'vue-router';
 
-const store =  useUserStore()
+const userStore =  useUserStore()
 
 const router = useRouter()
 
@@ -71,7 +71,7 @@ async function handleSubmit() {
         type: form.value.type,
         initialBalance: form.value.amount,
         balance: form.value.amount,
-        userId: store.user._id,
+        userId: userStore._id,
         imageUrl: '/src/assets/ManualAccountIcon.svg',
         syncType: AccountSyncType.MANUAL,
         currencyCode: CurrencyCodes.BRL,
