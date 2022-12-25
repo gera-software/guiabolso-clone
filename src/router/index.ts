@@ -14,10 +14,10 @@ import PluggyConnectWidgetView from '../views/PluggyConnectWidgetView.vue'
 import ConnectAccountView from '../views/ConnectAccountView.vue'
 import AddManualAccountView from '../views/AddManualAccountView.vue'
 import LoginView from '../views/LoginView.vue'
-import { useNetlifyIdentity } from '../composables/useNetlifyIdentity.js'
+import { useUserStore } from '../stores/userStore'
 
 
-const { getUser } = useNetlifyIdentity()
+
 
 
 const router = createRouter({
@@ -104,8 +104,10 @@ const router = createRouter({
   ]
 })
 
+//TODO  checar se o usuario está atutenticado através da local store
 function isAuthenticated() {
-  return getUser()
+  const userStore = useUserStore()
+  return userStore._id
 }
 
 router.beforeEach((to, from) => {

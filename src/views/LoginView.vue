@@ -9,66 +9,26 @@
 </template>
 <script setup lang="ts">
 
-import { onMounted, ref } from 'vue';
-import { useNetlifyIdentity } from '../composables/useNetlifyIdentity'
 import { useUserStore } from '../stores/userStore';
-import { useRouter } from 'vue-router';
-import api from '../config/axios.js'
-import { User } from '../config/types';
 
 const userStore = useUserStore()
 
-const { onOpen, onLogin, openModal, closeModal, getUser } = useNetlifyIdentity()
-
-const router = useRouter()
-
-onOpen((user: any) => {
-  console.log('onOpen', user)
-})
-
-onLogin(async (user: any) => {
-  const { id: netlifyId, email, token, user_metadata } = user
-  console.log('onLogin', netlifyId, email, token, user_metadata)
-  await getUserByNetlifyId(user)
-  closeModal()
-  router.push({ name: 'dashboard' })
-})
-
 function openNetlifyModal() {
-  openModal()
+  userStore.openModal()
 
 }
 
-onMounted(async () => {
-  const u = getUser()
-  if(u) {
-    await getUserByNetlifyId(u)
-    if(userStore._id) {
-      router.push({ name: 'dashboard' })
-    }
-  }
-})
+// onMounted(async () => {
+//   const u = getUser()
+//   if(u) {
+//     await getUserByNetlifyId(u)
+//     if(userStore._id) {
+//       router.push({ name: 'dashboard' })
+//     }
+//   }
+// })
 
-const loading = ref(false)
 
-async function getUserByNetlifyId(u: any) {
-  loading.value = true
-  return api.guiabolsoApi({
-    method: 'get',
-    url: `/user-get-by-netlify-id?netlifyId=${u.id}`,
-  }).then(function (response) {
-    // user.value = response.data as User
-    userStore.login({
-      ...response.data,
-      token: u.token,
-    })
-    console.log('cade o usuario',userStore._id)
-    loading.value = false
-    return response.data
-  }).catch(function (error) {
-    console.log(error.response?.data);
-  })
-}
 
 </script>
 <style scoped>

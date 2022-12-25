@@ -1,5 +1,4 @@
 import netlifyIdentity from 'netlify-identity-widget';
-import { useUserStore } from '../stores/userStore';
 
 
 // @ts-ignore
@@ -33,11 +32,12 @@ export function useNetlifyIdentity() {
         netlifyIdentity.on('login', user => callback(user));
     }
 
+    // TODO tem um bug aqui! quando userStore faz logout
     function onLogout(callback: any) {
         // @ts-ignore
         netlifyIdentity.on('logout', callback);
-        const userStore = useUserStore()
-        userStore.logout()
+        // const userStore = useUserStore()
+        // userStore.logout()
     }
 
 
