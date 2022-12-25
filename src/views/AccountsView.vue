@@ -67,7 +67,7 @@ async function getMyAccounts(): Promise<AccountSummaryDTO[]> {
     console.log('get my accounts')
   return api.guiabolsoApi({
     method: 'get',
-    url: `/accounts-fetch?id=${userStore._id}`,
+    url: `/accounts-fetch?id=${userStore.user._id}`,
   }).then(function (response) {
     console.log(response.data)
     accounts.value = response.data
@@ -86,7 +86,7 @@ function requestSync() {
   console.log('requested sync')
   return api.guiabolsoApi({
     method: 'get',
-    url: `/connectors-update?userId=${userStore._id}`,
+    url: `/connectors-update?userId=${userStore.user._id}`,
   }).then(function (response) {
     console.log(response.data)
     return response.data

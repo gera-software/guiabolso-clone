@@ -111,7 +111,7 @@ async function handleSubmit() {
         type: form.value.type as BillType,
         status: form.value.status as BillStatus,
         _isDeleted: false,
-        userId: userStore._id
+        userId: userStore.user._id
     }
     await save(payload)
     loading.value = false

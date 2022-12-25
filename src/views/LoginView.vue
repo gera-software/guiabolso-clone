@@ -18,7 +18,7 @@ const userStore = useUserStore()
 
 userStore.$subscribe((mutation, state) => {
   console.log('MUTATED STATE', state)
-  if(state._id) {
+  if(state.user._id) {
     router.push({ name: 'dashboard'})
   }
 })
@@ -32,7 +32,7 @@ function openNetlifyModal() {
 //   const u = getUser()
 //   if(u) {
 //     await getUserByNetlifyId(u)
-//     if(userStore._id) {
+//     if(userStore.user._id) {
 //       router.push({ name: 'dashboard' })
 //     }
 //   }

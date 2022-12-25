@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNetlifyIdentity } from '../composables/useNetlifyIdentity'
 import api from '../config/axios.js'
+import { useLocalStorage } from '@vueuse/core'
 
 
 type authInfo = {
@@ -31,34 +32,36 @@ export const useUserStore = defineStore('user', () => {
     })
 
     // user: { _id: import.meta.env.VITE_DEFAULT_USER_ID },
-    // user: {} as authInfo,
-    const _id = ref('')
-    const email = ref('')
-    const name = ref('')
-    const netlifyId = ref('')
-    const token = ref({
-        access_token: '',
-        expires_at: 0,
-        expires_in: 0,
-        refresh_token: '',
-        token_type: '',
-    })
-   
- 
-    function logout() {
-        console.log('porque ta fazendo logout aqui??????')
-        netlifyLogout()
-        _id.value = ''
-        email.value = ''
-        name.value = ''
-        netlifyId.value = ''
-        token.value = {
+    const user = useLocalStorage('pinia/auth', {
+        _id: '',
+        email: '',
+        name: '',
+        netlifyId: '',
+        token: {
             access_token: '',
             expires_at: 0,
             expires_in: 0,
             refresh_token: '',
             token_type: '',
         }
+    })
+
+    function logout() {
+        console.log('porque ta fazendo logout aqui??????')
+        user.value = {
+            _id: '',
+            email: '',
+            name: '',
+            netlifyId: '',
+            token: {
+                access_token: '',
+                expires_at: 0,
+                expires_in: 0,
+                refresh_token: '',
+                token_type: '',
+            }
+        }
+        netlifyLogout()
     }
 
     onLogin(async (user: any) => {
@@ -67,7 +70,6 @@ export const useUserStore = defineStore('user', () => {
         const authInfo = await getUserByNetlifyId(user)
         setUser(authInfo)
         closeModal()
-        // router.push({ name: 'dashboard' })
     })
 
     async function getUserByNetlifyId(u: any) {
@@ -85,22 +87,13 @@ export const useUserStore = defineStore('user', () => {
     }
     
     function setUser(u: authInfo) {
+        user.value = u
         console.log('SET USER', u)
-        _id.value = u._id
-        email.value = u.email
-        name.value = u.name
-        netlifyId.value = u.netlifyId
-        token.value = u.token
-        console.log('ta fazendo login ou não?', _id)
     }
 
         
     return {
-        _id,
-        email,
-        name,
-        netlifyId,
-        token,
+        user,
         logout,
         openModal,
     }

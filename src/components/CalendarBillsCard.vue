@@ -26,7 +26,7 @@ const monthFilterStore = useMonthFilterStore()
 monthFilterStore.$subscribe(async (mutation, state) => {
   console.log('changed state', state.monthFilter)
   const [ month, year ] = state.monthFilter.split('-')
-  const id = userStore._id
+  const id = userStore.user._id
   await getBills(id, year, month)
 })
 
@@ -52,7 +52,7 @@ async function getBills(userId: String, year: String, month: String) {
 onMounted(async () => {
   console.log('changed state', monthFilterStore.monthFilter)
   const [ month, year ] = monthFilterStore.monthFilter.split('-')
-  const id = userStore._id;
+  const id = userStore.user._id;
   await getBills(id, year, month)
 })
 

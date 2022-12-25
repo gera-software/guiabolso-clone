@@ -107,7 +107,7 @@ const router = createRouter({
 //TODO  checar se o usuario está atutenticado através da local store
 function isAuthenticated() {
   const userStore = useUserStore()
-  return userStore._id
+  return userStore.user._id
 }
 
 router.beforeEach((to, from) => {
