@@ -1,5 +1,5 @@
 <template>
-    <AppBar>
+    <AppBar hideBackButton="true">
         <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
         <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
             {{ option.text }}
@@ -7,9 +7,7 @@
         </select>
     </AppBar>
     <div class="container">
-        <div class="totalBalance">
-            <router-link :to="{ name: 'accounts'}">Ir para contas e cartões</router-link>
-        </div>
+        <MonthlyBalance></MonthlyBalance>
         <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
         <MonthPlanningCard></MonthPlanningCard>
         <LastTransactionsCard></LastTransactionsCard>
@@ -25,6 +23,7 @@ import HighestMonthlySpendingCard from '@/components/HighestMonthlySpendingCard.
 import MonthPlanningCard from '@/components/MonthPlanningCard.vue'
 import LastTransactionsCard from '@/components/LastTransactionsCard.vue'
 import CalendarBillsCard from '@/components/CalendarBillsCard.vue'
+import MonthlyBalance from '@/components/MonthlyBalance.vue'
 import { useRouter } from 'vue-router';
 import { useMonthFilterStore } from '../stores/monthFilterStore';
 
@@ -33,6 +32,7 @@ const router = useRouter()
 
 const userStore =  useUserStore()
 
+// logout button
 userStore.$subscribe((mutation, state) => {
   console.log('MUTATED STATE', state)
   if(!state.user._id) {
@@ -59,8 +59,12 @@ function handleLogout() {
     background-color: white;
 }
 
+.app-bar-select * {
+    color: #404040;
+}
+
 .container {
-    padding-top: 60px;
+    padding-top: 57px;
     padding-bottom: 80px;
 }
 
@@ -121,10 +125,6 @@ function handleLogout() {
     background-color: #D9D9D9;
     border-radius: 100%;
     flex-shrink: 0;
-}
-
-.totalBalance {
-    margin: 20px;
 }
 
 .button {
