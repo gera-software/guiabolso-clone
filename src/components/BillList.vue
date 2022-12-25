@@ -10,6 +10,7 @@
         </div>
         <CalendarSummary :bill="bill"></CalendarSummary>
       </div>
+      <div v-if="bills.length == 0">Ainda não há contas na agenda</div>
 
     </div>
 </template>

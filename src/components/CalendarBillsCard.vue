@@ -7,24 +7,25 @@
             </router-link>
           </div>
         <div class="card-body">
-          <span v-if="(bills.length == 0)">Sua agenda está vazia</span>
           <BillList :bills="bills"/>
         </div>
     </div>
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
+import { useMonthFilterStore } from '../stores/monthFilterStore';
 import api from "../config/axios.js";
 import { BillStatus, BillType, CalendarBill } from '../config/types';
 import BillList from './BillList.vue';
 
-const store =  useUserStore()
+const userStore =  useUserStore()
+const monthFilterStore = useMonthFilterStore()
 
-store.$subscribe(async (mutation, state) => {
+monthFilterStore.$subscribe(async (mutation, state) => {
   console.log('changed state', state.monthFilter)
   const [ month, year ] = state.monthFilter.split('-')
-  const id = state.userId;
+  const id = userStore.user._id
   await getBills(id, year, month)
 })
 
@@ -48,9 +49,9 @@ async function getBills(userId: String, year: String, month: String) {
 }
 
 onMounted(async () => {
-  console.log('changed state', store.monthFilter)
-  const [ month, year ] = store.monthFilter.split('-')
-  const id = store.userId;
+  console.log('changed state', monthFilterStore.monthFilter)
+  const [ month, year ] = monthFilterStore.monthFilter.split('-')
+  const id = userStore.user._id;
   await getBills(id, year, month)
 })
 

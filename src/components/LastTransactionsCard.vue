@@ -14,17 +14,20 @@
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 import api from "../config/axios.js";
 import TransactionSummary from '@/components/TransactionSummary.vue'
 import { Category, CurrencyCodes, TransactionStatus, TransactionSummaryDTO, TransactionType, AccountData, AccountType } from '../config/types';
+import { useMonthFilterStore } from '../stores/monthFilterStore';
 
-const store =  useUserStore()
+const userStore =  useUserStore()
+const monthFilterStore = useMonthFilterStore()
 
-store.$subscribe(async (mutation, state) => {
+
+monthFilterStore.$subscribe(async (mutation, state) => {
   console.log('changed state', state.monthFilter)
   const [ month, year ] = state.monthFilter.split('-')
-  const id = state.userId;
+  const id = userStore.user._id
   await getTransactions(id, year, month)
 })
 
@@ -48,9 +51,9 @@ async function getTransactions(userId: String, year: String, month: String) {
 }
 
 onMounted(async () => {
-  console.log('changed state', store.monthFilter)
-  const [ month, year ] = store.monthFilter.split('-')
-  const id = store.userId;
+  console.log('changed state', monthFilterStore.monthFilter)
+  const [ month, year ] = monthFilterStore.monthFilter.split('-')
+  const id = userStore.user._id;
   await getTransactions(id, year, month)
 })
 

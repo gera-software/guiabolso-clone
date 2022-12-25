@@ -15,7 +15,8 @@
 <script setup lang="ts">
 import api from "../config/axios.js";
 import { ref, onMounted, watch } from 'vue';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
+import { useMonthFilterStore } from '../stores/monthFilterStore';
 
 const props = defineProps({
     transactionType: String
@@ -27,17 +28,18 @@ watch(() => props.transactionType, async (newValue) => {
         newValue
       );
 
-    const [ month, year ] = store.monthFilter.split('-')
-    const id = store.userId;
+    const [ month, year ] = monthFilterStore.monthFilter.split('-')
+    const id = userStore.user._id;
     await getBarChartData(id, year, month, props.transactionType)
 });
 
-const store =  useUserStore()
+const userStore =  useUserStore()
+const monthFilterStore = useMonthFilterStore()
 
-store.$subscribe(async (mutation, state) => {
+monthFilterStore.$subscribe(async (mutation, state) => {
   console.log('changed state', state.monthFilter)
   const [ month, year ] = state.monthFilter.split('-')
-  const id = state.userId;
+  const id = userStore.user._id
   await getBarChartData(id, year, month, props.transactionType)
 })
 
@@ -71,9 +73,9 @@ async function getBarChartData(userId: String, year: String, month: String, tran
 }
 
 onMounted(async () => {
-  console.log('changed state', store.monthFilter)
-  const [ month, year ] = store.monthFilter.split('-')
-  const id = store.userId;
+  console.log('changed state', monthFilterStore.monthFilter)
+  const [ month, year ] = monthFilterStore.monthFilter.split('-')
+  const id = userStore.user._id;
   await getBarChartData(id, year, month, props.transactionType)
 })
 

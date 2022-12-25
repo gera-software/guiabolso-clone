@@ -44,11 +44,11 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { BillStatus, BillType, CalendarBill } from '../config/types';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 
 const router = useRouter()
 
-const store =  useUserStore()
+const userStore =  useUserStore()
 
 const types = [ 
     {
@@ -111,7 +111,7 @@ async function handleSubmit() {
         type: form.value.type as BillType,
         status: form.value.status as BillStatus,
         _isDeleted: false,
-        userId: store.userId
+        userId: userStore.user._id
     }
     await save(payload)
     loading.value = false

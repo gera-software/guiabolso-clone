@@ -13,6 +13,12 @@ import BillView from '../views/BillView.vue'
 import PluggyConnectWidgetView from '../views/PluggyConnectWidgetView.vue'
 import ConnectAccountView from '../views/ConnectAccountView.vue'
 import AddManualAccountView from '../views/AddManualAccountView.vue'
+import LoginView from '../views/LoginView.vue'
+import { useUserStore } from '../stores/userStore'
+
+
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +33,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'login',
+      component: LoginView,
+    },
+    {
+      path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
     },
@@ -91,6 +102,23 @@ const router = createRouter({
       component: PluggyConnectWidgetView, // @deprecated
     },
   ]
+})
+
+//TODO  checar se o usuario está atutenticado através da local store
+function isAuthenticated() {
+  const userStore = useUserStore()
+  return userStore.user._id
+}
+
+router.beforeEach((to, from) => {
+  // ...
+  // explicitly return false to cancel the navigation
+
+  // return false
+    console.log(to.name, isAuthenticated())
+  if(!isAuthenticated() && to.name !== 'login') {
+    return { name: 'login' }
+  }
 })
 
 export default router

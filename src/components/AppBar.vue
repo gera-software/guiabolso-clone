@@ -1,7 +1,7 @@
 <template>
   <div class="app-bar">
     <div class="container">
-      <BackButton/>
+        <BackButton v-if="!hideBackButton"/>
       <div class="content">
           <slot>
               <h1>{{title}}</h1>
@@ -19,6 +19,7 @@ import BackButton from '@/components/BackButton.vue'
 
 defineProps<{
     title?: String
+    hideBackButton?: Boolean
 }>()
 </script>
 
@@ -37,6 +38,10 @@ defineProps<{
   z-index: 2;
 }
 
+.app-bar .back-icon {
+  margin-right: 40px;
+}
+
 .app-bar .container {
   display: flex;
   justify-content: flex-start;
@@ -45,7 +50,6 @@ defineProps<{
 }
 
 .app-bar .content {
-    margin-left: 40px;
     display: flex;
 }
 

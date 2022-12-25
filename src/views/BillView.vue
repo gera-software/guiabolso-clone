@@ -46,10 +46,10 @@ import AppBar from '@/components/AppBar.vue'
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { BillStatus, BillType, CalendarBill } from '../config/types';
 import { onMounted, ref } from 'vue';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 import { useRoute, useRouter } from 'vue-router';
 
-const store =  useUserStore()
+const userStore =  useUserStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -151,7 +151,7 @@ async function handleSubmit() {
         // type: form.value.type as BillType,
         status: form.value.status as BillStatus,
         // _isDeleted: false,
-        // userId: store.userId
+        // userId: store.user._id
     }
 
     console.log(payload)

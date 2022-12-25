@@ -1,30 +1,51 @@
 <template>
-    <AppBar>
-        <select class="app-bar-select" v-model="store.monthFilter">
-        <option v-for="option in store.monthOptions" :value="option.value">
+    <AppBar hideBackButton="true">
+        <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
+        <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
             {{ option.text }}
         </option>
         </select>
     </AppBar>
     <div class="container">
-        <div class="totalBalance">
-            <router-link :to="{ name: 'accounts'}">Ir para contas e cartões</router-link>
-        </div>
+        <MonthlyBalance></MonthlyBalance>
         <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
         <MonthPlanningCard></MonthPlanningCard>
         <LastTransactionsCard></LastTransactionsCard>
         <CalendarBillsCard></CalendarBillsCard>
+
+        <button class="button button-outline" @click="handleLogout">Logout</button>
     </div>
 </template>
 <script setup lang="ts">
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 import AppBar from '@/components/AppBar.vue'
 import HighestMonthlySpendingCard from '@/components/HighestMonthlySpendingCard.vue'
 import MonthPlanningCard from '@/components/MonthPlanningCard.vue'
 import LastTransactionsCard from '@/components/LastTransactionsCard.vue'
 import CalendarBillsCard from '@/components/CalendarBillsCard.vue'
+import MonthlyBalance from '@/components/MonthlyBalance.vue'
+import { useRouter } from 'vue-router';
+import { useMonthFilterStore } from '../stores/monthFilterStore';
 
-const store =  useUserStore()
+
+const router = useRouter()
+
+const userStore =  useUserStore()
+
+// logout button
+userStore.$subscribe((mutation, state) => {
+  console.log('MUTATED STATE', state)
+  if(!state.user._id) {
+    router.push({ name: 'login'})
+  }
+})
+
+const monthFilterStore = useMonthFilterStore()
+
+
+function handleLogout() {
+    userStore.logout()
+}
 
 </script>
 
@@ -38,8 +59,12 @@ const store =  useUserStore()
     background-color: white;
 }
 
+.app-bar-select * {
+    color: #404040;
+}
+
 .container {
-    padding-top: 60px;
+    padding-top: 57px;
     padding-bottom: 80px;
 }
 
@@ -102,9 +127,20 @@ const store =  useUserStore()
     flex-shrink: 0;
 }
 
-.totalBalance {
-    margin: 20px;
+.button {
+    background-color: #F9386A;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Open Sans';
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 16px;
 }
 
-
+.button.button-outline {
+  background-color: transparent;
+  color: #F9386A;
+}
 </style>

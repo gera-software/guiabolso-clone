@@ -46,7 +46,7 @@ import api from '../config/axios.js'
 import { onMounted } from 'vue'
 import { groupBy } from 'lodash'
 import { AccountSummaryDTO } from '../config/types';
-import { useUserStore } from '../stores/store';
+import { useUserStore } from '../stores/userStore';
 import AccountSummary from '@/components/AccountSummary.vue';
 import AppBar from '@/components/AppBar.vue'
 import FAB from "@/components/FAB.vue";
@@ -55,7 +55,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 
 
-const store =  useUserStore()
+const userStore =  useUserStore()
 
 const accounts = ref<AccountSummaryDTO[]>([])
 
@@ -67,7 +67,7 @@ async function getMyAccounts(): Promise<AccountSummaryDTO[]> {
     console.log('get my accounts')
   return api.guiabolsoApi({
     method: 'get',
-    url: `/accounts-fetch?id=${store.userId}`,
+    url: `/accounts-fetch?id=${userStore.user._id}`,
   }).then(function (response) {
     console.log(response.data)
     accounts.value = response.data
@@ -86,7 +86,7 @@ function requestSync() {
   console.log('requested sync')
   return api.guiabolsoApi({
     method: 'get',
-    url: `/connectors-update?userId=${store.userId}`,
+    url: `/connectors-update?userId=${userStore.user._id}`,
   }).then(function (response) {
     console.log(response.data)
     return response.data
