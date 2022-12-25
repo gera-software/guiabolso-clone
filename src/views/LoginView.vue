@@ -4,7 +4,6 @@
   </div>
   <div class="container">
     <button class="button" @click="openNetlifyModal">Começar</button>
-    <router-link :to="{ name: 'dashboard'}">dashboard</router-link>
   </div>
 </template>
 <script setup lang="ts">

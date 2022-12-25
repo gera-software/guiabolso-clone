@@ -7,7 +7,6 @@
             </router-link>
           </div>
         <div class="card-body">
-          <span v-if="(bills.length == 0)">Sua agenda está vazia</span>
           <BillList :bills="bills"/>
         </div>
     </div>

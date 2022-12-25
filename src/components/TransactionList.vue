@@ -11,6 +11,7 @@
 
           <TransactionSummary :transaction="transaction"></TransactionSummary>
         </div>
+        <div v-if="transactions.length == 0">Ainda não há transações</div>
 
       </div>
 </template>

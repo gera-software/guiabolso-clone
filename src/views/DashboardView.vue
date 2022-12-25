@@ -10,11 +10,10 @@
         <div class="totalBalance">
             <router-link :to="{ name: 'accounts'}">Ir para contas e cartões</router-link>
         </div>
-        {{ userStore.$state }}
-        <!-- <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
+        <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
         <MonthPlanningCard></MonthPlanningCard>
         <LastTransactionsCard></LastTransactionsCard>
-        <CalendarBillsCard></CalendarBillsCard> -->
+        <CalendarBillsCard></CalendarBillsCard>
 
         <button class="button button-outline" @click="handleLogout">Logout</button>
     </div>
