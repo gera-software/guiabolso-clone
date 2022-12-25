@@ -142,3 +142,21 @@ export async function subtractFromBalance(accountId: string, amount: number = 0)
 
     return doc;
 }
+
+type Balance = {
+    balance: number
+}
+
+export async function fetchUserBalance(id): Promise<Balance[]> {
+    await connect();
+    const result = await AccountModel.aggregate([
+        { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true } } },
+        { $group: { 
+            _id: '$type',
+            total: { $sum: '$balance'}
+            } 
+        },
+    ])
+    await disconnect();
+    return result;
+}

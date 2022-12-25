@@ -5,11 +5,11 @@ const currentDate = new Date()
 const year = currentDate.getFullYear()
 const month = currentDate.getMonth() + 1
 
-const selectedMonth = `${month.toString().padStart(2, '0')}-${year}`
+const currentMonth = `${month.toString().padStart(2, '0')}-${year}`
 
 export const useMonthFilterStore = defineStore('monthFilter', () => {
 
-        const monthFilter = ref(selectedMonth)
+        const monthFilter = ref(currentMonth)
 
         const monthOptions = [
             { text: "Dezembro/22", value: "12-2022" },
@@ -65,9 +65,14 @@ export const useMonthFilterStore = defineStore('monthFilter', () => {
             { text: "Janeiro/19", value: "01-2019" },
         ]
 
+        function isCurrentMonthSelected() {
+           return monthFilter.value === currentMonth
+        }
+
         return {
             monthFilter,
             monthOptions,
+            isCurrentMonthSelected,
         }
   
 })

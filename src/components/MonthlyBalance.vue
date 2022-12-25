@@ -1,24 +1,23 @@
 <template>
-    <div class="monthlyBalance">
+    <div class="monthlyBalance" v-if="monthFilterStore.isCurrentMonthSelected()">
         <div class="container">
             <h2>Contas e cartões</h2>
-
             <div class="flex">
                 <div class="row">
                     <div class="col1">Saldo das contas</div>
-                    <div class="col2">R$ 2,00</div>
+                    <div class="col2">R$ {{ (bankBalance / 100).toFixed(2) }}</div>
                 </div>
                 <div class="row">
                     <div class="col1">Fatura dos cartões</div>
-                    <div class="col2">R$ -353453452,00</div>
+                    <div class="col2">R$ {{ (creditCardBalance / 100).toFixed(2) }}</div>
                 </div>
                 <div class="row">
                     <div class="col1">Dinheiro</div>
-                    <div class="col2">R$ 2345345345345345,00</div>
+                    <div class="col2">R$ {{ (walletBalance / 100).toFixed(2) }}</div>
                 </div>
                 <div class="row">
                     <div class="col1">Total</div>
-                    <div class="col2">R$ 243534535345345,00</div>
+                    <div class="col2">R$ {{ (totalBalance / 100).toFixed(2) }}</div>
                 </div>
             </div>
             <router-link class="accounts-link" :to="{ name: 'accounts'}">Ir para contas e cartões</router-link>
@@ -26,6 +25,65 @@
     </div>
 </template>
 <script setup lang="ts">
+import api from "../config/axios.js";
+import { useUserStore } from '../stores/userStore';
+import { useMonthFilterStore } from '../stores/monthFilterStore';
+import { ref, computed, onMounted } from "vue";
+
+const userStore =  useUserStore()
+
+const monthFilterStore = useMonthFilterStore()
+
+// TODO só deve exibir o balanco do mes atual!
+monthFilterStore.$subscribe(async (mutation, state) => {
+  console.log('changed state', state.monthFilter)
+  const [ month, year ] = state.monthFilter.split('-')
+  const id = userStore.user._id
+  await getUserBalance(id)
+})
+
+const data = ref<{
+  _id: string,
+  total: number,
+}[]>([])
+
+
+
+async function getUserBalance(userId: String) {
+  data.value = await api.guiabolsoApi({
+    method: 'get',
+    url: `/user-balance?id=${userId}`,
+  }).then(function (response) {
+    console.log(response.data)
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+onMounted(async () => {
+  console.log('changed state', monthFilterStore.monthFilter)
+  const [ month, year ] = monthFilterStore.monthFilter.split('-')
+  const id = userStore.user._id;
+  await getUserBalance(id)
+})
+
+
+const walletBalance = computed(() => {
+    return data.value.find(el => el._id === 'WALLET')?.total ?? 0
+})
+
+const bankBalance = computed(() => {
+    return data.value.find(el => el._id === 'BANK')?.total ?? 0
+})
+
+const creditCardBalance = computed(() => {
+    return data.value.find(el => el._id === 'CREDIT_CARD')?.total ?? 0
+})
+
+const totalBalance = computed(() => {
+    return walletBalance.value + bankBalance.value + creditCardBalance.value;
+})
 
 
 </script>
