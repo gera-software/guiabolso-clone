@@ -4,6 +4,12 @@ import vue from '@vitejs/plugin-vue'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 import { VitePWA } from 'vite-plugin-pwa'
 
+import fs from 'fs'
+
+const packageJson = fs.readFileSync('./package.json')
+// @ts-ignore
+const version = JSON.parse(packageJson).version || 0
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -53,4 +59,7 @@ export default defineConfig({
       },
     },
   },
+  define: {
+    '__APP_VERSION__': '"' + version + '"'
+  }
 })

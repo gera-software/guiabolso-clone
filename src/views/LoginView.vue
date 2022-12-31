@@ -4,6 +4,7 @@
   </div>
   <div class="container">
     <button class="button" @click="openNetlifyModal">Começar</button>
+    app version {{ version }}
   </div>
 </template>
 <script setup lang="ts">
@@ -14,6 +15,9 @@ import { useUserStore } from '../stores/userStore';
 const router = useRouter()
 
 const userStore = useUserStore()
+
+// @ts-ignore
+const version: string = __APP_VERSION__;
 
 userStore.$subscribe((mutation, state) => {
   console.log('MUTATED STATE', state)

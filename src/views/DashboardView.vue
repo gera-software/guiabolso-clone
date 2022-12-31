@@ -14,6 +14,7 @@
         <CalendarBillsCard></CalendarBillsCard>
 
         <button class="button button-outline" @click="handleLogout">Logout</button>
+        v{{ version }}
     </div>
 </template>
 <script setup lang="ts">
@@ -26,7 +27,6 @@ import CalendarBillsCard from '@/components/CalendarBillsCard.vue'
 import MonthlyBalance from '@/components/MonthlyBalance.vue'
 import { useRouter } from 'vue-router';
 import { useMonthFilterStore } from '../stores/monthFilterStore';
-
 
 const router = useRouter()
 
@@ -46,6 +46,9 @@ const monthFilterStore = useMonthFilterStore()
 function handleLogout() {
     userStore.logout()
 }
+
+// @ts-ignore
+const version: string = __APP_VERSION__;
 
 </script>
 
