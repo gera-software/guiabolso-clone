@@ -21,7 +21,10 @@ export default defineConfig({
         name: 'Guiabolso Clone',
         short_name: 'Guiabolso',
         description: 'Clone do App Guiabolso porque o original foi descontinuado',
-        theme_color: '#ff0000',
+        theme_color: "#250048",
+        background_color: "#250048",
+        display: "standalone",
+        orientation: "portrait",
         icons: [
           {
             src: 'android-chrome-192x192.png',
