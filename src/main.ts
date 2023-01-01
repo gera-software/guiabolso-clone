@@ -43,7 +43,9 @@ import BankPostingsCreditCardIcon from '@/components/icons/BankPostingsCreditCar
 import BankPostingsRescueIcon from '@/components/icons/BankPostingsRescueIcon.vue'
 import BankPostingsTransferIcon from '@/components/icons/BankPostingsTransferIcon.vue'
 import UncategorizedIcon from '@/components/icons/UncategorizedIcon.vue'
-
+import { registerSW } from "virtual:pwa-register";
+import Toastify from 'toastify-js'
+import "toastify-js/src/toastify.css"
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -120,3 +122,35 @@ app.component('BankPostingsTransferIcon', BankPostingsTransferIcon)
 app.component('UncategorizedIcon', UncategorizedIcon)
 
 app.mount('#app')
+
+
+
+// if ("serviceWorker" in navigator && !/localhost/.test(window.location)) {
+//   registerSW();
+// }
+
+// if ('serviceWorker' in navigator) {
+//     navigator.serviceWorker.register(
+//       import.meta.env.MODE === 'production' ? '/sw.js' : '/dev-sw.js?dev-sw',
+//       { type: import.meta.env.MODE === 'production' ? 'classic' : 'module' }
+//     )
+//   }
+
+if ("serviceWorker" in navigator) {
+    // && !/localhost/.test(window.location) && !/lvh.me/.test(window.location)) {
+    const updateSW = registerSW({
+      onNeedRefresh() {
+        Toastify({
+          duration: -1,
+          text: `<h4 style='display: inline'>Nova atualização disponível!</h4>
+                 <br><br>
+                 <a class='do-sw-update'>Click to update and reload</a>  `,
+          escapeMarkup: false,
+          gravity: "bottom",
+          onClick() {
+            updateSW(true);
+          }
+        }).showToast();
+      }
+    });
+  }
