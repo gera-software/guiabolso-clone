@@ -151,6 +151,19 @@ if ("serviceWorker" in navigator) {
             updateSW(true);
           }
         }).showToast();
-      }
+      },
+      onOfflineReady() {
+        Toastify({
+            duration: -1,
+            text: `<h4 style='display: inline'>Seu dispositivo parece que está offline?</h4>
+                   <br><br>
+                   <a class='do-sw-update'>Click to update and reload</a>  `,
+            escapeMarkup: false,
+            gravity: "bottom",
+            onClick() {
+              window.alert('parece que sim')
+            }
+          }).showToast();
+      },
     });
   }

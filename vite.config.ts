@@ -35,15 +35,24 @@ export default defineConfig({
             src: 'android-chrome-512x512.png',
             sizes: '512x512',
             type: 'image/png'
-          }
+          },
+          // {
+          //   src: 'android-chrome-512x512.png',
+          //   sizes: '512x512',
+          //   type: 'image/png',
+          //   purpose: 'any maskable'
+          // }
         ]
       },
       strategies: 'injectManifest',
       srcDir: 'src',
       filename: 'sw.ts',
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+      },
       // registerType: 'autoUpdate',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+        // globPatterns: ['**/*.{js,css,html,ico,png,svg}']
       },
       devOptions: {
         enabled: true,
