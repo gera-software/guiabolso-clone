@@ -104,10 +104,10 @@ const router = createRouter({
   ]
 })
 
-//TODO  checar se o usuario está atutenticado através da local store
+//TODO  checar se o usuario está atutenticado e o token é ainda é válido
 function isAuthenticated() {
   const userStore = useUserStore()
-  return userStore.user._id
+  return userStore.tokenIsValid()
 }
 
 router.beforeEach((to, from) => {

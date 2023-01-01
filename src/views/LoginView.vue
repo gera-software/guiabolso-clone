@@ -8,7 +8,7 @@
   </div>
 </template>
 <script setup lang="ts">
-
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 
@@ -31,15 +31,11 @@ function openNetlifyModal() {
 
 }
 
-// onMounted(async () => {
-//   const u = getUser()
-//   if(u) {
-//     await getUserByNetlifyId(u)
-//     if(userStore.user._id) {
-//       router.push({ name: 'dashboard' })
-//     }
-//   }
-// })
+onMounted(async () => {
+  if(userStore.tokenIsValid()) {
+      router.push({ name: 'dashboard' })
+  }
+})
 
 
 
@@ -72,6 +68,7 @@ function openNetlifyModal() {
     font-weight: 600;
     text-align: center;
     padding: 12px 16px;
+    cursor: pointer;
 }
 
 .button.button-outline {

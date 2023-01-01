@@ -12,6 +12,19 @@ export const useMonthFilterStore = defineStore('monthFilter', () => {
         const monthFilter = ref(currentMonth)
 
         const monthOptions = [
+            { text: "Dezembro/23", value: "12-2023" },
+            { text: "Novembro/23", value: "11-2023" },
+            { text: "Outubro/23", value: "10-2023" },
+            { text: "Setembro/23", value: "09-2023" },
+            { text: "Agosto/23", value: "08-2023" },
+            { text: "Julho/23", value: "07-2023" },
+            { text: "Junho/23", value: "06-2023" },
+            { text: "Maio/23", value: "05-2023" },
+            { text: "Abril/23", value: "04-2023" },
+            { text: "Março/23", value: "03-2023" },
+            { text: "Fevereiro/23", value: "02-2023" },
+            { text: "Janeiro/23", value: "01-2023" },
+
             { text: "Dezembro/22", value: "12-2022" },
             { text: "Novembro/22", value: "11-2022" },
             { text: "Outubro/22", value: "10-2022" },
