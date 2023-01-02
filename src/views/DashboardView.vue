@@ -14,7 +14,7 @@
         <CalendarBillsCard></CalendarBillsCard>
 
         <button class="button button-outline" @click="handleLogout">Logout</button>
-        v{{ version }} automatic reload desativado
+        v{{ version }}
     </div>
 </template>
 <script setup lang="ts">

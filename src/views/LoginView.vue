@@ -4,7 +4,7 @@
   </div>
   <div class="container">
     <button class="button" @click="openNetlifyModal">Começar</button>
-    app version {{ version }}
+    v{{ version }}
   </div>
 </template>
 <script setup lang="ts">
