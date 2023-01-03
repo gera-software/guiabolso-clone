@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-    <div class="card card--skeleton" >
+    <div class="card card--skeleton" v-if="isLoading">
         <div class="card-header">
             <div class="h2"></div>
         </div>
