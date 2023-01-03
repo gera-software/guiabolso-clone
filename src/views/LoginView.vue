@@ -1,10 +1,12 @@
 <template>
-  <div class="hero">
-
-  </div>
-  <div class="container">
-    <button class="button" @click="openNetlifyModal">Começar</button>
-    v{{ version }}
+  <div class="page">
+    <div class="hero">
+  
+    </div>
+    <div class="container">
+      <button class="button" @click="openNetlifyModal">Começar</button>
+      v{{ version }}
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -41,21 +43,31 @@ onMounted(async () => {
 
 </script>
 <style scoped>
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 .hero {
   background-image: url('@/assets/LoginCover.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  width: 100vw;
-  height: 80vh;
+  width: 100dvw;
+  /* height: 80%; */
   background-color: #250048;
+  flex-basis: 80%;
 }
 
 .container {
+  background-color: red;
   display: flex;
   gap: 10px;
   flex-direction: column;
   padding: 30px;
+  flex-basis: 20%;
+  /* min-height: 30%; */
 }
 
 .button {

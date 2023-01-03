@@ -1,20 +1,22 @@
 <template>
-    <AppBar hideBackButton="true">
-        <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
-        <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
-            {{ option.text }}
-        </option>
-        </select>
-    </AppBar>
-    <div class="container">
-        <MonthlyBalance></MonthlyBalance>
-        <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
-        <MonthPlanningCard></MonthPlanningCard>
-        <LastTransactionsCard></LastTransactionsCard>
-        <CalendarBillsCard></CalendarBillsCard>
-
-        <button class="button button-outline" @click="handleLogout">Logout</button>
-        v{{ version }}
+    <div class="page">
+        <AppBar hideBackButton="true">
+            <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
+            <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
+                {{ option.text }}
+            </option>
+            </select>
+        </AppBar>
+        <div class="container">
+            <MonthlyBalance></MonthlyBalance>
+            <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
+            <MonthPlanningCard></MonthPlanningCard>
+            <LastTransactionsCard></LastTransactionsCard>
+            <CalendarBillsCard></CalendarBillsCard>
+    
+            <button class="button button-outline" @click="handleLogout">Logout</button>
+            v{{ version }}
+        </div>
     </div>
 </template>
 <script setup lang="ts">

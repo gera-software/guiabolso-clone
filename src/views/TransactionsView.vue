@@ -1,4 +1,5 @@
 <template>
+  <div class="page">
     <input v-model="monthFilter" type="month">
 
     <!-- <CategoryIcon icon="IncomeBonusIcon" color="red"/>
@@ -63,6 +64,7 @@
         </div>
       </div>
     </div>
+  </div>
 
 </template>
 

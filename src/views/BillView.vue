@@ -1,4 +1,5 @@
 <template>
+  <div class="page">
     <AppBar title="Detalhes da cobrança" />
     <div class="container" v-if="!loading">
         <form @submit.prevent="handleSubmit">
@@ -38,6 +39,7 @@
             </div>
         </form>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">

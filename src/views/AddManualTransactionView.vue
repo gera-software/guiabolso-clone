@@ -1,4 +1,5 @@
 <template>
+  <div class="page">
     <AppBar title="Nova transação manual" />
     <div class="container">
         <form @submit.prevent="handleSubmit">
@@ -46,6 +47,7 @@
             </div>
         </form>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">

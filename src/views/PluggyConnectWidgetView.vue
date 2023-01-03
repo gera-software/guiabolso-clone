@@ -1,42 +1,44 @@
 <template>
-    <!-- <component is="script" src="https://cdn.pluggy.ai/pluggy-connect/v2.3.1/pluggy-connect.js" async></component> -->
-    pluggy connect
-
-    <button @click="openPluggyConnectWidget">Connect new account</button>
-    <button @click="updatePluggyConnectWidget">update account</button> 
-    <div>
-        Created at: {{
-        // @ts-ignore 
-        item.createdAt
-        }}
-    </div> 
-    <div>
-        Updated at: {{
-        // @ts-ignore 
-        item.updatedAt
-        }}
-    </div> 
-    <div>
-        Status: {{
-        // @ts-ignore 
-        item.status
-        }}
-    </div> 
-    <div>
-        ExecutionStatus: {{
-        // @ts-ignore 
-        item.executionStatus
-        }}
-    </div> 
-    <div>
-        LastUpdatedAt: {{
-        // @ts-ignore 
-        item.lastUpdatedAt
-        }}
-    </div> 
-    <pre>
-        {{item}}
-    </pre>
+    <div class="page">
+        <!-- <component is="script" src="https://cdn.pluggy.ai/pluggy-connect/v2.3.1/pluggy-connect.js" async></component> -->
+        pluggy connect
+    
+        <button @click="openPluggyConnectWidget">Connect new account</button>
+        <button @click="updatePluggyConnectWidget">update account</button> 
+        <div>
+            Created at: {{
+            // @ts-ignore 
+            item.createdAt
+            }}
+        </div> 
+        <div>
+            Updated at: {{
+            // @ts-ignore 
+            item.updatedAt
+            }}
+        </div> 
+        <div>
+            Status: {{
+            // @ts-ignore 
+            item.status
+            }}
+        </div> 
+        <div>
+            ExecutionStatus: {{
+            // @ts-ignore 
+            item.executionStatus
+            }}
+        </div> 
+        <div>
+            LastUpdatedAt: {{
+            // @ts-ignore 
+            item.lastUpdatedAt
+            }}
+        </div> 
+        <pre>
+            {{item}}
+        </pre>
+    </div>
 </template>
 
 <script setup lang="ts">

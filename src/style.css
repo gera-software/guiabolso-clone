@@ -13,10 +13,16 @@ body {
   font-family: sans-serif;
   background-color: #FAFAFA;
   font-family: 'Open Sans', sans-serif;
+  overflow: hidden;
+  background-color: aquamarine;
+  height: 100dvh;
+  width: 100dvw;
 }
 
 #app {
-  min-height: 100vh;
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
 }
 
 /**
