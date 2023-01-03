@@ -61,7 +61,7 @@ onMounted(async () => {
 }
 
 .container {
-  background-color: red;
+  background-color: white;
   display: flex;
   gap: 10px;
   flex-direction: column;
