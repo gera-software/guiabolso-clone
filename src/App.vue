@@ -7,9 +7,9 @@
       <router-link :to="{ name: 'transactions' }">Transactions</router-link>
     </li>
   </ul> -->
-  <router-view v-slot="{ Component }">
+  <router-view v-slot="{ Component, route }">
     <!-- <transition name="slide-left" mode="in-out"> -->
-    <transition name="slide-right" mode="default">
+    <transition :name="route.meta.transitionName">
       <component :is="Component" />
     </transition>
   </router-view>
@@ -84,7 +84,7 @@ onMounted(() => {
 .slide-left-enter-to {
   /* position: absolute;
   width: 100%; */
-  z-index: 100;
+  z-index: 10;
   transform: translateX(0%);
 }
 
@@ -96,10 +96,11 @@ onMounted(() => {
 .slide-left-leave-active {
   /* position: absolute;
   width: 100%; */
-  /* transition: transform .5s ease; */
+  transition: transform .5s ease;
 }
 
 .slide-left-leave-to {
+  z-index: 0;
   /* z-index: 0; */
   /* opacity: 0; */
   /* position: absolute; */
@@ -132,12 +133,12 @@ onMounted(() => {
 }
 
 .slide-right-leave-active {
-  transition: all .5s ease-in;
+  transition: transform .5s ease-in;
 }
 
 .slide-right-leave-to {
   transform: translateX(100%);
-  z-index: 1
+  z-index: 10
 }
 
 
