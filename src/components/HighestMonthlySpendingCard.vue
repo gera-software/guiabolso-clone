@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card" v-if="!isLoading">
         <div class="card-header">
             <h2>Gastos do mês</h2> 
             <router-link :to="{ name: 'extract'}">
@@ -8,7 +8,7 @@
         </div>
         <div class="card-body">
             <span v-if="(donutSlices.length == 0)">Ainda não há transações</span>
-            <div class="donut">
+            <div v-else class="donut">
                 <svg class="donut-chart" :viewBox="`0 0 ${viewBox} ${viewBox}`">
                     <path
                         v-for="slice in donutSlices" :key="slice.label"
@@ -25,6 +25,19 @@
                         <div class="label">{{ slice.label }}</div>
                     </li>
                 </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card card--skeleton" v-if="isLoading">
+        <div class="card-header">
+            <div class="h2"></div>
+        </div>
+        <div class="card-body">
+            <div class="donut-skeleton"></div>
+            <div style="flex-basis: 40%">
+              <div class="p" style="width: 100%"></div>
+              <div class="p" style="width: 80%"></div>
+              <div class="p" style="width: 100%"></div>
             </div>
         </div>
     </div>
@@ -111,7 +124,7 @@ interface DonutSliceWithCommands extends DonutSlice {
   }
 
 
-
+const isLoading = ref(true)
 
 
 
@@ -139,11 +152,13 @@ const data = ref<DonutSlice[]>([])
 
 
 async function getData(userId: String, year: String, month: String) {
+  isLoading.value = true
   data.value = await api.guiabolsoApi({
     method: 'get',
     url: `/highest-monthly-spending-chart?id=${userId}&month=${month}&year=${year}`,
   }).then(function (response) {
     console.log(response.data)
+    isLoading.value = false
     return response.data
   }).catch(function (error) {
     console.log(error.response?.data);
@@ -225,6 +240,41 @@ onMounted(async () => {
     background-color: #D9D9D9;
     border-radius: 100%;
     flex-shrink: 0;
+}
+
+.card--skeleton {
+  min-height: 274px;
+}
+
+.card--skeleton .h2 {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 30px;
+    width: 60%;
+    margin-bottom: 10px;
+    animation: pulse-bg 1s infinite;
+}
+
+.card--skeleton .card-body {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.card--skeleton .donut-skeleton {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  
+  background-color: rgb(0, 0, 0, 10%);
+  animation: pulse-bg 1s infinite;
+}
+
+.card--skeleton .p {
+  background-color: rgb(0, 0, 0, 10%);
+  height: 24px;
+  width: 60%;
+  margin-bottom: 25px;
+  animation: pulse-bg 1s infinite;
 }
 
 </style>
