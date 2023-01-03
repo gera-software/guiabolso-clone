@@ -52,4 +52,19 @@ Animations on transitions
 }
 
 
+/* skeleton pulse animation */
+
+@keyframes pulse-bg {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
 
