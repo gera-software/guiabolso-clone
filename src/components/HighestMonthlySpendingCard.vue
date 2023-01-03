@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-    <div class="card card--skeleton" v-if="isLoading">
+    <div class="card card--skeleton" >
         <div class="card-header">
             <div class="h2"></div>
         </div>
@@ -258,13 +258,14 @@ onMounted(async () => {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  gap: 10px;
 }
 
 .card--skeleton .donut-skeleton {
   width: 170px;
   height: 170px;
   border-radius: 50%;
-  
+  flex-shrink: 0;
   background-color: rgb(0, 0, 0, 10%);
   animation: pulse-bg 1s infinite;
 }
