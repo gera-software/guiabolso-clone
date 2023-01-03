@@ -1,32 +1,34 @@
 <template>
-  <AppBar>
-    <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
-      <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
-          {{ option.text }}
-      </option>
-    </select>
-
-    <template #extra>
-      <div class="filter-bar">
-        <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.INCOME}" @click="toggleIncomeFilter(TransactionType.INCOME)">Rendas</button>
-        <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.EXPENSE}" @click="toggleIncomeFilter(TransactionType.EXPENSE)">Gastos</button>
-      </div>
-    </template>
-  </AppBar>
-
-    <div class="container">
-      <div class="account-info" v-if="account">
-        <img class="account-logo" :src="account.imageUrl?.toString()" />
-        <div>
-          <h2 class="title">{{account.bankData?.institution.name}}{{account.creditData?.institution.name}}</h2>
-          <h3 class="subtitle">{{account.name}}</h3>
+  <div class="page">
+    <AppBar>
+      <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
+        <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
+            {{ option.text }}
+        </option>
+      </select>
+  
+      <template #extra>
+        <div class="filter-bar">
+          <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.INCOME}" @click="toggleIncomeFilter(TransactionType.INCOME)">Rendas</button>
+          <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.EXPENSE}" @click="toggleIncomeFilter(TransactionType.EXPENSE)">Gastos</button>
         </div>
+      </template>
+    </AppBar>
+  
+      <div class="container">
+        <div class="account-info" v-if="account">
+          <img class="account-logo" :src="account.imageUrl?.toString()" />
+          <div>
+            <h2 class="title">{{account.bankData?.institution.name}}{{account.creditData?.institution.name}}</h2>
+            <h3 class="subtitle">{{account.name}}</h3>
+          </div>
+        </div>
+        <TransactionList :transactions="transactions" />
       </div>
-      <TransactionList :transactions="transactions" />
-    </div>
-    <FAB @click="handleClick">
-      <font-awesome-icon icon="fa-solid fa-plus" />
-    </FAB>
+      <FAB @click="handleClick">
+        <font-awesome-icon icon="fa-solid fa-plus" />
+      </FAB>
+  </div>
 </template>
 
 <script setup lang="ts">

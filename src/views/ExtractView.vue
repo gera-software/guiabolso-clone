@@ -1,26 +1,28 @@
 <template>
-  <AppBar>
-    <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
-      <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
-          {{ option.text }}
-      </option>
-    </select>
-
-    <template #extra>
-      <div class="filter-bar">
-        <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.INCOME}" @click="toggleIncomeFilter(TransactionType.INCOME)">Rendas</button>
-        <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.EXPENSE}" @click="toggleIncomeFilter(TransactionType.EXPENSE)">Gastos</button>
+  <div class="page">
+    <AppBar>
+      <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
+        <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
+            {{ option.text }}
+        </option>
+      </select>
+  
+      <template #extra>
+        <div class="filter-bar">
+          <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.INCOME}" @click="toggleIncomeFilter(TransactionType.INCOME)">Rendas</button>
+          <button class="button-toggle" :class="{'button-toggle--active': transactionTypeFilter == TransactionType.EXPENSE}" @click="toggleIncomeFilter(TransactionType.EXPENSE)">Gastos</button>
+        </div>
+      </template>
+    </AppBar>
+  
+      <div class="container">
+        <SpendingsBarChart :transactionType="transactionTypeFilter"/>
+        <TransactionList :transactions="transactions" />
       </div>
-    </template>
-  </AppBar>
-
-    <div class="container">
-      <SpendingsBarChart :transactionType="transactionTypeFilter"/>
-      <TransactionList :transactions="transactions" />
-    </div>
-    <FAB @click="handleClick">
-      <font-awesome-icon icon="fa-solid fa-plus" />
-    </FAB>
+      <FAB @click="handleClick">
+        <font-awesome-icon icon="fa-solid fa-plus" />
+      </FAB>
+  </div>
 </template>
 
 <script setup lang="ts">

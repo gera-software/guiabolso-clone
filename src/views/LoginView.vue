@@ -1,19 +1,25 @@
 <template>
-  <div class="hero">
-
-  </div>
-  <div class="container">
-    <button class="button" @click="openNetlifyModal">Começar</button>
+  <div class="page">
+    <div class="hero">
+  
+    </div>
+    <div class="container">
+      <button class="button" @click="openNetlifyModal">Começar</button>
+      v{{ version }}
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 
 const router = useRouter()
 
 const userStore = useUserStore()
+
+// @ts-ignore
+const version: string = __APP_VERSION__;
 
 userStore.$subscribe((mutation, state) => {
   console.log('MUTATED STATE', state)
@@ -27,35 +33,41 @@ function openNetlifyModal() {
 
 }
 
-// onMounted(async () => {
-//   const u = getUser()
-//   if(u) {
-//     await getUserByNetlifyId(u)
-//     if(userStore.user._id) {
-//       router.push({ name: 'dashboard' })
-//     }
-//   }
-// })
+onMounted(async () => {
+  if(userStore.tokenIsValid()) {
+      router.push({ name: 'dashboard' })
+  }
+})
 
 
 
 </script>
 <style scoped>
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 .hero {
   background-image: url('@/assets/LoginCover.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  width: 100vw;
-  height: 80vh;
+  width: 100dvw;
+  /* height: 80%; */
   background-color: #250048;
+  flex-basis: 80%;
 }
 
 .container {
+  background-color: white;
   display: flex;
   gap: 10px;
   flex-direction: column;
   padding: 30px;
+  flex-basis: 20%;
+  /* min-height: 30%; */
 }
 
 .button {
@@ -68,6 +80,7 @@ function openNetlifyModal() {
     font-weight: 600;
     text-align: center;
     padding: 12px 16px;
+    cursor: pointer;
 }
 
 .button.button-outline {

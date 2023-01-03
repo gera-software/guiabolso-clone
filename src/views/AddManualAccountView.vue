@@ -1,4 +1,5 @@
 <template>
+  <div class="page">
     <AppBar title="Nova conta manual" />
 
     <div class="container">
@@ -26,6 +27,7 @@
             </div>
         </form>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">

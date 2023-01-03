@@ -1,29 +1,31 @@
 <template>
-    <AppBar title="Conexão de conta" />
-    <div class="container">
-        <p>
-            Escolha uma instituição para conectar
-        </p>
-        <ul class="institutions-list">
-            <li v-for="institution in institutions" :key="institution._id?.toString()">
-                <div class="institution breve">
-                    <img class="institution-logo" :src="institution.imageUrl?.toString()" />
-                    <div>
-                        {{institution.name}}
+    <div class="page">
+        <AppBar title="Conexão de conta" />
+        <div class="container">
+            <p>
+                Escolha uma instituição para conectar
+            </p>
+            <ul class="institutions-list">
+                <li v-for="institution in institutions" :key="institution._id?.toString()">
+                    <div class="institution breve">
+                        <img class="institution-logo" :src="institution.imageUrl?.toString()" />
+                        <div>
+                            {{institution.name}}
+                        </div>
                     </div>
+                </li>
+            </ul>
+    
+            <p>
+                Não encontrou seu banco ou quer registrar gastos manualmente?
+            </p>
+            <router-link class="institution" :to="{ name: 'accounts-connect-manual'}">
+                <img class="institution-logo" src="@/assets/ManualAccountIcon.svg" />
+                <div>
+                    Conta manual
                 </div>
-            </li>
-        </ul>
-
-        <p>
-            Não encontrou seu banco ou quer registrar gastos manualmente?
-        </p>
-        <router-link class="institution" :to="{ name: 'accounts-connect-manual'}">
-            <img class="institution-logo" src="@/assets/ManualAccountIcon.svg" />
-            <div>
-                Conta manual
-            </div>
-        </router-link>
+            </router-link>
+        </div>
     </div>
 </template>
 

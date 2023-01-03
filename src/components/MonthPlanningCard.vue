@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card" v-if="!isLoading">
         <div class="card-header">
             <h2>Planejamento do mês</h2>
         </div>
@@ -9,6 +9,15 @@
 
           <h3 class="label">Gastos</h3>
           <h4 class="display">R$ {{expenses}}</h4>
+        </div>
+    </div>
+    <div class="card card--skeleton" v-if="isLoading">
+        <div class="card-header">
+          <div class="h2"></div>
+        </div>
+        <div class="card-body">
+          <div class="text"></div>
+          <div class="text"></div>
         </div>
     </div>
 </template>
@@ -30,7 +39,7 @@ monthFilterStore.$subscribe(async (mutation, state) => {
   await getData(id, year, month)
 })
 
-
+const isLoading = ref(true)
 
 const data = ref<{
   _id: string,
@@ -40,11 +49,13 @@ const data = ref<{
 
 
 async function getData(userId: String, year: String, month: String) {
+  isLoading.value = true
   data.value = await api.guiabolsoApi({
     method: 'get',
     url: `/month-planning-chart?id=${userId}&month=${month}&year=${year}`,
   }).then(function (response) {
     console.log(response.data)
+    isLoading.value = false
     return response.data
   }).catch(function (error) {
     console.log(error.response?.data);
@@ -107,6 +118,26 @@ const expenses = computed(() => {
   font-weight: 800;
   margin: 0;
   margin-bottom: 20px;
+}
+
+.card--skeleton {
+  min-height: 240px;
+}
+
+.card--skeleton .h2 {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 30px;
+    width: 60%;
+    /* margin-bottom: 20px; */
+    animation: pulse-bg 1s infinite;
+}
+
+.card--skeleton .text {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 57px;
+    width: 100%;
+    margin-top: 20px;
+    animation: pulse-bg 1s infinite;
 }
 
 </style>

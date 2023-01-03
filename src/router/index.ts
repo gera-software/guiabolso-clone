@@ -67,7 +67,7 @@ const router = createRouter({
       component: ExtractByAccountView,
     },
     {
-      path: '/add-transaction',
+      path: '/transactions/add-transaction',
       name: 'add-transaction',
       component: AddManualTransactionView,
     },
@@ -92,7 +92,7 @@ const router = createRouter({
       component: BillView,
     },
     {
-      path: '/add-bill',
+      path: '/bills/add-bill',
       name: 'add-bill',
       component: AddBillView,
     },
@@ -104,10 +104,10 @@ const router = createRouter({
   ]
 })
 
-//TODO  checar se o usuario está atutenticado através da local store
+//TODO  checar se o usuario está atutenticado e o token é ainda é válido
 function isAuthenticated() {
   const userStore = useUserStore()
-  return userStore.user._id
+  return userStore.tokenIsValid()
 }
 
 router.beforeEach((to, from) => {
@@ -119,6 +119,12 @@ router.beforeEach((to, from) => {
   if(!isAuthenticated() && to.name !== 'login') {
     return { name: 'login' }
   }
+})
+
+router.afterEach((to, from) => {
+  const toDepth = to.path.split('/').length
+  const fromDepth = from.path.split('/').length
+  to.meta.transitionName = toDepth == fromDepth ? 'fade' : (toDepth < fromDepth ? 'slide-right' : 'slide-left')
 })
 
 export default router

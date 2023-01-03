@@ -18,36 +18,43 @@ const handler :Handler = async (event: HandlerEvent, context: HandlerContext) =>
     
     const result: item[] = [];
 
-    // TODO ainda vai dar erro se houverem menos de 3 categorias!
     if(spendingsByCategories.length) {
+   
         const first = spendingsByCategories.shift()
         result.push({
             name: first?.category.name ?? '',
             primaryColor: first?.category.primaryColor ?? 'gray',
             amount: Math.abs(first?.totalAmount ?? 0),
         })
-    
-        const second = spendingsByCategories.shift()
-        result.push({
-            name: second?.category.name ?? '',
-            primaryColor: second?.category.primaryColor ?? 'gray',
-            amount: Math.abs(second?.totalAmount ?? 0),
-        })
+
+        if(spendingsByCategories.length) {
+            const second = spendingsByCategories.shift()
+            result.push({
+                name: second?.category.name ?? '',
+                primaryColor: second?.category.primaryColor ?? 'gray',
+                amount: Math.abs(second?.totalAmount ?? 0),
+            })
+        }
+
+        if(spendingsByCategories.length) {
+            const third = spendingsByCategories.shift()
+            result.push({
+                name: third?.category.name ?? '',
+                primaryColor: third?.category.primaryColor ?? 'gray',
+                amount: Math.abs(third?.totalAmount ?? 0),
+            })
+        }
+
+        if(spendingsByCategories.length) {
+            const others = spendingsByCategories.reduce((accumulator, category) => accumulator + category.totalAmount, 0)
         
-        const third = spendingsByCategories.shift()
-        result.push({
-            name: third?.category.name ?? '',
-            primaryColor: third?.category.primaryColor ?? 'gray',
-            amount: Math.abs(third?.totalAmount ?? 0),
-        })
-    
-        const others = spendingsByCategories.reduce((accumulator, category) => accumulator + category.totalAmount, 0)
-    
-        result.push({
-            name: 'Outras categorias',
-            primaryColor: '#D9D9D9',
-            amount: Math.abs(others ?? 0),
-        })
+            result.push({
+                name: 'Outras categorias',
+                primaryColor: '#D9D9D9',
+                amount: Math.abs(others ?? 0),
+            })
+        }
+
     }
 
     const totalAmount = result.reduce((accumulator, category) => accumulator + category.amount, 0)

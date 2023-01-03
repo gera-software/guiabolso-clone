@@ -46,7 +46,7 @@ function closeBottomSheet() {
     position: fixed;
     bottom: 0;
     width: 100%;
-    max-height: 80vh;
+    max-height: 80dvh;
     overflow-y: auto;
     z-index: 15;
     border-top-left-radius: 16px;

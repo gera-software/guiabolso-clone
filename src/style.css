@@ -13,10 +13,16 @@ body {
   font-family: sans-serif;
   background-color: #FAFAFA;
   font-family: 'Open Sans', sans-serif;
+  overflow: hidden;
+  /* background-color: aquamarine; */
+  height: 100dvh;
+  width: 100dvw;
 }
 
 #app {
-  min-height: 100vh;
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
 }
 
 /**
@@ -43,6 +49,21 @@ Animations on transitions
 .slideup-leave-to {
   transform: translateY(100%);
   /* opacity: 0; */
+}
+
+
+/* skeleton pulse animation */
+
+@keyframes pulse-bg {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .6;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 

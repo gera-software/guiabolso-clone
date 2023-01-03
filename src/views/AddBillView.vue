@@ -1,39 +1,41 @@
 <template>
-    <AppBar title="Novo item na agenda" />
-    <div class="container">
-        <form @submit.prevent="handleSubmit">
-            <div class="form-group">
-                <label class="form-label">Tipo</label>
-                <select class="form-input" required v-model="form.type">
-                    <option v-for="billType in types" :value="billType.value">{{billType.label}}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Nome da cobrança</label>
-                <input class="form-input" type="text" placeholder="Salário" required v-model="form.description">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Valor</label>
-                <CurrencyInput class="form-input" required v-model="form.amount" :class="{ 'input-red': form.amount < 0 }"/>
-                <!-- <div class="inline-buttons">
-                  <button @click="turnNegative" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount < 0 }">- R$</button>
-                  <button @click="turnPositive" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount >= 0 }">+ R$</button>
-                </div> -->
-            </div>
-            <div class="form-group">
-                <label class="form-label">Data</label>
-                <input class="form-input" type="date" required v-model="form.dueDate" :min="dateToString(new Date())">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Status</label>
-                <select class="form-input" required v-model="form.status">
-                    <option v-for="s in status" :value="s.value">{{s.label}}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="button" :disabled="loading">Salvar</button>
-            </div>
-        </form>
+    <div class="page">
+        <AppBar title="Novo item na agenda" />
+        <div class="container">
+            <form @submit.prevent="handleSubmit">
+                <div class="form-group">
+                    <label class="form-label">Tipo</label>
+                    <select class="form-input" required v-model="form.type">
+                        <option v-for="billType in types" :value="billType.value">{{billType.label}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nome da cobrança</label>
+                    <input class="form-input" type="text" placeholder="Salário" required v-model="form.description">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Valor</label>
+                    <CurrencyInput class="form-input" required v-model="form.amount" :class="{ 'input-red': form.amount < 0 }"/>
+                    <!-- <div class="inline-buttons">
+                      <button @click="turnNegative" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount < 0 }">- R$</button>
+                      <button @click="turnPositive" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount >= 0 }">+ R$</button>
+                    </div> -->
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Data</label>
+                    <input class="form-input" type="date" required v-model="form.dueDate" :min="dateToString(new Date())">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-input" required v-model="form.status">
+                        <option v-for="s in status" :value="s.value">{{s.label}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="button" :disabled="loading">Salvar</button>
+                </div>
+            </form>
+        </div>
     </div>
 </template>
 <script setup lang="ts">

@@ -1,43 +1,45 @@
 <template>
-  <AppBar>
-    <h1>Contas e Cartões</h1>
-    <!-- <button class="button" @click="requestSync">
-      <font-awesome-icon icon="fa-solid fa-arrows-rotate" />
-    </button> -->
-  </AppBar>
-  <div class="container">
-
-    <div class="card">
-      <div class="card-header">
-        Contas bancárias
+  <div class="page">
+    <AppBar>
+      <h1>Contas e Cartões</h1>
+      <!-- <button class="button" @click="requestSync">
+        <font-awesome-icon icon="fa-solid fa-arrows-rotate" />
+      </button> -->
+    </AppBar>
+    <div class="container">
+  
+      <div class="card">
+        <div class="card-header">
+          Contas bancárias
+        </div>
+        <div v-if="!accountsGroupedByType.BANK">Você não tem nenhuma conta bancária!</div>
+        <AccountSummary :account="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()" />
+      </div> 
+  
+      <div class="card">
+        <div class="card-header">
+          Cartões de Crédito
+        </div>
+        <div v-if="!accountsGroupedByType.CREDIT_CARD">Você não tem nenhum cartão de crédito!</div>
+        <AccountSummary :account="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()" />
+      </div> 
+  
+      <div class="card">
+        <div class="card-header">
+          Carteiras
+        </div>
+        <div v-if="!accountsGroupedByType.WALLET">Você não tem nenhuma carteira manual!</div>
+        <AccountSummary :account="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()" />
       </div>
-      <div v-if="!accountsGroupedByType.BANK">Você não tem nenhuma conta bancária!</div>
-      <AccountSummary :account="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()" />
-    </div> 
-
-    <div class="card">
-      <div class="card-header">
-        Cartões de Crédito
-      </div>
-      <div v-if="!accountsGroupedByType.CREDIT_CARD">Você não tem nenhum cartão de crédito!</div>
-      <AccountSummary :account="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()" />
-    </div> 
-
-    <div class="card">
-      <div class="card-header">
-        Carteiras
-      </div>
-      <div v-if="!accountsGroupedByType.WALLET">Você não tem nenhuma carteira manual!</div>
-      <AccountSummary :account="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()" />
+  
+      <!-- <button @click="openPluggyConnectWidget">add item</button> -->
+      
     </div>
-
-    <!-- <button @click="openPluggyConnectWidget">add item</button> -->
-    
+  
+    <FAB @click="() => { $router.push({ name: 'accounts-connect'}) }">
+      <font-awesome-icon icon="fa-solid fa-plus" />
+    </FAB>
   </div>
-
-  <FAB @click="() => { $router.push({ name: 'accounts-connect'}) }">
-    <font-awesome-icon icon="fa-solid fa-plus" />
-  </FAB>
 </template>
 
 <script setup lang="ts">
