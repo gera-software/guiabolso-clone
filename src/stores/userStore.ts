@@ -91,11 +91,21 @@ export const useUserStore = defineStore('user', () => {
         console.log('SET USER', u)
     }
 
+    function tokenIsValid() {
+        if(user.value.token.access_token) {
+            console.log('token is valid', user.value)
+            console.log((new Date()).getTime() < (new Date(user.value.token.expires_at)).getTime())
+            return true
+        } 
+        return false
+    }
+
         
     return {
         user,
         logout,
         openModal,
+        tokenIsValid,
     }
   
 })

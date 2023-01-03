@@ -1,28 +1,40 @@
 <template>
-    <div class="monthlyBalance" v-if="monthFilterStore.isCurrentMonthSelected()">
-        <div class="container">
-            <h2>Contas e cartões</h2>
-            <div class="flex">
-                <div class="row">
-                    <div class="col1">Saldo das contas</div>
-                    <div class="col2">R$ {{ (bankBalance / 100).toFixed(2) }}</div>
+    <template v-if="monthFilterStore.isCurrentMonthSelected()">
+        <div class="monthlyBalance" v-if="!isLoading">
+            <div class="container">
+                <h2>Contas e cartões</h2>
+                <div class="flex">
+                    <div class="row">
+                        <div class="col1">Saldo das contas</div>
+                        <div class="col2">R$ {{ (bankBalance / 100).toFixed(2) }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col1">Fatura dos cartões</div>
+                        <div class="col2">R$ {{ (creditCardBalance / 100).toFixed(2) }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col1">Dinheiro</div>
+                        <div class="col2">R$ {{ (walletBalance / 100).toFixed(2) }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col1">Total</div>
+                        <div class="col2">R$ {{ (totalBalance / 100).toFixed(2) }}</div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col1">Fatura dos cartões</div>
-                    <div class="col2">R$ {{ (creditCardBalance / 100).toFixed(2) }}</div>
-                </div>
-                <div class="row">
-                    <div class="col1">Dinheiro</div>
-                    <div class="col2">R$ {{ (walletBalance / 100).toFixed(2) }}</div>
-                </div>
-                <div class="row">
-                    <div class="col1">Total</div>
-                    <div class="col2">R$ {{ (totalBalance / 100).toFixed(2) }}</div>
-                </div>
+                <router-link class="accounts-link" :to="{ name: 'accounts'}">Ir para contas e cartões</router-link>
             </div>
-            <router-link class="accounts-link" :to="{ name: 'accounts'}">Ir para contas e cartões</router-link>
         </div>
-    </div>
+
+        <div class="monthlyBalance monthlyBalance--skeleton" v-if="isLoading">
+            <div class="container">
+                <div class="h2"></div>
+                <div class="p"></div>
+                <div class="text"></div>
+            </div>
+        </div>
+    </template>
+
+
 </template>
 <script setup lang="ts">
 import api from "../config/axios.js";
@@ -47,14 +59,17 @@ const data = ref<{
   total: number,
 }[]>([])
 
+const isLoading = ref(true)
 
 
 async function getUserBalance(userId: String) {
+    isLoading.value = true
   data.value = await api.guiabolsoApi({
     method: 'get',
     url: `/user-balance?id=${userId}`,
   }).then(function (response) {
     console.log(response.data)
+    isLoading.value = false
     return response.data
   }).catch(function (error) {
     console.log(error.response?.data);
@@ -84,7 +99,6 @@ const creditCardBalance = computed(() => {
 const totalBalance = computed(() => {
     return walletBalance.value + bankBalance.value + creditCardBalance.value;
 })
-
 
 </script>
 
@@ -134,6 +148,34 @@ h2 {
 .accounts-link {
     font-size: .9em;
     color: #FB396A;
+}
+
+.monthlyBalance--skeleton {
+    min-height: 235px;
+}
+
+.monthlyBalance--skeleton .h2 {
+    background-color: rgb(255, 255, 255, 15%);
+    height: 36px;
+    width: 80%;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    animation: pulse-bg 1s infinite;
+}
+
+.monthlyBalance--skeleton .p {
+    background-color: rgb(255, 255, 255, 15%);
+    height: 28px;
+    width: 60%;
+    margin-bottom: 25px;
+    animation: pulse-bg 1s infinite;
+}
+.monthlyBalance--skeleton .text {
+    background-color: rgb(255, 255, 255, 15%);
+    height: 42px;
+    width: 100%;
+    margin-bottom: 15px;
+    animation: pulse-bg 1s infinite;
 }
 
 </style>

@@ -1,19 +1,22 @@
 <template>
-    <AppBar hideBackButton="true">
-        <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
-        <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
-            {{ option.text }}
-        </option>
-        </select>
-    </AppBar>
-    <div class="container">
-        <MonthlyBalance></MonthlyBalance>
-        <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
-        <MonthPlanningCard></MonthPlanningCard>
-        <LastTransactionsCard></LastTransactionsCard>
-        <CalendarBillsCard></CalendarBillsCard>
-
-        <button class="button button-outline" @click="handleLogout">Logout</button>
+    <div class="page">
+        <AppBar hideBackButton="true">
+            <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
+            <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
+                {{ option.text }}
+            </option>
+            </select>
+        </AppBar>
+        <div class="container">
+            <MonthlyBalance></MonthlyBalance>
+            <HighestMonthlySpendingCard></HighestMonthlySpendingCard>
+            <MonthPlanningCard></MonthPlanningCard>
+            <LastTransactionsCard></LastTransactionsCard>
+            <CalendarBillsCard></CalendarBillsCard>
+    
+            <button class="button button-outline" @click="handleLogout">Logout</button>
+            v{{ version }}
+        </div>
     </div>
 </template>
 <script setup lang="ts">
@@ -26,7 +29,6 @@ import CalendarBillsCard from '@/components/CalendarBillsCard.vue'
 import MonthlyBalance from '@/components/MonthlyBalance.vue'
 import { useRouter } from 'vue-router';
 import { useMonthFilterStore } from '../stores/monthFilterStore';
-
 
 const router = useRouter()
 
@@ -46,6 +48,9 @@ const monthFilterStore = useMonthFilterStore()
 function handleLogout() {
     userStore.logout()
 }
+
+// @ts-ignore
+const version: string = __APP_VERSION__;
 
 </script>
 

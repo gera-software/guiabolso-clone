@@ -1,4 +1,5 @@
 <template>
+  <div class="page">
     <AppBar>
         <select class="app-bar-select" v-model="monthFilterStore.monthFilter">
         <option v-for="option in monthFilterStore.monthOptions" :value="option.value">
@@ -12,6 +13,7 @@
     <FAB @click="handleClick">
       <font-awesome-icon icon="fa-solid fa-plus" />
     </FAB>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -34,7 +34,7 @@ defineProps<{
   /* padding: 15px 20px; */
   position: fixed;
   top: 0;
-  width: 100vw;
+  width: 100dvw;
   z-index: 2;
 }
 

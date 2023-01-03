@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card" v-if="!isLoading">
         <div class="card-header">
             <h2>Agenda</h2> 
             <router-link :to="{ name: 'bills'}">
@@ -8,6 +8,15 @@
           </div>
         <div class="card-body">
           <BillList :bills="bills"/>
+        </div>
+    </div>
+    <div class="card card--skeleton" v-if="isLoading">
+        <div class="card-header">
+            <div class="h2"></div>
+          </div>
+        <div class="card-body">
+          <div class="block"></div>
+          <div class="block"></div>
         </div>
     </div>
 </template>
@@ -29,14 +38,19 @@ monthFilterStore.$subscribe(async (mutation, state) => {
   await getBills(id, year, month)
 })
 
+const isLoading = ref(true)
+
+
 const bills = ref<CalendarBill[]>([])
 
 async function getBills(userId: String, year: String, month: String) {
+  isLoading.value = true
   bills.value = await api.guiabolsoApi({
     method: 'get',
     url: `/bills-fetch-by-user?id=${userId}&month=${month}&year=${year}&limit=2`,
   }).then(function (response) {
     console.log(response.data)
+    isLoading.value = false
     return response.data
   }).then(bills => {
     return bills.map((transaction : CalendarBill): CalendarBill => { 
@@ -176,6 +190,22 @@ function getStatus(bill: CalendarBill) {
 }
 .calendar-summary .badge.ATRASADO {
     background-color: #ED4A4A;
+}
+
+.card--skeleton .h2 {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 30px;
+    width: 60%;
+    /* margin-bottom: 10px; */
+    animation: pulse-bg 1s infinite;
+}
+
+.card--skeleton .block {
+  background-color: rgb(0, 0, 0, 10%);
+  height: 88px;
+  width: 100%;
+  margin-bottom: 15px;
+  animation: pulse-bg 1s infinite;
 }
 
 </style>
