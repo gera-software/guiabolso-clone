@@ -25,7 +25,7 @@ onMounted(() => {
     // window.alert('you are offline')
     Toastify({
             duration: 5000,
-            text: `<h4 style='display: inline'>Você está offline mesmo...</h4> `,
+            text: `<h4 style='display: inline'>Parece que você está offline...</h4> `,
             escapeMarkup: false,
             gravity: "top",
           }).showToast();
@@ -36,7 +36,7 @@ onMounted(() => {
     // window.alert('you are online')
     Toastify({
             duration: 5000,
-            text: `<h4 style='display: inline'>Agora tá de volta online</h4> `,
+            text: `<h4 style='display: inline'>Agora tá de volta online!</h4> `,
             escapeMarkup: false,
             gravity: "top",
           }).showToast();
