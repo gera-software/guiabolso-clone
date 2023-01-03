@@ -8,7 +8,8 @@
     </li>
   </ul> -->
   <router-view v-slot="{ Component }">
-    <transition name="slide-left" mode="in-out">
+    <!-- <transition name="slide-left" mode="in-out"> -->
+    <transition name="slide-right" mode="default">
       <component :is="Component" />
     </transition>
   </router-view>
@@ -52,6 +53,8 @@ onMounted(() => {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+/** Page transitions */
 
 .fade-enter-active,
 .fade-leave-active {
@@ -102,6 +105,39 @@ onMounted(() => {
   /* position: absolute; */
   /* width: 100%; */
   /* transform: translateX(0); */
+}
+
+
+
+
+.slide-right-enter-from {
+  /* opacity: .3; */
+  z-index: 0
+}
+.slide-right-enter-active {
+  /* transition: transform .5s ease-in; */
+  /* opacity: .3; */
+  
+}
+
+.slide-right-enter-to {
+  /* opacity: .3; */
+  z-index: 0
+
+}
+
+.slide-right-leave-from {
+  transform: translateX(0%);
+  z-index: 10
+}
+
+.slide-right-leave-active {
+  transition: all .5s ease-in;
+}
+
+.slide-right-leave-to {
+  transform: translateX(100%);
+  z-index: 1
 }
 
 
