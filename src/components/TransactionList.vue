@@ -1,5 +1,5 @@
 <template>
-      <div class="transactions-container">
+      <div class="transactions-container" v-if="!isLoading">
         
         <div v-for="(transaction, index) in transactions">
           <div class="date-separator" v-if="index === 0 || transactions[index - 1].date.getDate() !== transaction.date.getDate()">
@@ -14,13 +14,28 @@
         <div v-if="transactions.length == 0">Ainda não há transações</div>
 
       </div>
+
+      <div class="transactions-container transactions-container--skeleton" v-if="isLoading">
+        <div class="transaction" v-for="n in 15">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%; margin-left: 20px;">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+            </div>
+            <div style="flex-basis: 50%; margin-left: 20px;display: flex;flex-direction: column;align-items: flex-end;">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+            </div>
+          </div>
+      </div>
 </template>
 <script setup lang="ts">
 import TransactionSummary from "../components/TransactionSummary.vue";
 import { TransactionSummaryDTO } from "../config/types";
 
 defineProps<{
-    transactions: TransactionSummaryDTO[]
+    transactions: TransactionSummaryDTO[],
+    isLoading: boolean
 }>()
 </script>
 <style scoped>
@@ -63,6 +78,38 @@ defineProps<{
     font-weight: 400;
     color: #AAAAAA;
     text-transform: uppercase;
+}
+
+
+.transactions-container--skeleton {
+  /* background-color: red; */
+}
+.transactions-container--skeleton .transaction {
+  display: flex;
+  padding: 15px 0;
+}
+
+.transactions-container--skeleton .avatar {
+  background-color: rgb(0, 0, 0, 10%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse-bg 1s infinite;
+}
+
+.transactions-container--skeleton .title {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 16px;
+    width: 70%;
+    margin-bottom: 5px;
+    animation: pulse-bg 1s infinite;
+}
+.transactions-container--skeleton .subtitle {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 19px;
+    width: 100%;
+    animation: pulse-bg 1s infinite;
 }
 
 </style>

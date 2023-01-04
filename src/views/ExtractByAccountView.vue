@@ -23,7 +23,7 @@
             <h3 class="subtitle">{{account.name}}</h3>
           </div>
         </div>
-        <TransactionList :transactions="transactions" />
+        <TransactionList :transactions="transactions" :isLoading="isLoading"/>
       </div>
       <FAB @click="handleClick">
         <font-awesome-icon icon="fa-solid fa-plus" />
@@ -61,10 +61,11 @@ monthFilterStore.$subscribe(async (mutation, state) => {
   await getTransactionsByAccount(id, year, month)
 })
 
-
+const isLoading = ref(true)
 const transactions = ref<TransactionSummaryDTO[]>([])
 
 async function getTransactionsByAccount(accountId: String, year: String, month: String) {
+  isLoading.value = true
   transactions.value = await api.guiabolsoApi({
     method: 'get',
     url: `/transactions-fetch-by-account?id=${accountId}&month=${month}&year=${year}&transactionType=${transactionTypeFilter.value}`,
@@ -72,6 +73,7 @@ async function getTransactionsByAccount(accountId: String, year: String, month: 
     console.log(response.data)
     return response.data
   }).then(transactions => {
+    isLoading.value = false
     return transactions.map((transaction : TransactionSummaryDTO): TransactionSummaryDTO => { 
       transaction.date = new Date(transaction.date) 
       return transaction 
@@ -178,6 +180,7 @@ function toggleIncomeFilter(type: TransactionFilter) {
   padding: 20px 15px 0 15px;
   display: flex;
   align-items: center;
+  min-height: 70px;
 }
 
 .account-info .account-logo {

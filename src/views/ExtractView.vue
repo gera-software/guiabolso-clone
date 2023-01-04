@@ -17,7 +17,7 @@
   
       <div class="container">
         <SpendingsBarChart :transactionType="transactionTypeFilter"/>
-        <TransactionList :transactions="transactions" />
+        <TransactionList :transactions="transactions" :isLoading="isLoading" />
       </div>
       <FAB @click="handleClick">
         <font-awesome-icon icon="fa-solid fa-plus" />
@@ -53,10 +53,12 @@ monthFilterStore.$subscribe(async (mutation, state) => {
   await getTransactions(id, year, month)
 })
 
+const isLoading = ref(true)
 
 const transactions = ref<TransactionSummaryDTO[]>([])
 
 async function getTransactions(userId: String, year: String, month: String) {
+  isLoading.value = true
   transactions.value = await api.guiabolsoApi({
     method: 'get',
     url: `/transactions-fetch-by-user?id=${userId}&month=${month}&year=${year}&transactionType=${transactionTypeFilter.value}`,
@@ -64,6 +66,7 @@ async function getTransactions(userId: String, year: String, month: String) {
     console.log(response.data)
     return response.data
   }).then(transactions => {
+    isLoading.value = false
     return transactions.map((transaction : TransactionSummaryDTO): TransactionSummaryDTO => { 
       transaction.date = new Date(transaction.date) 
       return transaction 
