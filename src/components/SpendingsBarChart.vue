@@ -1,5 +1,5 @@
 <template>
-    <div class="barchart">
+    <div class="barchart" v-if="!isLoading">
         <div class="chartarea">
             <div class="bar" v-for="item in data" :style="{ height: convertToLocalPercent(item.percent) + '%', backgroundColor: item.primaryColor.toString() }"></div>
         </div>
@@ -7,6 +7,21 @@
             <div class="label" v-for="item in data" :style="{ color: item.primaryColor.toString(), fill: item.primaryColor.toString() }" :title="item.name.toString()">
                 <span>R$ {{ (+item.amount / 100).toFixed(0) }}</span>
                 <component :is="item.iconName+'Icon'" class="icon"></component>
+            </div>
+        </div>
+    </div>
+
+    <div class="barchart barchart--skeleton" v-if="isLoading">
+        <div class="chartarea">
+            <div class="bar" style="height:100%"></div>
+            <div class="bar" style="height:50%"></div>
+            <div class="bar" style="height:70%"></div>
+            <div class="bar" style="height:20%"></div>
+            <div class="bar" style="height:40%"></div>
+        </div>
+        <div class="y-labels">
+            <div class="label" v-for="n in 5" :style="{   }">
+                <span><div class="text"></div></span>
             </div>
         </div>
     </div>
@@ -43,6 +58,8 @@ monthFilterStore.$subscribe(async (mutation, state) => {
   await getBarChartData(id, year, month, props.transactionType)
 })
 
+const isLoading = ref(false)
+
 type Item = {
     _id: String,
     name: String,
@@ -60,11 +77,13 @@ const data = ref<Item[]>([])
 
 async function getBarChartData(userId: String, year: String, month: String, transactionType: string | undefined) {
     console.log('get', props.transactionType)
+    isLoading.value = true
   data.value = await api.guiabolsoApi({
     method: 'get',
     url: `/monthly-spending-by-categories?id=${userId}&month=${month}&year=${year}&transactionType=${props.transactionType}`,
   }).then(function (response) {
     console.log(response.data)
+    isLoading.value = false
     return response.data
   })
   .catch(function (error) {
@@ -132,6 +151,14 @@ onMounted(async () => {
 .y-labels .label .icon {
     margin: 10px;
     /* background-color: rebeccapurple; */
+}
+
+.barchart--skeleton .text {
+  background-color: rgb(0, 0, 0, 10%);
+  height: 22px;
+  width: 50px;
+  margin: 15px 0;
+  animation: pulse-bg 1s infinite;
 }
 
 </style>

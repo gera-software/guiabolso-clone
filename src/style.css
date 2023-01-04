@@ -1,6 +1,14 @@
-@font-face {
+/* @font-face {
   font-family: 'Axiforma';
   src: url('./assets/fonts/Kastelov\ -\ Axiforma\ Regular.otf');
+} */
+
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 400;
+  font-style: normal;
+  font-display: auto;
+  src: local("Axiforma"), url("/fonts/axiforma/AxiformaRegular.otf") format("otf");
 }
 
 

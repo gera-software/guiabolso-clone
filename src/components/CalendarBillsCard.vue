@@ -7,7 +7,7 @@
             </router-link>
           </div>
         <div class="card-body">
-          <BillList :bills="bills"/>
+          <BillList :bills="bills" :isLoading="isLoading"/>
         </div>
     </div>
     <div class="card card--skeleton" v-if="isLoading">
