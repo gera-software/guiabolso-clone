@@ -280,10 +280,6 @@ async function openPluggyConnectWidget() {
 }
 
 
-.card--skeleton {
-  /* background-color: red; */
-}
-
 .card--skeleton .h2 {
   background-color: rgb(0, 0, 0, 10%);
   height: 30px;
