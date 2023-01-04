@@ -8,7 +8,7 @@
         </select>
     </AppBar>
     <div class="container">
-      <BillList :bills="bills" />
+      <BillList :bills="bills" :isLoading="isLoading"/>
     </div>
     <FAB @click="handleClick">
       <font-awesome-icon icon="fa-solid fa-plus" />
@@ -43,9 +43,12 @@ monthFilterStore.$subscribe(async (mutation, state) => {
   await getBills(id, year, month)
 })
 
+const isLoading = ref(true)
+
 const bills = ref<CalendarBill[]>([])
 
 async function getBills(userId: String, year: String, month: String) {
+  isLoading.value = true
   bills.value = await api.guiabolsoApi({
     method: 'get',
     url: `/bills-fetch-by-user?id=${userId}&month=${month}&year=${year}`,
@@ -54,6 +57,7 @@ async function getBills(userId: String, year: String, month: String) {
     return response.data
   })
   .then(bills => {
+    isLoading.value = false
     return bills.map((bill : CalendarBill): CalendarBill => { 
       bill.dueDate = new Date(bill.dueDate) 
       return bill 
