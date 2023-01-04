@@ -5,12 +5,22 @@
             <p>
                 Escolha uma instituição para conectar
             </p>
-            <ul class="institutions-list">
+            <ul class="institutions-list" v-if="!isLoading">
                 <li v-for="institution in institutions" :key="institution._id?.toString()">
                     <div class="institution breve">
                         <img class="institution-logo" :src="institution.imageUrl?.toString()" />
                         <div>
                             {{institution.name}}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <ul class="institutions-list institutions-list--skeleton" v-if="isLoading">
+                <li v-for="n in 6" >
+                    <div class="institution">
+                        <div class="institution-logo"></div>
+                        <div style="flex-basis: 100%">
+                           <div class="text"></div>
                         </div>
                     </div>
                 </li>
@@ -37,13 +47,17 @@ import { ref, onMounted } from 'vue';
 
 const institutions = ref<Institution[]>([])
 
+const isLoading = ref(true)
+
 async function getAvailableConnectors(): Promise<Institution[]> {
+    isLoading.value = true
     console.log('get institutions')
   return api.guiabolsoApi({
     method: 'get',
     url: `/pluggy-available-connectors`,
   }).then(function (response) {
       institutions.value = response.data
+      isLoading.value = false
       console.log(institutions.value)
     return response.data
   }).catch(function (error) {
@@ -87,6 +101,7 @@ onMounted(async () => {
     height: 50px;
     border-radius: 100%;
     margin-right: 10px;
+    flex-shrink: 0;
 }
 
 .institution.breve {
@@ -106,5 +121,16 @@ onMounted(async () => {
     font-size: .6em;
     font-weight: 600;
     margin-left: 10px;
+}
+
+.institutions-list--skeleton .institution-logo {
+  background-color: rgb(0, 0, 0, 10%);
+  animation: pulse-bg 1s infinite;
+}
+.institutions-list--skeleton .text {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 22px;
+    width: 60%;
+    animation: pulse-bg 1s infinite;
 }
  </style>
