@@ -7,32 +7,126 @@
       </button> -->
     </AppBar>
     <div class="container">
-  
-      <div class="card">
-        <div class="card-header">
-          Contas bancárias
+
+      <template v-if="!isLoading">
+        <div class="card">
+          <div class="card-header">
+            Contas bancárias
+          </div>
+          <div v-if="!accountsGroupedByType.BANK">Você não tem nenhuma conta bancária!</div>
+          <AccountSummary :account="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()" />
+        </div> 
+    
+        <div class="card">
+          <div class="card-header">
+            Cartões de Crédito
+          </div>
+          <div v-if="!accountsGroupedByType.CREDIT_CARD">Você não tem nenhum cartão de crédito!</div>
+          <AccountSummary :account="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()" />
+        </div> 
+    
+        <div class="card">
+          <div class="card-header">
+            Carteiras
+          </div>
+          <div v-if="!accountsGroupedByType.WALLET">Você não tem nenhuma carteira manual!</div>
+          <AccountSummary :account="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()" />
         </div>
-        <div v-if="!accountsGroupedByType.BANK">Você não tem nenhuma conta bancária!</div>
-        <AccountSummary :account="account" v-for="account in accountsGroupedByType.BANK" :key="account._id?.toString()" />
-      </div> 
-  
-      <div class="card">
-        <div class="card-header">
-          Cartões de Crédito
+    
+        <!-- <button @click="openPluggyConnectWidget">add item</button> -->
+      </template>
+
+
+      <template v-if="isLoading">
+        <div class="card card--skeleton">
+          <div class="card-header">
+            <div class="h2"></div>
+          </div>
+          <div class="account">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+              <div class="p"></div>
+            </div>
+          </div>
+          <div class="account">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+              <div class="p"></div>
+            </div>
+          </div>
+          <div class="account">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+              <div class="p"></div>
+            </div>
+          </div>
         </div>
-        <div v-if="!accountsGroupedByType.CREDIT_CARD">Você não tem nenhum cartão de crédito!</div>
-        <AccountSummary :account="account" v-for="account in accountsGroupedByType.CREDIT_CARD" :key="account._id?.toString()" />
-      </div> 
-  
-      <div class="card">
-        <div class="card-header">
-          Carteiras
+        <div class="card card--skeleton">
+          <div class="card-header">
+            <div class="h2"></div>
+          </div>
+          <div class="account">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+              <div class="p"></div>
+            </div>
+          </div>
+          <div class="account">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+              <div class="p"></div>
+            </div>
+          </div>
+          <div class="account">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+              <div class="p"></div>
+            </div>
+          </div>
         </div>
-        <div v-if="!accountsGroupedByType.WALLET">Você não tem nenhuma carteira manual!</div>
-        <AccountSummary :account="account" v-for="account in accountsGroupedByType.WALLET" :key="account._id?.toString()" />
-      </div>
+        <div class="card card--skeleton">
+          <div class="card-header">
+            <div class="h2"></div>
+          </div>
+          <div class="account">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+              <div class="p"></div>
+            </div>
+          </div>
+          <div class="account">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+              <div class="p"></div>
+            </div>
+          </div>
+          <div class="account">
+            <div class="avatar"></div>
+            <div style="flex-basis: 100%">
+              <div class="title"></div>
+              <div class="subtitle"></div>
+              <div class="p"></div>
+            </div>
+          </div>
+        </div>
+      </template>
   
-      <!-- <button @click="openPluggyConnectWidget">add item</button> -->
       
     </div>
   
@@ -59,6 +153,8 @@ const router = useRouter()
 
 const userStore =  useUserStore()
 
+const isLoading = ref(true)
+
 const accounts = ref<AccountSummaryDTO[]>([])
 
 const accountsGroupedByType = computed(() => {
@@ -66,6 +162,7 @@ const accountsGroupedByType = computed(() => {
 });
 
 async function getMyAccounts(): Promise<AccountSummaryDTO[]> {
+  isLoading.value = true
     console.log('get my accounts')
   return api.guiabolsoApi({
     method: 'get',
@@ -73,6 +170,7 @@ async function getMyAccounts(): Promise<AccountSummaryDTO[]> {
   }).then(function (response) {
     console.log(response.data)
     accounts.value = response.data
+    isLoading.value = false
     return response.data
   }).catch(function (error) {
     console.log(error.response?.data);
@@ -181,6 +279,55 @@ async function openPluggyConnectWidget() {
   margin-bottom: 15px;
 }
 
+
+.card--skeleton {
+  /* background-color: red; */
+}
+
+.card--skeleton .h2 {
+  background-color: rgb(0, 0, 0, 10%);
+  height: 30px;
+  width: 60%;
+  margin-bottom: 15px;
+  animation: pulse-bg 1s infinite;
+}
+
+.card--skeleton .account {
+  display: flex;
+  gap: 10px;
+  padding: 15px 0;
+}
+
+.card--skeleton .avatar {
+  background-color: rgb(0, 0, 0, 10%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse-bg 1s infinite;
+}
+
+.card--skeleton .title {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 16px;
+    width: 70%;
+    margin-bottom: 5px;
+    animation: pulse-bg 1s infinite;
+}
+.card--skeleton .subtitle {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 30px;
+    width: 50%;
+    margin-bottom: 15px;
+    animation: pulse-bg 1s infinite;
+}
+.card--skeleton .p {
+    background-color: rgb(0, 0, 0, 10%);
+    height: 16px;
+    width: 90%;
+    margin-bottom: 5px;
+    animation: pulse-bg 1s infinite;
+}
 
 </style>
   
