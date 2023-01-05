@@ -27,10 +27,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Categoria</label>
-                <CategoryInput />
-                <select class="form-input" required v-model="form.categoryId">
-                    <option v-for="category in categories" :value="category._id">{{category.name}}</option>
-                </select>
+                <CategoryInput v-model="form.categoryId" />
             </div>
             <div class="form-group">
                 <label class="form-label">Comentários e #tags</label>
@@ -92,6 +89,7 @@ onMounted(async () => {
 
 const categories = ref<Category[]>([])
 
+// TODO refactor, not necessary fetch all categories, use getCategoryById()...
 async function getCategories(): Promise<Category[]> {
     console.log('get categories')
   return api.guiabolsoApi({
@@ -154,6 +152,7 @@ async function handleSubmit() {
         amount: form.value.amount,
         currencyCode: CurrencyCodes.BRL,
         date: stringToDate(form.value.date),
+        // TODO refactor, not necessary fetch all categories, use getCategoryById()...
         category: categories.value.find(category => category._id === form.value.categoryId),
         type: form.value.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
         syncType: AccountSyncType.MANUAL,

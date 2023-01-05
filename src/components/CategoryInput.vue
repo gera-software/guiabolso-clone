@@ -9,7 +9,7 @@
             <div class="page">
                 <AppBar title="Categorias">
                     <template v-slot:button>
-                        <button @click="open = false" class="back-icon">
+                        <button @click="closeModal" class="back-icon">
                             <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
                         </button>
                     </template>
@@ -36,12 +36,18 @@ import { Category } from '../config/types';
 import api from '../config/axios.js'
 import CategoryIcon from '@/components/CategoryIcon.vue'
 
+const props = defineProps(['modelValue'])
+
+const emit = defineEmits(['update:modelValue'])
 
 const open = ref(false)
 
 function openModal() {
-    console.log('open modal')
     open.value = true
+}
+
+function closeModal() {
+    open.value = false
 }
 
 const categories = ref<Category[]>([])
@@ -61,14 +67,16 @@ async function getCategories(): Promise<Category[]> {
 }
 
 onMounted(async () => {
-    getCategories()
+    await getCategories()
+    selected.value = categories.value.find(category => category._id == props.modelValue)
 })
 
 const selected = ref<Category>()
 
 function handleSelect(category: Category) {
     selected.value = category
-    open.value = false
+    emit('update:modelValue', selected.value._id)
+    closeModal()
 }
 </script>
 
