@@ -1,6 +1,8 @@
 <template>
-    category input
-    <button type="button" @click="openModal">open</button>
+    <div class="category-select" @click="openModal">
+        <CategoryIcon :icon="selected?.iconName ?? 'Uncategorized'" :color="selected?.primaryColor ?? '#F9386A'" />
+        <span>{{selected?.name ?? 'Categorizar'}}</span>
+    </div>
 
     <Teleport to="body">
         <div v-if="open" class="modal modal--fullscreen">
@@ -13,8 +15,14 @@
                     </template>
                 </AppBar>
                 <div class="container">
-                    <p v-for="n in 50">Hello from the modal!</p>
-                    <button @click="open = false">Close</button>
+                    <ul class="category-list">
+                        <li v-for="category in categories">
+                            <div class="category" @click="handleSelect(category)">
+                                <CategoryIcon :icon="category?.iconName ?? 'Uncategorized'" :color="category?.primaryColor ?? '#F9386A'" />
+                                <span>{{category.name}}</span>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -22,8 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import AppBar from '@/components/AppBar.vue'
+import { Category } from '../config/types';
+import api from '../config/axios.js'
+import CategoryIcon from '@/components/CategoryIcon.vue'
 
 
 const open = ref(false)
@@ -32,13 +43,40 @@ function openModal() {
     console.log('open modal')
     open.value = true
 }
+
+const categories = ref<Category[]>([])
+
+async function getCategories(): Promise<Category[]> {
+    console.log('get categories')
+  return api.guiabolsoApi({
+    method: 'get',
+    url: `/categories-fetch`,
+  }).then(function (response) {
+    //   console.log(response.data)
+      categories.value = response.data
+    return response.data
+  }).catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+onMounted(async () => {
+    getCategories()
+})
+
+const selected = ref<Category>()
+
+function handleSelect(category: Category) {
+    selected.value = category
+    open.value = false
+}
 </script>
 
 <style scoped>
 .modal {
   position: fixed;
   z-index: 999;
-  background-color: aquamarine;
+  background-color: white;
   overflow-y: auto;
 }
 
@@ -56,9 +94,39 @@ function openModal() {
   font-size: 16px;
   height: 16px;
   border: none;
+  background-color: transparent;
 }
 
 .container {
   padding-top: 60px;
+}
+
+.category-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.category-list li {
+    margin: 10px 0;
+}
+
+.category-select,
+.category {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.category:hover {
+    background-color: #0000000f;
+}
+
+.category-select {
+    border-bottom: 1px solid black;
+    padding: 8px 0;
 }
 </style>
