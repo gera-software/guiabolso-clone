@@ -5,27 +5,29 @@
     </div>
 
     <Teleport to="body">
-        <div v-if="open" class="modal modal--fullscreen">
-            <div class="page">
-                <AppBar title="Categorias">
-                    <template v-slot:button>
-                        <button @click="closeModal" class="back-icon">
-                            <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
-                        </button>
-                    </template>
-                </AppBar>
-                <div class="container">
-                    <ul class="category-list">
-                        <li v-for="category in categories">
-                            <div class="category" @click="handleSelect(category)">
-                                <CategoryIcon :icon="category?.iconName ?? 'Uncategorized'" :color="category?.primaryColor ?? '#F9386A'" />
-                                <span>{{category.name}}</span>
-                            </div>
-                        </li>
-                    </ul>
+        <Transition name="fade">
+            <div v-if="open" class="modal modal--fullscreen">
+                <div class="page">
+                    <AppBar title="Categorias">
+                        <template v-slot:button>
+                            <button @click="closeModal" class="back-icon">
+                                <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
+                            </button>
+                        </template>
+                    </AppBar>
+                    <div class="container">
+                        <ul class="category-list">
+                            <li v-for="category in categories">
+                                <div class="category" @click="handleSelect(category)">
+                                    <CategoryIcon :icon="category?.iconName ?? 'Uncategorized'" :color="category?.primaryColor ?? '#F9386A'" />
+                                    <span>{{category.name}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Transition>
     </Teleport>
 </template>
 
