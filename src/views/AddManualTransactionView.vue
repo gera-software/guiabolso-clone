@@ -27,6 +27,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Categoria</label>
+                <CategoryInput />
                 <select class="form-input" required v-model="form.categoryId">
                     <option v-for="category in categories" :value="category._id">{{category.name}}</option>
                 </select>
@@ -58,6 +59,7 @@ import { onMounted } from 'vue';
 import { AccountSummaryDTO, AccountSyncType, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
 import { useUserStore } from '../stores/userStore';
 import CurrencyInput from '../components/CurrencyInput.vue'
+import CategoryInput from '../components/CategoryInput.vue'
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
