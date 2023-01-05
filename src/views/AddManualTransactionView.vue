@@ -96,7 +96,7 @@ async function getCategories(): Promise<Category[]> {
     method: 'get',
     url: `/categories-fetch`,
   }).then(function (response) {
-    //   console.log(response.data)
+      console.log('category fetch',response.data)
       categories.value = response.data
     return response.data
   }).catch(function (error) {
@@ -164,7 +164,7 @@ async function handleSubmit() {
         _isDeleted: false,
     }
 
-    // console.log(payload)
+    // console.log('add',payload)
     await saveTransaction(payload)
     loading.value = false
     // router.push({ name: 'extract'})

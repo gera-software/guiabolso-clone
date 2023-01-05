@@ -16,14 +16,17 @@
                         </template>
                     </AppBar>
                     <div class="container">
-                        <ul class="category-list">
-                            <li v-for="category in categories">
-                                <div class="category" @click="handleSelect(category)">
-                                    <CategoryIcon :icon="category?.iconName ?? 'Uncategorized'" :color="category?.primaryColor ?? '#F9386A'" />
-                                    <span>{{category.name}}</span>
-                                </div>
-                            </li>
-                        </ul>
+                        <div v-for="(catGroup, key) in categoriesByGroup">
+                            <h2 class="category-group">{{key}}</h2>
+                            <ul class="category-list">
+                                <li v-for="category in catGroup">
+                                    <div class="category" @click="handleSelect(category)">
+                                        <CategoryIcon :icon="category?.iconName ?? 'Uncategorized'" :color="category?.primaryColor ?? '#F9386A'" />
+                                        <span>{{category.name}}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -32,11 +35,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import AppBar from '@/components/AppBar.vue'
 import { Category } from '../config/types';
 import api from '../config/axios.js'
 import CategoryIcon from '@/components/CategoryIcon.vue'
+import { groupBy } from 'lodash'
 
 const props = defineProps(['modelValue'])
 
@@ -54,8 +58,11 @@ function closeModal() {
 
 const categories = ref<Category[]>([])
 
+const categoriesByGroup = computed(() => {
+  return groupBy(categories.value, (category) => category.group)
+})
+
 async function getCategories(): Promise<Category[]> {
-    console.log('get categories')
   return api.guiabolsoApi({
     method: 'get',
     url: `/categories-fetch`,
@@ -111,6 +118,13 @@ function handleSelect(category: Category) {
   padding-top: 60px;
 }
 
+.category-group {
+    color: #707070;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 30px 15px 10px 15px;
+}
+
 .category-list {
     list-style: none;
     margin: 0;
@@ -118,7 +132,7 @@ function handleSelect(category: Category) {
 }
 
 .category-list li {
-    margin: 10px 0;
+    margin: 5px 0;
 }
 
 .category-select,
