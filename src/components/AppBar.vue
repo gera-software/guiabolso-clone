@@ -1,7 +1,9 @@
 <template>
   <div class="app-bar">
     <div class="container">
+      <slot name="button">
         <BackButton v-if="!hideBackButton"/>
+      </slot>
       <div class="content">
           <slot>
               <h1>{{title}}</h1>
