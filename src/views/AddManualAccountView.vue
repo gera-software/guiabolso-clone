@@ -14,14 +14,38 @@
                     <option v-for="accountType in accountTypes" :value="accountType.value">{{accountType.label}}</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label class="form-label">Qual é o saldo atual dessa conta?</label>
-                <CurrencyInput class="form-input" required v-model="form.amount" :class="{ 'input-red': form.amount < 0 }"/>
-                <div class="inline-buttons">
-                  <button @click="turnNegative" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount < 0 }">- R$</button>
-                  <button @click="turnPositive" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount >= 0 }">+ R$</button>
-                </div>
-            </div>
+            <template v-if="form.type == 'WALLET' || form.type == 'BANK'">
+              <div class="form-group">
+                  <label class="form-label">Qual é o saldo atual dessa conta?</label>
+                  <CurrencyInput class="form-input" required v-model="form.amount" :class="{ 'input-red': form.amount < 0 }"/>
+                  <div class="inline-buttons">
+                    <button @click="turnNegative" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount < 0 }">- R$</button>
+                    <button @click="turnPositive" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount >= 0 }">+ R$</button>
+                  </div>
+              </div>
+            </template>
+            <template v-if="form.type == 'CREDIT_CARD'">
+              <div class="form-group">
+                <label class="form-label">Qua a bandeira do cartão?</label>
+                <select class="form-input" required v-model="form.creditData.brand">
+                    <option v-for="brandType in creditCardBrandTypes" :value="brandType.value">{{brandType.label}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Qual o limite do cartão?</label>
+                <CurrencyInput class="form-input" required v-model="form.creditData.creditLimit"/>
+                <!-- <input class="form-input" type="number" required v-model="form.creditData.creditLimit" min="0"> -->
+              </div>
+              <div class="form-group">
+                <label class="form-label">E o dia do vencimento?</label>
+                <input class="form-input" type="number" required v-model="form.creditData.dueDay" min="1" max="31">
+              </div>
+              <div class="form-group">
+                <label class="form-label">E o dia do fechamento? (melhor dia de compra)</label>
+                <input class="form-input" type="number" required v-model="form.creditData.closeDay" min="1" max="31">
+              </div>
+            </template>
+
             <div class="form-group">
                 <button type="submit" class="button" :disabled="loading">Criar conta manual</button>
             </div>
@@ -50,10 +74,22 @@ const accountTypes = [
     { label: 'Cartão de crédito', value: 'CREDIT_CARD' },
 ]
 
+const creditCardBrandTypes = [
+    { label: 'Mastercard', value: 'Mastercard' },
+    { label: 'Visa', value: 'Visa' },
+    { label: 'Elo', value: 'Elo' },
+]
+
 const form = ref({
     name: '',
     type: 'WALLET',
     amount: 0, // multiplied by 100 to remove decimals
+    creditData: {
+      brand: 'Mastercard',
+      creditLimit: 0,
+      closeDay: 3,
+      dueDay: 10,
+    }
 })
 
 function turnNegative() {
@@ -71,13 +107,23 @@ async function handleSubmit() {
     const payload = {
         name: form.value.name,
         type: form.value.type,
-        initialBalance: form.value.amount,
-        balance: form.value.amount,
+        initialBalance: form.value.type == 'WALLET' || form.value.type == 'BANK' ? form.value.amount : 0,
+        balance: form.value.type == 'WALLET' || form.value.type == 'BANK' ? form.value.amount : 0,
         userId: userStore.user._id,
         imageUrl: '/src/assets/ManualAccountIcon.svg',
         syncType: AccountSyncType.MANUAL,
         currencyCode: CurrencyCodes.BRL,
         _isDeleted: false,
+    }
+
+    if(form.value.type == 'CREDIT_CARD') {
+      //@ts-ignore
+      payload.creditData = {
+        brand: form.value.creditData.brand,
+        creditLimit: form.value.creditData.creditLimit,
+        closeDay: form.value.creditData.closeDay,
+        dueDay: form.value.creditData.dueDay,
+      }
     }
 
     console.log(payload)

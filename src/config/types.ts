@@ -73,8 +73,8 @@ export interface CreditData {
     brand: String,
     creditLimit: Number,
     availableCreditLimit: Number,
-    closeDate: Date,
-    dueDate: Date,
+    closeDay: Number,
+    dueDay: Number,
 }
 
 export interface AccountDTO {

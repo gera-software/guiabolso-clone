@@ -74,12 +74,12 @@ export interface BankData {
 } 
 
 export interface CreditData {
-    institution: Institution,
+    institution?: Institution,
     brand: String,
     creditLimit: Number,
-    availableCreditLimit: Number,
-    closeDate: Date,
-    dueDate: Date,
+    availableCreditLimit?: Number,
+    closeDay: Number,
+    dueDay: Number,
 }
 
 export interface Account {
