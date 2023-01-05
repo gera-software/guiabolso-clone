@@ -19,6 +19,7 @@ export interface Category {
     iconName: string,
     primaryColor: string,
     ignored?: boolean,
+    group: string,
 }
 
 export interface User {

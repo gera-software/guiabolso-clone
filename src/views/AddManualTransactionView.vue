@@ -27,9 +27,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Categoria</label>
-                <select class="form-input" required v-model="form.categoryId">
-                    <option v-for="category in categories" :value="category._id">{{category.name}}</option>
-                </select>
+                <CategoryInput v-model="form.categoryId" />
             </div>
             <div class="form-group">
                 <label class="form-label">Comentários e #tags</label>
@@ -58,6 +56,7 @@ import { onMounted } from 'vue';
 import { AccountSummaryDTO, AccountSyncType, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
 import { useUserStore } from '../stores/userStore';
 import CurrencyInput from '../components/CurrencyInput.vue'
+import CategoryInput from '../components/CategoryInput.vue'
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
@@ -90,13 +89,14 @@ onMounted(async () => {
 
 const categories = ref<Category[]>([])
 
+// TODO refactor, not necessary fetch all categories, use getCategoryById()...
 async function getCategories(): Promise<Category[]> {
     console.log('get categories')
   return api.guiabolsoApi({
     method: 'get',
     url: `/categories-fetch`,
   }).then(function (response) {
-    //   console.log(response.data)
+      console.log('category fetch',response.data)
       categories.value = response.data
     return response.data
   }).catch(function (error) {
@@ -152,6 +152,7 @@ async function handleSubmit() {
         amount: form.value.amount,
         currencyCode: CurrencyCodes.BRL,
         date: stringToDate(form.value.date),
+        // TODO refactor, not necessary fetch all categories, use getCategoryById()...
         category: categories.value.find(category => category._id === form.value.categoryId),
         type: form.value.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
         syncType: AccountSyncType.MANUAL,
@@ -163,7 +164,7 @@ async function handleSubmit() {
         _isDeleted: false,
     }
 
-    // console.log(payload)
+    // console.log('add',payload)
     await saveTransaction(payload)
     loading.value = false
     // router.push({ name: 'extract'})

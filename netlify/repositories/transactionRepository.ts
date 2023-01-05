@@ -159,9 +159,11 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
  * @returns 
  */
 export async function create(transaction: Transaction | null): Promise<Transaction | null> {
+    console.log('CREATE', transaction?.category)
     await connect();
     const doc = new TransactionModel(transaction);
     const result = await doc.save();
+    console.log('RESULT', result)
     await disconnect();
 
     return result;

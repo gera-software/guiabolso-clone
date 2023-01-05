@@ -30,9 +30,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Categoria</label>
-                <select class="form-input" required v-model="form.categoryId">
-                    <option v-for="category in categories" :value="category._id">{{category.name}}</option>
-                </select>
+                <CategoryInput v-model="form.categoryId"/>
             </div>
             <div class="form-group">
                 <label class="form-label">Comentários e #tags</label>
@@ -65,6 +63,7 @@ import { AccountSummaryDTO, Category, CurrencyCodes, Transaction, TransactionSta
 import { useUserStore } from '../stores/userStore';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { useRoute, useRouter } from 'vue-router';
+import CategoryInput from '../components/CategoryInput.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -115,8 +114,8 @@ async function getTransaction(id: string) {
 
 onMounted(async () => {
   const transactionId = route.params.id.toString()
-  console.log(transactionId)
   await getTransaction(transactionId)
+  console.log(transaction.value)
 
   if(transaction.value) {
     form.value.description = transaction.value.description || transaction.value.descriptionOriginal || ''
@@ -156,6 +155,7 @@ onMounted(async () => {
 
 const categories = ref<Category[]>([])
 
+// TODO refactor, not necessary fetch all categories, use getCategoryById()...
 async function getCategories(): Promise<Category[]> {
     console.log('get categories')
   return api.guiabolsoApi({
@@ -182,7 +182,17 @@ function turnPositive() {
   form.value.amount = Math.abs(form.value.amount ?? 0)
 }
 
-const form = ref({
+type TransactionForm = {
+  description: string,
+  amount: number,
+  date: string,
+  accountId: string,
+  categoryId: string,
+  comment: string,
+  ignored: boolean,
+}
+
+const form = ref<TransactionForm>({
     description: '',
     amount: 0, // multiplied by 100 to remove decimals
     date: dateToString(new Date()),
@@ -219,6 +229,7 @@ async function handleSubmit() {
         amount: form.value.amount,
         // currencyCode: CurrencyCodes.BRL,
         date: stringToDate(form.value.date),
+        // TODO refactor, not necessary fetch all categories, use getCategoryById()...
         category: categories.value.find(category => category._id === form.value.categoryId),
         type: form.value.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
         // status: TransactionStatus.POSTED,

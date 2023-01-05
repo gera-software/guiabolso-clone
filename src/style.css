@@ -74,5 +74,101 @@ Animations on transitions
   }
 }
 
+.page {
+  background-color: #FAFAFA;
+  height: 100dvh;
+  position: absolute;
+  width: 100dvw;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/** Page transitions */
+
+.fade-enter-active,
+.fade-leave-active {
+  position: absolute;
+  width: 100%;
+  transition: opacity .5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  position: absolute;
+  width: 100%;
+  opacity: 0;
+}
+
+
+.slide-left-enter-from {
+  transform: translateX(100%);
+
+}
+.slide-left-enter-active {
+  /* position: absolute;
+  width: 100%; */
+  transition: transform .5s ease-out;
+}
+
+.slide-left-enter-to {
+  /* position: absolute;
+  width: 100%; */
+  z-index: 10;
+  transform: translateX(0%);
+}
+
+.slide-left-leave-from {
+  /* transform: translateX(100%); */
+  z-index: 0;
+
+}
+.slide-left-leave-active {
+  /* position: absolute;
+  width: 100%; */
+  transition: transform .5s ease;
+}
+
+.slide-left-leave-to {
+  z-index: 0;
+  /* z-index: 0; */
+  /* opacity: 0; */
+  /* position: absolute; */
+  /* width: 100%; */
+  /* transform: translateX(0); */
+}
+
+
+
+
+.slide-right-enter-from {
+  /* opacity: .3; */
+  z-index: 0
+}
+/* .slide-right-enter-active {
+  transition: transform .5s ease-in;
+  opacity: .3;
+  
+} */
+
+.slide-right-enter-to {
+  /* opacity: .3; */
+  z-index: 0
+
+}
+
+.slide-right-leave-from {
+  transform: translateX(0%);
+  z-index: 10
+}
+
+.slide-right-leave-active {
+  transition: transform .5s ease-in;
+}
+
+.slide-right-leave-to {
+  transform: translateX(100%);
+  z-index: 10
+}
+
 
 

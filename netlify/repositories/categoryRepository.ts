@@ -6,6 +6,7 @@ const schema = new Schema<Category>({
     name: String,
     iconName: { type: String, required: false },
     primaryColor: { type: String, required: false },
+    group: String,
 });
 
 const CategoryModel = model<Category>('categories', schema);

@@ -14,6 +14,7 @@ const schema = new Schema<Transaction>({
         iconName: String,
         primaryColor: String,
         ignored: Boolean,
+        group: String,
     },
     type: String,
     syncType: String,
