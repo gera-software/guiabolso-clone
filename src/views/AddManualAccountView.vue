@@ -110,7 +110,7 @@ async function handleSubmit() {
         initialBalance: form.value.type == 'WALLET' || form.value.type == 'BANK' ? form.value.amount : 0,
         balance: form.value.type == 'WALLET' || form.value.type == 'BANK' ? form.value.amount : 0,
         userId: userStore.user._id,
-        imageUrl: '/src/assets/ManualAccountIcon.svg',
+        imageUrl: '/assets/ManualAccountIcon.svg',
         syncType: AccountSyncType.MANUAL,
         currencyCode: CurrencyCodes.BRL,
         _isDeleted: false,

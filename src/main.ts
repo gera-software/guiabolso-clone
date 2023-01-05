@@ -1,5 +1,6 @@
 import { createApp, markRaw } from 'vue'
 import './style.css'
+import './assets/ManualAccountIcon.svg'
 import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
