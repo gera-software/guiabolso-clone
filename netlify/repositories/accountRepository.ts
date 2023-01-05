@@ -39,8 +39,8 @@ const schema = new Schema<Account>({
         brand: String,
         creditLimit: Number,
         availableCreditLimit: Number,
-        closeDate: Date,
-        dueDate: Date,
+        closeDay: Number,
+        dueDay: Number,
     },
     _isDeleted: { type: Boolean, required: false },
 });

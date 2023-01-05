@@ -1,7 +1,8 @@
 <template>
         <div class="account" @click="goToExtract(account._id?.toString())">
           <div class="col-1">
-            <img class="account-logo" :src="account.imageUrl?.toString()" />
+            <img v-if="account.imageUrl" class="account-logo" :src="account.imageUrl?.toString()" />
+            <img v-else class="account-logo" src="@/assets/ManualAccountIcon.svg" />
             <div>
               <div class="name">{{account.name}}</div>
               <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
