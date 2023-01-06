@@ -137,6 +137,7 @@ export interface Transaction {
     amount: Number,
     currencyCode: CurrencyCodes,
     date: Date,
+    creditCardDate?: Date,
     category?: Category,
     type: TransactionType,
     syncType: AccountSyncType,
@@ -144,6 +145,7 @@ export interface Transaction {
     comment?: String,
     ignored?: Boolean,
     accountId: String,
+    accountType?: AccountType,
     userId: String,
     _isDeleted?: Boolean,
 }

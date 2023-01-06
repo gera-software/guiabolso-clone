@@ -68,6 +68,7 @@ export async function fetchByAccount(id, monthField, yearField, transactionType 
                     amount: 1,
                     currencyCode: 1,
                     date: 1,
+                    creditCardDate: 1,
                     category: 1,
                     type: 1,
                     status: 1,
@@ -128,6 +129,7 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
                 amount: 1,
                 currencyCode: 1,
                 date: 1,
+                creditCardDate: 1,
                 category: 1,
                 type: 1,
                 status: 1,
@@ -159,7 +161,7 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
  * @returns 
  */
 export async function create(transaction: Transaction | null): Promise<Transaction | null> {
-    console.log('CREATE', transaction?.category)
+    console.log('CREATE', transaction)
     await connect();
     const doc = new TransactionModel(transaction);
     const result = await doc.save();
@@ -190,6 +192,7 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
         doc.description = transaction.description
         doc.amount = transaction.amount
         doc.date = transaction.date
+        doc.creditCardDate = transaction.creditCardDate
         doc.category = transaction.category
         doc.accountId = transaction.accountId
         doc.type = transaction.type
@@ -210,6 +213,7 @@ export async function findOneAndUpdate(transaction: Transaction): Promise<Transa
         description: transaction.description,
         amount: transaction.amount,
         date: transaction.date,
+        creditCardDate: transaction.creditCardDate,
         category: transaction.category,
         accountId: transaction.accountId,
         type: transaction.type,

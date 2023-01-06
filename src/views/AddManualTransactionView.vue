@@ -53,7 +53,7 @@ import api from '../config/axios.js'
 import { ref, watch, computed  } from 'vue'
 import AppBar from '@/components/AppBar.vue'
 import { onMounted } from 'vue';
-import { AccountSummaryDTO, AccountSyncType, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
+import { AccountSummaryDTO, AccountSyncType, AccountType, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
 import { useUserStore } from '../stores/userStore';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import CategoryInput from '../components/CategoryInput.vue'
@@ -119,15 +119,17 @@ function turnPositive() {
 const form = ref({
     description: '',
     amount: 0, // multiplied by 100 to remove decimals
-    date: dateToString(new Date()),
+    date: dateToLocalString(new Date()),
     accountId: '',
     categoryId: '',
     comment: '',
     ignored: false,
 })
 
-function dateToString(date: Date) : string {
-  return date.toISOString().split('T')[0]
+function dateToLocalString(date: Date) : string {
+  //yyyy-mm-dd
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}`
+  // return date.toISOString().split('T')[0]
 }
 
 function stringToDate(dateString: string): Date {
@@ -160,14 +162,14 @@ async function handleSubmit() {
         comment: form.value.comment,
         ignored: form.value.ignored,
         accountId: form.value.accountId,
+        accountType: manualAccounts.value.find(account => account._id == form.value.accountId)?.type,
         userId: userStore.user._id,
         _isDeleted: false,
     }
 
-    // console.log('add',payload)
+    console.log('add',payload)
     await saveTransaction(payload)
     loading.value = false
-    // router.push({ name: 'extract'})
     router.back()
 
 }

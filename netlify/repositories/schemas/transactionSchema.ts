@@ -8,6 +8,7 @@ const schema = new Schema<Transaction>({
     amount: Number,
     currencyCode: String,
     date: Date,
+    creditCardDate: { type: Date, required: false },
     category: {
         _id: Types.ObjectId,
         name: String,
@@ -22,6 +23,7 @@ const schema = new Schema<Transaction>({
     comment: { type: String, required: false },
     ignored: Boolean,
     accountId: Types.ObjectId,
+    accountType: { type: String, required: false },
     userId: Types.ObjectId,
     _isDeleted: Boolean,
 });

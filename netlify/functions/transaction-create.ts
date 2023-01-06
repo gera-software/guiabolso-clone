@@ -1,7 +1,7 @@
 import { Handler } from "@netlify/functions";
 import * as TransactionRepository from "../repositories/transactionRepository";
 import * as AccountRepository from "../repositories/accountRepository";
-import { Transaction, CurrencyCodes, TransactionType, TransactionStatus } from "../types";
+import { Transaction, CurrencyCodes, TransactionType, TransactionStatus, AccountType } from "../types";
 
 const handler: Handler = async (event, context) => {
     // {
@@ -33,6 +33,11 @@ const handler: Handler = async (event, context) => {
     }
 
     const transaction = JSON.parse(event.body) as Transaction;
+
+    if(transaction.accountType == AccountType.CREDIT_CARD) {
+        console.log('CARTÃO', transaction.date, new Date(transaction.date).toLocaleDateString())
+    }
+
     let doc: Transaction | null;
     try {
         doc = await TransactionRepository.create(transaction);

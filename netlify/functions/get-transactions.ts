@@ -1,3 +1,8 @@
+
+/**
+ * @deprecated
+ */
+
 import { Handler } from "@netlify/functions";
 import mongoose from 'mongoose';
 
