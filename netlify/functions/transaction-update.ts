@@ -87,6 +87,7 @@ const handler: Handler = async (event, context) => {
 
     console.log(transaction)
 
+    // TODO se trocar uma transação de account, dá algum problema no balanço das contas! Porque não está descontando a alteração 
     let docBeforeUpdate: Transaction | null;
     try {
         docBeforeUpdate = await TransactionRepository.findOneAndUpdate(transaction);

@@ -23,10 +23,10 @@
             </template>
             <template v-if="transaction?.accountType == 'CREDIT_CARD'">
               <div class="form-group">
-                  <label class="form-label">credit card date</label>
+                  <label class="form-label">Data da transação</label>
                   <input class="form-input" type="date" required :disabled="transaction?.syncType === 'AUTOMATIC'" v-model="form.creditCardDate">
               </div>
-              <div class="form-group">
+              <div class="form-group" v-if="transaction.category?.name !== 'Pagamento de cartão'">
                   <label class="form-label">Vencimento da fatura</label>
                   <input class="form-input" type="date" required disabled v-model="form.date">
               </div>
@@ -36,7 +36,7 @@
                 <select v-if="transaction?.syncType == 'AUTOMATIC'" class="form-input" required disabled="true" v-model="form.accountId">
                     <option v-for="account in accounts" :value="account._id">{{account.name}}</option>
                 </select>
-                <select v-else class="form-input" required v-model="form.accountId">
+                <select v-else class="form-input" required disabled="true" v-model="form.accountId">
                     <option v-for="account in manualAccounts" :value="account._id">{{account.name}}</option>
                 </select>
             </div>
