@@ -167,6 +167,10 @@ async function handleSubmit() {
         _isDeleted: false,
     }
 
+    if(payload.accountType == AccountType.CREDIT_CARD) {
+      payload.creditCardDate = payload.date
+    }
+
     console.log('add',payload)
     await saveTransaction(payload)
     loading.value = false

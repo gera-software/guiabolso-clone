@@ -34,18 +34,18 @@ const handler: Handler = async (event, context) => {
 
     const transaction = JSON.parse(event.body) as Transaction;
 
+    // se é cartão de credito, verificar o fechamento e vencimento do cartão para definir em qual mês será lançada a transação
     try {
-        // TODO se é cartão de credito, verificar o fechamento e vencimento do cartão para definir em qual mês será lançada a transação
-        if(transaction.accountType == AccountType.CREDIT_CARD) {
-            const creditCardDate = new Date(transaction.date)
+        if(transaction.accountType == AccountType.CREDIT_CARD && transaction.category?.name !== 'Pagamento de cartão') {
+            const creditCardDate = new Date(transaction.creditCardDate ?? '')
             let invoiceMonth = creditCardDate.getMonth()
             let invoiceYear = creditCardDate.getFullYear()
 
             const invoiceDate = new Date(
                 invoiceYear, 
                 invoiceMonth, 
-                creditCardDate.getDate(), 
-                23, 59, 59);
+                1, 
+                0, 0, 0);
             console.log('INVOICE DATE', invoiceDate.toLocaleString())
 
             const account = await AccountRepository.getById(transaction.accountId)
@@ -63,18 +63,20 @@ const handler: Handler = async (event, context) => {
                 invoiceYear, 
                 invoiceMonth, 
                 dueDay, 
-                23, 59, 59);
+                0, 0, 0);
             console.log('DUE DATE', dueDate.toLocaleString())
 
-
-
-
             console.log('ACCOUNT', creditCardDate.toLocaleDateString(), closeDay, dueDay)
+
+            transaction.creditCardDate = creditCardDate
+            // move a transação para a data de vencimento da fatura correspondente
             if(creditCardDate >= closingDate) {
-                console.log('dentro da fatura do mes que vem')
+                dueDate.setMonth(dueDate.getMonth() + 1)
+                console.log('dentro da fatura do mes que vem', dueDate.toLocaleString())
             } else {
-                console.log('dentro da fatura do mes atual')
+                console.log('dentro da fatura do mes atual', dueDate.toLocaleString())
             }
+            transaction.date = dueDate
         }
     } catch (err) {
         return {
@@ -83,17 +85,18 @@ const handler: Handler = async (event, context) => {
         };
     }
 
-    // let doc: Transaction | null;
-    // try {
-    //     doc = await TransactionRepository.create(transaction);
-    //     const account = await AccountRepository.addToBalance(transaction.accountId.toString(), transaction.amount.valueOf());
-    //     console.log(account)
-    // } catch (err) {
-    //     return {
-    //         statusCode: 500,
-    //         body: JSON.stringify(err),
-    //     };
-    // }
+    console.log(transaction)
+    let doc: Transaction | null;
+    try {
+        doc = await TransactionRepository.create(transaction);
+        const account = await AccountRepository.addToBalance(transaction.accountId.toString(), transaction.amount.valueOf());
+        // console.log(account)
+    } catch (err) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify(err),
+        };
+    }
 
     return {
         statusCode: 200,

@@ -15,10 +15,22 @@
                   <button @click="turnPositive" type="button" class="button button-toggle" :class="{ 'button-toggle--active': form.amount >= 0 }">+ R$</button>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="form-label">Data</label>
-                <input class="form-input" type="date" required :disabled="transaction?.syncType === 'AUTOMATIC'" v-model="form.date">
-            </div>
+            <template v-if="transaction?.accountType !== 'CREDIT_CARD'">
+              <div class="form-group">
+                  <label class="form-label">Data</label>
+                  <input class="form-input" type="date" required :disabled="transaction?.syncType === 'AUTOMATIC'" v-model="form.date">
+              </div>
+            </template>
+            <template v-if="transaction?.accountType == 'CREDIT_CARD'">
+              <div class="form-group">
+                  <label class="form-label">credit card date</label>
+                  <input class="form-input" type="date" required :disabled="transaction?.syncType === 'AUTOMATIC'" v-model="form.creditCardDate">
+              </div>
+              <div class="form-group">
+                  <label class="form-label">Vencimento da fatura</label>
+                  <input class="form-input" type="date" required disabled v-model="form.date">
+              </div>
+            </template>
             <div class="form-group">
                 <label class="form-label">Conta</label>
                 <select v-if="transaction?.syncType == 'AUTOMATIC'" class="form-input" required disabled="true" v-model="form.accountId">
@@ -59,7 +71,7 @@ import api from '../config/axios.js'
 import { ref, watch, computed  } from 'vue'
 import AppBar from '@/components/AppBar.vue'
 import { onMounted } from 'vue';
-import { AccountSummaryDTO, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
+import { AccountSummaryDTO, AccountType, Category, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from '../config/types';
 import { useUserStore } from '../stores/userStore';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { useRoute, useRouter } from 'vue-router';
@@ -121,6 +133,9 @@ onMounted(async () => {
     form.value.description = transaction.value.description || transaction.value.descriptionOriginal || ''
     form.value.amount = transaction.value.amount
     form.value.date = dateToString(new Date(transaction.value.date))
+    if(transaction.value.accountType == AccountType.CREDIT_CARD) {
+      form.value.creditCardDate = dateToString(new Date(transaction.value.creditCardDate ?? ''))
+    }
     form.value.accountId = transaction.value.accountId
     form.value.categoryId = transaction.value.category?._id ?? ''
     form.value.comment = transaction.value.comment ?? ''
@@ -186,6 +201,7 @@ type TransactionForm = {
   description: string,
   amount: number,
   date: string,
+  creditCardDate: string,
   accountId: string,
   categoryId: string,
   comment: string,
@@ -195,7 +211,8 @@ type TransactionForm = {
 const form = ref<TransactionForm>({
     description: '',
     amount: 0, // multiplied by 100 to remove decimals
-    date: dateToString(new Date()),
+    date: '',
+    creditCardDate: '',
     accountId: '',
     categoryId: '',
     comment: '',
@@ -231,6 +248,7 @@ async function handleSubmit() {
         amount: form.value.amount,
         // currencyCode: CurrencyCodes.BRL,
         date: stringToDate(form.value.date),
+        // creditCardDate: null as Date,
         // TODO refactor, not necessary fetch all categories, use getCategoryById()...
         category: categories.value.find(category => category._id === form.value.categoryId),
         type: form.value.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
@@ -238,8 +256,14 @@ async function handleSubmit() {
         comment: form.value.comment,
         ignored: form.value.ignored,
         accountId: form.value.accountId,
+        accountType: accounts.value.find(account => account._id == form.value.accountId)?.type,
         // userId: store.user._id,
         // _isDeleted: false,
+    }
+
+    if(payload.accountType == AccountType.CREDIT_CARD) {
+      // @ts-ignore
+      payload.creditCardDate = stringToDate(form.value.creditCardDate)
     }
 
     console.log(payload)

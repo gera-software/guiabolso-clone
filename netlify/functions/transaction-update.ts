@@ -1,6 +1,6 @@
 import { Handler } from "@netlify/functions";
 import * as TransactionRepository from "../repositories/transactionRepository";
-import { Transaction, CurrencyCodes, TransactionType, TransactionStatus } from "../types";
+import { Transaction, CurrencyCodes, TransactionType, TransactionStatus, AccountType } from "../types";
 import * as AccountRepository from '../repositories/accountRepository'
 
 const handler: Handler = async (event, context) => {
@@ -33,6 +33,60 @@ const handler: Handler = async (event, context) => {
     }
 
     const transaction = JSON.parse(event.body) as Transaction;
+
+    // se é cartão de credito, verificar o fechamento e vencimento do cartão para definir em qual mês será lançada a transação
+    try {
+        if(transaction.accountType == AccountType.CREDIT_CARD && transaction.category?.name !== 'Pagamento de cartão') {
+            const creditCardDate = new Date(transaction.creditCardDate ?? '')
+            let invoiceMonth = creditCardDate.getMonth()
+            let invoiceYear = creditCardDate.getFullYear()
+
+            const invoiceDate = new Date(
+                invoiceYear, 
+                invoiceMonth, 
+                1, 
+                0, 0, 0);
+            console.log('INVOICE DATE', invoiceDate.toLocaleString())
+
+            const account = await AccountRepository.getById(transaction.accountId)
+            const closeDay = +(account?.creditData?.closeDay ?? 0)
+            const dueDay = +(account?.creditData?.dueDay ?? 0)
+            
+            const closingDate =  new Date(
+                invoiceYear, 
+                invoiceMonth, 
+                closeDay, 
+                0, 0, 0);
+            console.log('CLOSING DATE', closingDate.toLocaleString())
+
+            const dueDate = new Date(
+                invoiceYear, 
+                invoiceMonth, 
+                dueDay, 
+                0, 0, 0);
+            console.log('DUE DATE', dueDate.toLocaleString())
+
+            console.log('ACCOUNT', creditCardDate.toLocaleDateString(), closeDay, dueDay)
+
+            transaction.creditCardDate = creditCardDate
+            // move a transação para a data de vencimento da fatura correspondente
+            if(creditCardDate >= closingDate) {
+                dueDate.setMonth(dueDate.getMonth() + 1)
+                console.log('dentro da fatura do mes que vem', dueDate.toLocaleString())
+            } else {
+                console.log('dentro da fatura do mes atual', dueDate.toLocaleString())
+            }
+            transaction.date = dueDate
+        }
+    } catch (err) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify(err),
+        };
+    }
+
+    console.log(transaction)
+
     let docBeforeUpdate: Transaction | null;
     try {
         docBeforeUpdate = await TransactionRepository.findOneAndUpdate(transaction);
