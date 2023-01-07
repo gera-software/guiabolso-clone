@@ -149,3 +149,28 @@ export async function updateCashTransaction(transaction: Transaction): Promise<T
     console.log(transaction)
     return transaction
 }
+
+export async function removeCreditCardTransaction(transaction: Transaction): Promise<Transaction | null | undefined> {
+    const result: Transaction | null = await TransactionRepository.remove(transaction._id)
+    // TODO talvez não seja preciso atualizar o balanço quando for cartão de crédito
+    const account = await AccountRepository.subtractFromBalance('' + transaction?.accountId.toString(), transaction?.amount.valueOf());
+    // console.log(account)
+
+    return result
+}
+
+export async function removeCheckingAccountTransaction(transaction: Transaction): Promise<Transaction | null | undefined> {
+    const result: Transaction | null = await TransactionRepository.remove(transaction._id)
+    const account = await AccountRepository.subtractFromBalance('' + transaction?.accountId.toString(), transaction?.amount.valueOf());
+    // console.log(account)
+
+    return result
+}
+
+export async function removeCashTransaction(transaction: Transaction): Promise<Transaction | null | undefined> {
+    const result: Transaction | null = await TransactionRepository.remove(transaction._id)
+    const account = await AccountRepository.subtractFromBalance('' + transaction?.accountId.toString(), transaction?.amount.valueOf());
+    // console.log(account)
+
+    return result
+}
