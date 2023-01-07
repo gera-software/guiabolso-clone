@@ -1,8 +1,6 @@
 import { Handler } from "@netlify/functions";
-import * as TransactionRepository from "../repositories/transactionRepository";
-import * as AccountRepository from "../repositories/accountRepository";
 import * as TransactionService from "../services/transactionService";
-import { Transaction, CurrencyCodes, TransactionType, TransactionStatus, AccountType } from "../types";
+import { Transaction, AccountType } from "../types";
 
 const handler: Handler = async (event, context) => {
 
