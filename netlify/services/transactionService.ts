@@ -12,60 +12,15 @@ import * as CreditCardInvoiceRepository from "../repositories/creditCardInvoiceR
  */
 export async function addCreditCardTransaction(transaction: Transaction): Promise<Transaction | null | undefined> {
     if(transaction.accountType == AccountType.CREDIT_CARD && transaction.category?.name !== 'Pagamento de cartão') {
-        // indeitificar dueDate and ClosingDate
-        
-        const creditCardDate = new Date(transaction.creditCardDate ?? '')
-        let invoiceMonth = creditCardDate.getUTCMonth() // between 0 and 11
-        let invoiceYear = creditCardDate.getUTCFullYear()
+        // indentificar invoice dueDate and ClosingDate 
+        const { dueDate, closingDate } = await calculateInvoiceDates(transaction)
 
-        const invoiceDate = new Date(Date.UTC(+invoiceYear, +invoiceMonth, 1))
-        console.log('INVOICE DATE', invoiceDate.toISOString())
-
-        const account = await AccountRepository.getById(transaction.accountId)
-        const closeDay = +(account?.creditData?.closeDay ?? 0)
-        const dueDay = +(account?.creditData?.dueDay ?? 0)
-        
-        const closingDate = new Date(Date.UTC(+invoiceYear, +invoiceMonth, closeDay, 0, 0, 0))
-        console.log('CLOSING DATE', closingDate.toISOString())
-
-        const dueDate = new Date(Date.UTC(+invoiceYear, +invoiceMonth, dueDay, 0, 0, 0))
-        console.log('DUE DATE', dueDate.toISOString())
-
-        console.log('ACCOUNT', creditCardDate.toISOString(), closeDay, dueDay)
-
-        transaction.creditCardDate = creditCardDate
         // move a transação para a data de vencimento da fatura correspondente
-        if(creditCardDate >= closingDate) {
-            dueDate.setUTCMonth(dueDate.getUTCMonth() + 1)
-            closingDate.setUTCMonth(closingDate.getUTCMonth() + 1)
-            console.log('dentro da fatura do mes que vem', dueDate.toISOString())
-        } else {
-            console.log('dentro da fatura do mes atual', dueDate.toISOString())
-        }
         transaction.date = dueDate
-
-        // cria a fatura se ela ainda não existe
-        const cci = await CreditCardInvoiceRepository.getByDueDate(transaction.accountId.toString(), dueDate)
-        
-        if(cci) {
-            console.log('FATURA ENCONTRADA', cci._id)
-            // add cci._d to transaction.crecitCardInvoiceId
-            transaction.creditCardInvoiceId = cci._id
-        } else {
-            const creditCardInvoice : CreditCardInvoice = {
-                dueDate: dueDate,
-                closeDate: closingDate,
-                amount: 0,
-                currencyCode: CurrencyCodes.BRL,
-                userId: transaction.userId.toString(),
-                accountId: transaction.accountId.toString(),
-                _isDeleted: false,
-            }
-            // cria a fatura
-            const newInvoice = await CreditCardInvoiceRepository.create(creditCardInvoice)
-            console.log('NOVA FATURA CRIADA', newInvoice)
-            transaction.creditCardInvoiceId = newInvoice?._id
-        }
+    
+        // link transaction to invoice
+        const invoice = await findOrCreateInvoiceToTransaction(transaction, dueDate, closingDate)
+        transaction.creditCardInvoiceId = invoice?._id
     }
 
     let doc: Transaction | null = await TransactionRepository.create(transaction);
@@ -100,6 +55,58 @@ export async function addCashTransaction(transaction: Transaction): Promise<Tran
     
     console.log(doc)
     return doc
+}
+
+/**
+ * Calculate invoice dueDate and closingDate, based only on transaction informations
+ * @param transaction 
+ */
+async function calculateInvoiceDates(transaction: Transaction) {
+        const creditCardDate = new Date(transaction.creditCardDate ?? '')
+        let invoiceMonth = creditCardDate.getUTCMonth() // between 0 and 11
+        let invoiceYear = creditCardDate.getUTCFullYear()
+
+        const account = await AccountRepository.getById(transaction.accountId)
+        const closeDay = +(account?.creditData?.closeDay ?? 0)
+        const dueDay = +(account?.creditData?.dueDay ?? 0)
+        
+        const closingDate = new Date(Date.UTC(+invoiceYear, +invoiceMonth, closeDay, 0, 0, 0))
+
+        const dueDate = new Date(Date.UTC(+invoiceYear, +invoiceMonth, dueDay, 0, 0, 0))
+
+        // move a transação para a data de vencimento da fatura correspondente
+        if(creditCardDate >= closingDate) {
+            dueDate.setUTCMonth(dueDate.getUTCMonth() + 1)
+            closingDate.setUTCMonth(closingDate.getUTCMonth() + 1)
+            // console.log('dentro da fatura do mes que vem', dueDate.toISOString())
+        } else {
+            // console.log('dentro da fatura do mes atual', dueDate.toISOString())
+        }
+        
+        return {
+            dueDate,
+            closingDate,
+        }
+}
+
+async function findOrCreateInvoiceToTransaction(transaction: Transaction, dueDate: Date, closingDate: Date) {
+    let invoice = await CreditCardInvoiceRepository.getByDueDate(transaction.accountId.toString(), dueDate)
+
+    if(!invoice) {
+        const creditCardInvoice : CreditCardInvoice = {
+            dueDate: dueDate,
+            closeDate: closingDate,
+            amount: 0,
+            currencyCode: CurrencyCodes.BRL,
+            userId: transaction.userId.toString(),
+            accountId: transaction.accountId.toString(),
+            _isDeleted: false,
+        }
+        // cria a fatura
+        invoice = await CreditCardInvoiceRepository.create(creditCardInvoice)
+    }
+
+    return invoice
 }
 
 export async function updateCreditCardTransaction(transaction: Transaction): Promise<Transaction | null | undefined> {
