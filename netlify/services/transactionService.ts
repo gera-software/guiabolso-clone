@@ -1,6 +1,7 @@
-import { AccountType, Transaction } from "../types";
+import { AccountType, CreditCardInvoice, CurrencyCodes, Transaction } from "../types";
 import * as AccountRepository from "../repositories/accountRepository";
 import * as TransactionRepository from "../repositories/transactionRepository";
+import * as CreditCardInvoiceRepository from "../repositories/creditCardInvoiceRepository";
 
 /**
  * Adiciona uma transação no cartão de crédito
@@ -11,6 +12,8 @@ import * as TransactionRepository from "../repositories/transactionRepository";
  */
 export async function addCreditCardTransaction(transaction: Transaction): Promise<Transaction | null | undefined> {
     if(transaction.accountType == AccountType.CREDIT_CARD && transaction.category?.name !== 'Pagamento de cartão') {
+        // indeitificar dueDate and ClosingDate
+        
         const creditCardDate = new Date(transaction.creditCardDate ?? '')
         let invoiceMonth = creditCardDate.getUTCMonth() // between 0 and 11
         let invoiceYear = creditCardDate.getUTCFullYear()
@@ -34,12 +37,34 @@ export async function addCreditCardTransaction(transaction: Transaction): Promis
         // move a transação para a data de vencimento da fatura correspondente
         if(creditCardDate >= closingDate) {
             dueDate.setUTCMonth(dueDate.getUTCMonth() + 1)
+            closingDate.setUTCMonth(closingDate.getUTCMonth() + 1)
             console.log('dentro da fatura do mes que vem', dueDate.toISOString())
         } else {
             console.log('dentro da fatura do mes atual', dueDate.toISOString())
         }
         transaction.date = dueDate
 
+        // cria a fatura se ela ainda não existe
+        const cci = await CreditCardInvoiceRepository.getByDueDate(transaction.accountId.toString(), dueDate)
+        
+        if(cci) {
+            console.log('FATURA ENCONTRADA', cci._id)
+            // add cci._d to transaction.crecitCardInvoiceId
+            cci._id
+        } else {
+            const creditCardInvoice : CreditCardInvoice = {
+                dueDate: dueDate,
+                closeDate: closingDate,
+                amount: 0,
+                currencyCode: CurrencyCodes.BRL,
+                userId: transaction.userId.toString(),
+                accountId: transaction.accountId.toString(),
+                _isDeleted: false,
+            }
+            // cria a fatura
+            const newInvoice = await CreditCardInvoiceRepository.create(creditCardInvoice)
+            console.log('NOVA FATURA CRIADA', newInvoice)
+        }
     }
 
     let doc: Transaction | null = await TransactionRepository.create(transaction);

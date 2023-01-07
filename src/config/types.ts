@@ -208,6 +208,17 @@ export interface CalendarBill {
     _isDeleted: boolean,
 }
 
+export interface CreditCardInvoice {
+    _id?: string,
+    dueDate: Date,
+    closeDate: Date,
+    amount: number,
+    currencyCode: CurrencyCodes,
+    userId: string,
+    accountId: string,
+    _isDeleted: boolean,
+}
+
 
 export interface DataProvider {
     fetchInstitutions(): Promise<Institution[]>
