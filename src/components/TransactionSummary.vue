@@ -13,7 +13,7 @@
         </div>
         <div class="col-2">
             <span class="accountOrDate">{{
-                showDate ? transaction.date.toLocaleDateString() : transaction.account.name
+                showDate ? transaction.date.toISOString().slice(0,10) : transaction.account.name
             }}</span>
             <span class="value">R$ {{ (+transaction.amount / 100).toFixed(2) }}</span>
         </div>

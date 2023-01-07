@@ -76,6 +76,7 @@ import { useUserStore } from '../stores/userStore';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { useRoute, useRouter } from 'vue-router';
 import CategoryInput from '../components/CategoryInput.vue'
+import { dateToUTCString, stringToUTCDate } from '../config/dateHelper';
 
 const router = useRouter()
 const route = useRoute()
@@ -132,9 +133,9 @@ onMounted(async () => {
   if(transaction.value) {
     form.value.description = transaction.value.description || transaction.value.descriptionOriginal || ''
     form.value.amount = transaction.value.amount
-    form.value.date = dateToString(new Date(transaction.value.date))
-    if(transaction.value.accountType == AccountType.CREDIT_CARD) {
-      form.value.creditCardDate = dateToString(new Date(transaction.value.creditCardDate ?? ''))
+    form.value.date = dateToUTCString(new Date(transaction.value.date))
+    if(transaction.value.accountType == AccountType.CREDIT_CARD && transaction.value.creditCardDate) {
+      form.value.creditCardDate = dateToUTCString(new Date(transaction.value.creditCardDate))
     }
     form.value.accountId = transaction.value.accountId
     form.value.categoryId = transaction.value.category?._id ?? ''
@@ -219,25 +220,6 @@ const form = ref<TransactionForm>({
     ignored: false,
 })
 
-function dateToString(date: Date) : string {
-  //yyyy-mm-dd
-  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}`
-  // return date.toISOString().split('T')[0]
-}
-
-function stringToDate(dateString: string): Date {
-    // const date = new Date(dateString)
-    // const start = date.toISOString().split('T')[0]
-    // const end = (new Date()).toISOString().split('T')[1]
-    // const isoDateString = start + 'T' + end
-    // return new Date(isoDateString)
-
-    const date = new Date()
-    const [ year, month, day ] = dateString.split('-')
-    date.setFullYear(+year, +month - 1, +day)
-    return date
-}
-
 const loading = ref(false)
 
 async function handleSubmit() {
@@ -247,7 +229,7 @@ async function handleSubmit() {
         description: form.value.description,
         amount: form.value.amount,
         // currencyCode: CurrencyCodes.BRL,
-        date: stringToDate(form.value.date),
+        date: stringToUTCDate(form.value.date),
         // creditCardDate: null as Date,
         // TODO refactor, not necessary fetch all categories, use getCategoryById()...
         category: categories.value.find(category => category._id === form.value.categoryId),
@@ -263,7 +245,7 @@ async function handleSubmit() {
 
     if(payload.accountType == AccountType.CREDIT_CARD) {
       // @ts-ignore
-      payload.creditCardDate = stringToDate(form.value.creditCardDate)
+      payload.creditCardDate = stringToUTCDate(form.value.creditCardDate)
     }
 
     console.log(payload)

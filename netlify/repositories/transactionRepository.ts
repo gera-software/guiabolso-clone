@@ -43,6 +43,8 @@ export async function fetchByAccount(id, monthField, yearField, transactionType 
     const firstDay = new Date(`${year}-${month}-01`)
     const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
     
+    console.log('FIRST DAY', firstDay.toISOString(),'LAST DAY', lastDay.toISOString())
+    
     const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
     const result = await TransactionModel.aggregate([
@@ -68,7 +70,9 @@ export async function fetchByAccount(id, monthField, yearField, transactionType 
                     amount: 1,
                     currencyCode: 1,
                     date: 1,
+                    plainDate: 1,
                     creditCardDate: 1,
+                    plainCreditCardDate: 1,
                     category: 1,
                     type: 1,
                     status: 1,
@@ -129,7 +133,9 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
                 amount: 1,
                 currencyCode: 1,
                 date: 1,
+                plainDate: 1,
                 creditCardDate: 1,
+                plainCreditCardDate: 1,
                 category: 1,
                 type: 1,
                 status: 1,
@@ -192,7 +198,9 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
         doc.description = transaction.description
         doc.amount = transaction.amount
         doc.date = transaction.date
+        doc.plainDate = transaction.plainDate
         doc.creditCardDate = transaction.creditCardDate
+        doc.plainCreditCardDate = transaction.plainCreditCardDate
         doc.category = transaction.category
         doc.accountId = transaction.accountId
         doc.type = transaction.type
@@ -213,7 +221,9 @@ export async function findOneAndUpdate(transaction: Transaction): Promise<Transa
         description: transaction.description,
         amount: transaction.amount,
         date: transaction.date,
+        plainDate: transaction.plainDate,
         creditCardDate: transaction.creditCardDate,
+        plainCreditCardDate: transaction.plainCreditCardDate,
         category: transaction.category,
         accountId: transaction.accountId,
         type: transaction.type,
@@ -273,7 +283,7 @@ export async function fetchSpendingsByCategories(id, monthField, yearField, tran
                 _isDeleted: { $ne: true }, 
                 ignored: { $ne: true }, 
                 "category.ignored": false , 
-                date: { $gte: firstDay, $lt: lastDay },
+                date: { $gte: firstDay, $lt: lastDay }, // TODO that is a big problem
                 type: { $in: types }, 
                 } 
             },

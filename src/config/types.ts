@@ -160,6 +160,7 @@ export interface TransactionSummaryDTO {
     amount: number,
     currencyCode: CurrencyCodes,
     date: Date,
+    // plainDate: string,
     category?: Category,
     type: TransactionType,
     status: TransactionStatus,
@@ -195,6 +196,7 @@ export enum BillType {
     RECEIVABLE = 'RECEIVABLE',
 }
 
+// TODO agenda deve ter um atributo plainDate também, assim como as transações para resolver os problemas com fuso horários
 export interface CalendarBill {
     _id?: string,
     dueDate: Date,

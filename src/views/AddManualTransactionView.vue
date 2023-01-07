@@ -58,6 +58,7 @@ import { useUserStore } from '../stores/userStore';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import CategoryInput from '../components/CategoryInput.vue'
 import { useRouter } from 'vue-router';
+import { currentDateToUTCString, dateToUTCString, stringToUTCDate } from '../config/dateHelper';
 
 const router = useRouter()
 
@@ -119,31 +120,14 @@ function turnPositive() {
 const form = ref({
     description: '',
     amount: 0, // multiplied by 100 to remove decimals
-    date: dateToLocalString(new Date()),
+    date: currentDateToUTCString(),
     accountId: '',
     categoryId: '',
     comment: '',
     ignored: false,
 })
 
-function dateToLocalString(date: Date) : string {
-  //yyyy-mm-dd
-  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}`
-  // return date.toISOString().split('T')[0]
-}
 
-function stringToDate(dateString: string): Date {
-    // const date = new Date(dateString)
-    // const start = date.toISOString().split('T')[0]
-    // const end = (new Date()).toISOString().split('T')[1]
-    // const isoDateString = start + 'T' + end
-    // return new Date(isoDateString)
-
-    const date = new Date()
-    const [ year, month, day ] = dateString.split('-')
-    date.setFullYear(+year, +month - 1, +day)
-    return date
-}
 
 const loading = ref(false)
 
@@ -153,7 +137,7 @@ async function handleSubmit() {
         description: form.value.description,
         amount: form.value.amount,
         currencyCode: CurrencyCodes.BRL,
-        date: stringToDate(form.value.date),
+        date: stringToUTCDate(form.value.date),
         // TODO refactor, not necessary fetch all categories, use getCategoryById()...
         category: categories.value.find(category => category._id === form.value.categoryId),
         type: form.value.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,

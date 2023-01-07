@@ -50,6 +50,7 @@ import { BillStatus, BillType, CalendarBill } from '../config/types';
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '../stores/userStore';
 import { useRoute, useRouter } from 'vue-router';
+import { dateToUTCString, stringToUTCDate } from '../config/dateHelper';
 
 const userStore =  useUserStore()
 const router = useRouter()
@@ -79,29 +80,10 @@ const status = [
     }, 
 ]
 
-function dateToString(date: Date) : string {
-  //yyyy-mm-dd
-  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}`
-  // return date.toISOString().split('T')[0]
-}
-
-function stringToDate(dateString: string): Date {
-    // const date = new Date(dateString)
-    // const start = date.toISOString().split('T')[0]
-    // const end = (new Date()).toISOString().split('T')[1]
-    // const isoDateString = start + 'T' + end
-    // return new Date(isoDateString)
-
-    const date = new Date()
-    const [ year, month, day ] = dateString.split('-')
-    date.setFullYear(+year, +month - 1, +day)
-    return date
-}
-
 const bill = ref<CalendarBill>()
 
 const form = ref({
-    dueDate: dateToString(new Date()),
+    dueDate: '',
     description: '',
     amount: 0, // multiplied by 100 to remove decimals
     status: '',
@@ -134,7 +116,7 @@ onMounted(async () => {
   if(bill.value) {
     form.value.description = bill.value.description
     form.value.amount = Math.abs(bill.value.amount),
-    form.value.dueDate = dateToString(new Date(bill.value.dueDate))
+    form.value.dueDate = dateToUTCString(new Date(bill.value.dueDate))
     form.value.userId = bill.value.userId
     form.value.status = bill.value.status
     form.value.type = bill.value.type
@@ -150,7 +132,7 @@ async function handleSubmit() {
         _id: bill.value?._id,
         description: form.value.description,
         amount: form.value.type === BillType.PAYABLE ? Math.abs(form.value.amount) * -1 : Math.abs(form.value.amount),
-        dueDate: stringToDate(form.value.dueDate),
+        dueDate: stringToUTCDate(form.value.dueDate),
         // type: form.value.type as BillType,
         status: form.value.status as BillStatus,
         // _isDeleted: false,

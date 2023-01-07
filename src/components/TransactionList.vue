@@ -4,8 +4,10 @@
         <div v-for="(transaction, index) in transactions">
           <div class="date-separator" v-if="index === 0 || transactions[index - 1].date.getDate() !== transaction.date.getDate()">
             <div class="date">
-              <h2 class="day">{{ transaction.date.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2>
-              <div class="month">{{ transaction.date.toLocaleString('pt-BR', { month: 'short'}) }}</div>
+              <h2 class="day">{{ transaction.date.getUTCDate() }}</h2>
+              <!-- <h2 class="day">{{ transaction.date.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2> -->
+              <!-- <div class="month">{{ transaction.date.toLocaleString('pt-BR', { month: 'short'}) }}</div> -->
+              <div class="month">{{ numberToMonth(transaction.date.getUTCMonth()) }}</div>
             </div>
           </div>
 
@@ -30,13 +32,18 @@
       </div>
 </template>
 <script setup lang="ts">
+import { computed } from "vue";
 import TransactionSummary from "../components/TransactionSummary.vue";
 import { TransactionSummaryDTO } from "../config/types";
+import { numberToMonth } from '../config/dateHelper'
 
 defineProps<{
     transactions: TransactionSummaryDTO[],
     isLoading: boolean
 }>()
+
+
+
 </script>
 <style scoped>
 
