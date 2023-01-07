@@ -2,7 +2,7 @@
     <div class="bills-container" v-if="!isLoading">
       
       <div v-for="(bill, index) in bills">
-        <div class="date-separator" v-if="index === 0 || bills[index - 1].dueDate.getDate() !== bill.dueDate.getDate()">
+        <div class="date-separator" v-if="index === 0 || bills[index - 1].dueDate.getUTCDate() !== bill.dueDate.getUTCDate()">
           <div class="date">
             <h2 class="day">{{ bill.dueDate.getUTCDate() }}</h2>
             <div class="month">{{ numberToMonth(bill.dueDate.getUTCMonth()) }}</div>

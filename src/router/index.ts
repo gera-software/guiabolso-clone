@@ -73,7 +73,7 @@ const router = createRouter({
     //   component: ExtractByAccountView,
     // },
     {
-      path: '/creditcard/:accountId/invoices/:invoiceId',
+      path: '/creditcard/:accountId/invoices',
       name: 'creditcard-invoice',
       component: CreditCardInvoiceView,
     },

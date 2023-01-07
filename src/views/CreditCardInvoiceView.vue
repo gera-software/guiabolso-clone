@@ -18,10 +18,10 @@
             </div>
 
             <div class="invoice-info" v-if="selectedInvoice">
-                <div>
+                <!-- <div>
                     <h3 class="label">Total</h3>
                     <h4 class="display"> R$ X</h4>
-                </div>
+                </div> -->
                 <div>
                     <h3 class="label">Fechamento</h3>
                     <h4 class="display">{{ `${(''+selectedInvoice.closeDate.getUTCDate()).padStart(2, '0')}/${(selectedInvoice.closeDate.getUTCMonth()+1).toString().padStart(2, '0')}/${selectedInvoice.closeDate.getUTCFullYear()}` }}</h4>
@@ -34,11 +34,7 @@
             </template>
         </AppBar>
         <div class="container">
-            {{ accountId }}
-            <pre>
-                {{ invoices }}
-            </pre>
-            <!-- <CreditCardTransactionList></CreditCardTransactionList> -->
+            <CreditCardTransactionList :transactions="transactions" :isLoading="false"></CreditCardTransactionList>
         </div>
     </div>
 </template>
@@ -49,7 +45,7 @@ import api from "../config/axios.js";
 import CreditCardTransactionList from '@/components/CreditCardTransactionList.vue'
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { AccountDTO, AccountSyncType, AccountType, CreditCardInvoice, CurrencyCodes, InstitutionType } from '../config/types';
+import { AccountDTO, AccountSyncType, AccountType, CreditCardInvoice, CurrencyCodes, InstitutionType, Transaction } from '../config/types';
 import { currentDateToUTCString, numberToMonth } from '../config/dateHelper';
 
 const router = useRouter()
@@ -121,10 +117,48 @@ const referenceOptions = computed(() => {
     }))
 })
 
+const transactions = ref<Transaction[]>([])
+
+async function getTransactionsByInvoice(invoiceId: String) {
+  transactions.value = await api.guiabolsoApi({
+    method: 'get',
+    url: `/transactions-fetch-by-credit-card-invoice?id=${invoiceId}`
+  }).then((response) => {
+    return response.data
+  }).then((transaction) => {
+    return transaction.map((transaction: Transaction) : Transaction => {
+        transaction.date = new Date(transaction.date)
+        transaction.creditCardDate = new Date(transaction.creditCardDate ?? '')
+        return transaction
+    } )
+  })
+  .catch(function (error) {
+    console.log(error.response?.data);
+  })
+}
+
+
+watch(selectedInvoiceId, async (invoiceId) => {
+  console.log('WATCH SELECTED ID', invoiceId)
+  await getTransactionsByInvoice(invoiceId)
+})
+
+
+
 
 </script>
 
 <style scoped>
+
+.app-bar-select {
+    margin: 0;
+    font-weight: 600;
+    font-size: 22px;
+    color: #404040;
+    border: none;
+    background-color: white;
+}
+
 
 .container {
   padding-top: 196px;

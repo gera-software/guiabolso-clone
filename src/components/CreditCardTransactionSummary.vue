@@ -1,5 +1,5 @@
 <template>
-    <div  tabindex="0" class="transaction" :class="{ 'transaction--ignored': transaction.ignored }" @click="showDetails(transaction._id ?? '')">
+    <div class="transaction" :class="{ 'transaction--ignored': transaction.ignored }">
         <div class="col-1">
             <CategoryIcon :icon="transaction.category?.iconName ?? 'Uncategorized'" :color="transaction.category?.primaryColor ?? '#F9386A'" />
             <div class="flex">
@@ -12,9 +12,9 @@
             </div>
         </div>
         <div class="col-2">
-            <span class="accountOrDate">{{
-                showDate ? transaction.date.toISOString().slice(0,10) : transaction.account.name
-            }}</span>
+            <!-- <span class="accountOrDate">{{
+                transaction.date.toISOString().slice(0,10)
+            }}</span> -->
             <span class="value">R$ {{ (+transaction.amount / 100).toFixed(2) }}</span>
         </div>
     </div>
@@ -22,20 +22,14 @@
 
 <script setup lang="ts">
 import CategoryIcon from '@/components/CategoryIcon.vue'
-import { TransactionSummaryDTO } from '../config/types';
+import { Transaction } from '../config/types';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
 
 defineProps<{
-    transaction: TransactionSummaryDTO,
-    showDate?: boolean,
+    transaction: Transaction,
 }>()
-
-function showDetails(transactionId: string) {
-    console.log('showDetails', transactionId)
-    router.push({ name: 'transaction', params: { id: transactionId } })
-}
 
 </script>
 <style scoped>
@@ -46,12 +40,12 @@ function showDetails(transactionId: string) {
     padding: 15px 0;
 }
 
-.transaction:hover {
+/* .transaction:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 .transaction:focus {
     background-color: rgba(0, 0, 0, 0.1);
-}
+} */
 
 .transaction--ignored {
     opacity: .35;

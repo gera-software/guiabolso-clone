@@ -166,6 +166,58 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
 }
 
 /**
+ * Fetch all (not deleted) transactions linked to an credit card invoice
+ * @param id 
+ * @returns 
+ */
+export async function fetchByCreditCardInvoice(id): Promise<Transaction[]> {
+    await connect();
+
+    const result = await TransactionModel.aggregate([
+            { $match: { 
+                creditCardInvoiceId: new Types.ObjectId(id), 
+                _isDeleted: { $ne: true }, 
+              }
+            },
+            { $lookup: { 
+                from: 'accounts', 
+                localField: 'accountId', 
+                foreignField: '_id', 
+                as: 'account' 
+                }
+            },
+            { $unwind: { 'path': '$account' } },
+            { $project: {
+                    _id: 1,
+                    description: 1,
+                    descriptionOriginal: 1,
+                    amount: 1,
+                    currencyCode: 1,
+                    date: 1,
+                    plainDate: 1,
+                    creditCardDate: 1,
+                    plainCreditCardDate: 1,
+                    category: 1,
+                    type: 1,
+                    status: 1,
+                    ignored: 1,
+                    account: {
+                        _id: 1,
+                        name: 1,
+                        type: 1,
+                        imageUrl: 1
+                    },
+                    creditCardInvoiceId: 1,
+                }
+            },
+            { $sort: { creditCardDate: -1 } }
+          ]) as Transaction[];
+
+    await disconnect();
+    return result;
+}
+
+/**
  * Creates a transaction
  * @param transaction 
  * @returns 

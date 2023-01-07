@@ -2,7 +2,7 @@
       <div class="transactions-container" v-if="!isLoading">
         
         <div v-for="(transaction, index) in transactions">
-          <div class="date-separator" v-if="index === 0 || transactions[index - 1].date.getDate() !== transaction.date.getDate()">
+          <div class="date-separator" v-if="index === 0 || transactions[index - 1].date.getUTCDate() !== transaction.date.getUTCDate()">
             <div class="date">
               <h2 class="day">{{ transaction.date.getUTCDate() }}</h2>
               <!-- <h2 class="day">{{ transaction.date.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2> -->

@@ -2,12 +2,12 @@
       <div class="transactions-container" v-if="!isLoading">
         
         <div v-for="(transaction, index) in transactions">
-          <div class="date-separator" v-if="index === 0 || transactions[index - 1].date.getDate() !== transaction.date.getDate()">
+          <div class="date-separator" v-if="index === 0 || transactions[index - 1].creditCardDate?.getUTCDate() !== transaction.creditCardDate?.getUTCDate()">
             <div class="date">
-              <h2 class="day">{{ transaction.date.getUTCDate() }}</h2>
-              <!-- <h2 class="day">{{ transaction.date.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2> -->
-              <!-- <div class="month">{{ transaction.date.toLocaleString('pt-BR', { month: 'short'}) }}</div> -->
-              <div class="month">{{ numberToMonth(transaction.date.getUTCMonth()) }}</div>
+              <h2 class="day">{{ transaction.creditCardDate?.getUTCDate() }}</h2>
+              <!-- <h2 class="day">{{ transaction.creditCardDate.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2> -->
+              <!-- <div class="month">{{ transaction.creditCardDate.toLocaleString('pt-BR', { month: 'short'}) }}</div> -->
+              <div class="month">{{ numberToMonth(transaction.creditCardDate?.getUTCMonth() ?? -1) }}</div>
             </div>
           </div>
 
@@ -34,11 +34,11 @@
 
 <script setup lang="ts">
 import CreditCardTransactionSummary from '@/components/CreditCardTransactionSummary.vue'
-import { TransactionSummaryDTO } from "../config/types";
+import { Transaction } from "../config/types";
 import { numberToMonth } from '../config/dateHelper'
 
 defineProps<{
-    transactions: TransactionSummaryDTO[],
+    transactions: Transaction[],
     isLoading: boolean
 }>()
 
