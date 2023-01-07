@@ -143,6 +143,7 @@ export interface Transaction {
     accountId: string,
     accountType?: AccountType,
     userId: string,
+    creditCardInvoiceId?: string,
     _isDeleted?: boolean,
 }
 

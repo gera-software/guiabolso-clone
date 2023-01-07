@@ -149,6 +149,7 @@ export interface Transaction {
     accountId: String,
     accountType?: AccountType,
     userId: String,
+    creditCardInvoiceId?: String,
     _isDeleted?: Boolean,
 }
 

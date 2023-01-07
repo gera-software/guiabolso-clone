@@ -50,7 +50,7 @@ export async function addCreditCardTransaction(transaction: Transaction): Promis
         if(cci) {
             console.log('FATURA ENCONTRADA', cci._id)
             // add cci._d to transaction.crecitCardInvoiceId
-            cci._id
+            transaction.creditCardInvoiceId = cci._id
         } else {
             const creditCardInvoice : CreditCardInvoice = {
                 dueDate: dueDate,
@@ -64,6 +64,7 @@ export async function addCreditCardTransaction(transaction: Transaction): Promis
             // cria a fatura
             const newInvoice = await CreditCardInvoiceRepository.create(creditCardInvoice)
             console.log('NOVA FATURA CRIADA', newInvoice)
+            transaction.creditCardInvoiceId = newInvoice?._id
         }
     }
 

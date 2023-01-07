@@ -82,7 +82,8 @@ export async function fetchByAccount(id, monthField, yearField, transactionType 
                         name: 1,
                         type: 1,
                         imageUrl: 1
-                    }
+                    },
+                    creditCardInvoiceId: 1,
                 }
             },
             { $sort: { date: -1 } }
@@ -147,7 +148,8 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
                     name: 1,
                     type: 1,
                     imageUrl: 1
-                }
+                },
+                creditCardInvoiceId: 1,
             }
         },
         { $sort: { date: -1 } },
@@ -206,6 +208,7 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
         doc.category = transaction.category
         doc.accountId = transaction.accountId
         doc.type = transaction.type
+        doc.creditCardInvoiceId = transaction.creditCardInvoiceId,
         doc.comment = transaction.comment
         doc.ignored = transaction.ignored
         await doc.save();
@@ -229,6 +232,7 @@ export async function findOneAndUpdate(transaction: Transaction): Promise<Transa
         category: transaction.category,
         accountId: transaction.accountId,
         type: transaction.type,
+        creditCardInvoiceId: transaction.creditCardInvoiceId,
         comment: transaction.comment,
         ignored: transaction.ignored,
     }
