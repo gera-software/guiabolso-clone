@@ -110,37 +110,16 @@ async function findOrCreateInvoiceToTransaction(transaction: Transaction, dueDat
 }
 
 export async function updateCreditCardTransaction(transaction: Transaction): Promise<Transaction | null | undefined> {
-    // TODO duplicated if code
     if(transaction.accountType == AccountType.CREDIT_CARD && transaction.category?.name !== 'Pagamento de cartão') {
-        const creditCardDate = new Date(transaction.creditCardDate ?? '')
-        let invoiceMonth = creditCardDate.getUTCMonth() // between 0 and 11
-        let invoiceYear = creditCardDate.getUTCFullYear()
+        // indentificar invoice dueDate and ClosingDate 
+        const { dueDate, closingDate } = await calculateInvoiceDates(transaction)
 
-        const invoiceDate = new Date(Date.UTC(+invoiceYear, +invoiceMonth, 1))
-        console.log('INVOICE DATE', invoiceDate.toISOString())
-
-        const account = await AccountRepository.getById(transaction.accountId)
-        const closeDay = +(account?.creditData?.closeDay ?? 0)
-        const dueDay = +(account?.creditData?.dueDay ?? 0)
-        
-        const closingDate = new Date(Date.UTC(+invoiceYear, +invoiceMonth, closeDay, 0, 0, 0))
-        console.log('CLOSING DATE', closingDate.toISOString())
-
-        const dueDate = new Date(Date.UTC(+invoiceYear, +invoiceMonth, dueDay, 0, 0, 0))
-        console.log('DUE DATE', dueDate.toISOString())
-
-        console.log('ACCOUNT', creditCardDate.toISOString(), closeDay, dueDay)
-
-        transaction.creditCardDate = creditCardDate
         // move a transação para a data de vencimento da fatura correspondente
-        if(creditCardDate >= closingDate) {
-            dueDate.setUTCMonth(dueDate.getUTCMonth() + 1)
-            console.log('dentro da fatura do mes que vem', dueDate.toISOString())
-        } else {
-            console.log('dentro da fatura do mes atual', dueDate.toISOString())
-        }
         transaction.date = dueDate
-
+    
+        // link transaction to invoice
+        const invoice = await findOrCreateInvoiceToTransaction(transaction, dueDate, closingDate)
+        transaction.creditCardInvoiceId = invoice?._id
     }
 
     let docBeforeUpdate: Transaction | null;
