@@ -40,11 +40,11 @@ export async function fetchByAccount(id, monthField, yearField, transactionType 
     const year = parseInt(yearField)
     const month = parseInt(monthField)
 
-    const firstDay = new Date(`${year}-${month}-01`)
-    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+    const firstDay = new Date(`${year}-${(''+month).padStart(2, '0')}-01T00:00:00Z`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01T00:00:00Z`) ) : ( new Date(`${year}-${(''+(month + 1)).padStart(2, '0')}-01T00:00:00Z`) )
     
     console.log('FIRST DAY', firstDay.toISOString(),'LAST DAY', lastDay.toISOString())
-    
+
     const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
     const result = await TransactionModel.aggregate([
@@ -104,8 +104,10 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
     const year = parseInt(yearField)
     const month = parseInt(monthField)
 
-    const firstDay = new Date(`${year}-${month}-01`)
-    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+    const firstDay = new Date(`${year}-${(''+month).padStart(2, '0')}-01T00:00:00Z`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01T00:00:00Z`) ) : ( new Date(`${year}-${(''+(month + 1)).padStart(2, '0')}-01T00:00:00Z`) )
+    
+    console.log('FIRST DAY', firstDay.toISOString(),'LAST DAY', lastDay.toISOString())
 
     const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
@@ -272,8 +274,10 @@ export async function fetchSpendingsByCategories(id, monthField, yearField, tran
     const year = parseInt(yearField)
     const month = parseInt(monthField)
 
-    const firstDay = new Date(`${year}-${month}-01`)
-    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+    const firstDay = new Date(`${year}-${(''+month).padStart(2, '0')}-01T00:00:00Z`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01T00:00:00Z`) ) : ( new Date(`${year}-${(''+(month + 1)).padStart(2, '0')}-01T00:00:00Z`) )
+    
+    console.log('FIRST DAY', firstDay.toISOString(),'LAST DAY', lastDay.toISOString())
 
     const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
@@ -283,7 +287,7 @@ export async function fetchSpendingsByCategories(id, monthField, yearField, tran
                 _isDeleted: { $ne: true }, 
                 ignored: { $ne: true }, 
                 "category.ignored": false , 
-                date: { $gte: firstDay, $lt: lastDay }, // TODO that is a big problem
+                date: { $gte: firstDay, $lt: lastDay },
                 type: { $in: types }, 
                 } 
             },
