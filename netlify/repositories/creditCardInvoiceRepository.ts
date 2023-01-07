@@ -32,3 +32,18 @@ export async function create(creditCardInvoice: CreditCardInvoice | null): Promi
 
     return result;
 }
+
+/**
+ * Fetch all (not deleted) invoices by account id
+ * @param accountId 
+ * @returns 
+ */
+export async function fetchByAccount(accountId): Promise<CreditCardInvoice[]> {
+    await connect();
+
+    const result = await CreditCardInvoiceModel.find({ accountId: new Types.ObjectId(accountId), _isDeleted: { $ne: true } })
+        .sort({ dueDate: -1 })
+
+    await disconnect();
+    return result;
+}
