@@ -34,10 +34,21 @@
               <div class="form-group">
                 <label class="form-label">Qual o limite do cartão?</label>
                 <CurrencyInput class="form-input" required v-model="form.creditData.creditLimit"/>
-                <!-- <input class="form-input" type="number" required v-model="form.creditData.creditLimit" min="0"> -->
               </div>
               <div class="form-group">
-                <label class="form-label">E o dia do vencimento?</label>
+                <label class="form-label">E o limite disponível atualmente?</label>
+                <CurrencyInput class="form-input" required v-model="form.creditData.availableCreditLimit"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Qual o valor da fatura atual?</label>
+                <CurrencyInput class="form-input" required v-model="form.creditData.currentInvoice"/>
+              </div>
+              <!-- <div class="form-group">
+                <label class="form-label">E o valor total das próximas faturas?</label>
+                <CurrencyInput class="form-input" required v-model="form.creditData.nextInvoices"/>
+              </div> -->
+              <div class="form-group">
+                <label class="form-label">Qual o dia do vencimento?</label>
                 <input class="form-input" type="number" required v-model="form.creditData.dueDay" min="1" max="31">
               </div>
               <div class="form-group">
@@ -87,6 +98,9 @@ const form = ref({
     creditData: {
       brand: 'Mastercard',
       creditLimit: 0,
+      availableCreditLimit: 0,
+      currentInvoice: 0,
+      // nextInvoices: 0,
       closeDay: 3,
       dueDay: 10,
     }
@@ -120,9 +134,10 @@ async function handleSubmit() {
       //@ts-ignore
       payload.creditData = {
         brand: form.value.creditData.brand,
-        creditLimit: form.value.creditData.creditLimit,
         closeDay: form.value.creditData.closeDay,
         dueDay: form.value.creditData.dueDay,
+        creditLimit: form.value.creditData.creditLimit,
+        availableCreditLimit: form.value.creditData.availableCreditLimit + form.value.creditData.currentInvoice, // descontando do limite disponível o valor das transações do mes atual (que ainda deverão ser cadastradas manualmente)
       }
     }
 
