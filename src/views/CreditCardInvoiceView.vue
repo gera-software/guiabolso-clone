@@ -36,6 +36,9 @@
         <div class="container">
             <CreditCardTransactionList :transactions="transactions" :isLoading="false"></CreditCardTransactionList>
         </div>
+        <FAB @click="handleClick">
+          <font-awesome-icon icon="fa-solid fa-plus" />
+        </FAB>
     </div>
 </template>
 
@@ -47,6 +50,7 @@ import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { AccountDTO, AccountSyncType, AccountType, CreditCardInvoice, CurrencyCodes, InstitutionType, Transaction } from '../config/types';
 import { currentDateToUTCString, numberToMonth } from '../config/dateHelper';
+import FAB from "@/components/FAB.vue";
 
 const router = useRouter()
 
@@ -143,7 +147,9 @@ watch(selectedInvoiceId, async (invoiceId) => {
   await getTransactionsByInvoice(invoiceId)
 })
 
-
+function handleClick() {
+    router.push({ name: 'add-transaction' })
+}
 
 
 </script>
