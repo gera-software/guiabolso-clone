@@ -24,9 +24,9 @@ export async function addCreditCardTransaction(transaction: Transaction): Promis
     }
 
     let doc: Transaction | null = await TransactionRepository.create(transaction);
-    // TODO no caso de cartão de credito talvez não seja necessário atualizar o balanço.
-    await AccountRepository.addToBalance(transaction.accountId.toString(), transaction.amount.valueOf());
     
+    await AccountRepository.addToAvailableCreditLimit(transaction.accountId.toString(), transaction.amount.valueOf());
+    // TODO UPDATE BALANCE
     console.log(doc)
     return doc
 }
@@ -129,7 +129,7 @@ export async function updateCreditCardTransaction(transaction: Transaction): Pro
     if(docBeforeUpdate) {
         const balance = -docBeforeUpdate.amount + transaction.amount.valueOf()
         // TODO talvez não seja necessario atualizar balanço quando é cartão de crédito
-        const account = await AccountRepository.addToBalance('' + transaction?.accountId.toString(), balance);
+        const account = await AccountRepository.addToAvailableCreditLimit('' + transaction?.accountId.toString(), balance);
     }
 
     console.log(transaction)
@@ -165,7 +165,7 @@ export async function updateCashTransaction(transaction: Transaction): Promise<T
 export async function removeCreditCardTransaction(transaction: Transaction): Promise<Transaction | null | undefined> {
     const result: Transaction | null = await TransactionRepository.remove(transaction._id)
     // TODO talvez não seja preciso atualizar o balanço quando for cartão de crédito
-    const account = await AccountRepository.subtractFromBalance('' + transaction?.accountId.toString(), transaction?.amount.valueOf());
+    const account = await AccountRepository.subtractFromAvailableCreditLimit('' + transaction?.accountId.toString(), transaction?.amount.valueOf());
     // console.log(account)
 
     return result

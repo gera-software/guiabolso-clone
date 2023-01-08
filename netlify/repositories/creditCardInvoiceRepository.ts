@@ -47,3 +47,30 @@ export async function fetchByAccount(accountId): Promise<CreditCardInvoice[]> {
     await disconnect();
     return result;
 }
+
+
+/**
+ * Get the last (not deleted) closed invoice by account id
+ * @param id 
+ * @returns 
+ */
+export async function getLastClosedInvoice(accountId: string): Promise<CreditCardInvoice | null> {
+    await connect();
+    const c = new Date()
+    const currentDate = new Date(Date.UTC(c.getFullYear(), c.getMonth(), c.getDate()))
+
+    const result = await CreditCardInvoiceModel.aggregate([
+        { 
+            $match: { 
+                accountId: new Types.ObjectId(accountId), 
+                closeDate: { $lte: currentDate }, 
+                _isDeleted: { $ne: true } 
+            }
+        },
+        { $sort: { closeDate: -1 } },
+        { $limit: 1 },
+    ]);
+    await disconnect();
+
+    return result.length ? result[0] : null
+}

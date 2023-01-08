@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction" :class="{ 'transaction--ignored': transaction.ignored }">
+    <div class="transaction" :class="{ 'transaction--ignored': transaction.ignored }" @click="showDetails(transaction._id ?? '')">
         <div class="col-1">
             <CategoryIcon :icon="transaction.category?.iconName ?? 'Uncategorized'" :color="transaction.category?.primaryColor ?? '#F9386A'" />
             <div class="flex">
@@ -30,6 +30,11 @@ const router = useRouter()
 defineProps<{
     transaction: Transaction,
 }>()
+
+function showDetails(transactionId: string) {
+    console.log('showDetails', transactionId)
+    router.push({ name: 'transaction', params: { id: transactionId } })
+}
 
 </script>
 <style scoped>
