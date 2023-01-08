@@ -26,8 +26,17 @@ export async function addCreditCardTransaction(transaction: Transaction): Promis
     let doc: Transaction | null = await TransactionRepository.create(transaction);
     
     await AccountRepository.addToAvailableCreditLimit(transaction.accountId.toString(), transaction.amount.valueOf());
-    // TODO UPDATE BALANCE
-    console.log(doc)
+    
+    // UPDATE BALANCE
+    const lastClosedInvoice = await CreditCardInvoiceRepository.getLastClosedInvoice(transaction.accountId.toString())
+    if(lastClosedInvoice) {
+        const transactions = await TransactionRepository.fetchByCreditCardInvoice(lastClosedInvoice._id)
+        const balance = transactions.reduce((accumulator: number, transaction: Transaction) => {
+           return accumulator += transaction.amount.valueOf()
+        }, 0)
+        await AccountRepository.setBalance(transaction.accountId.toString(), balance)
+    }
+
     return doc
 }
 
@@ -132,6 +141,16 @@ export async function updateCreditCardTransaction(transaction: Transaction): Pro
         const account = await AccountRepository.addToAvailableCreditLimit('' + transaction?.accountId.toString(), balance);
     }
 
+    // UPDATE BALANCE
+    const lastClosedInvoice = await CreditCardInvoiceRepository.getLastClosedInvoice(transaction.accountId.toString())
+    if(lastClosedInvoice) {
+        const transactions = await TransactionRepository.fetchByCreditCardInvoice(lastClosedInvoice._id)
+        const balance = transactions.reduce((accumulator: number, transaction: Transaction) => {
+            return accumulator += transaction.amount.valueOf()
+        }, 0)
+        await AccountRepository.setBalance(transaction.accountId.toString(), balance)
+    }
+
     console.log(transaction)
     return transaction
 }
@@ -167,6 +186,16 @@ export async function removeCreditCardTransaction(transaction: Transaction): Pro
     // TODO talvez não seja preciso atualizar o balanço quando for cartão de crédito
     const account = await AccountRepository.subtractFromAvailableCreditLimit('' + transaction?.accountId.toString(), transaction?.amount.valueOf());
     // console.log(account)
+
+    // UPDATE BALANCE
+    const lastClosedInvoice = await CreditCardInvoiceRepository.getLastClosedInvoice(transaction.accountId.toString())
+    if(lastClosedInvoice) {
+        const transactions = await TransactionRepository.fetchByCreditCardInvoice(lastClosedInvoice._id)
+        const balance = transactions.reduce((accumulator: number, transaction: Transaction) => {
+            return accumulator += transaction.amount.valueOf()
+        }, 0)
+        await AccountRepository.setBalance(transaction.accountId.toString(), balance)
+    }
 
     return result
 }

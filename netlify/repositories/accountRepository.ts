@@ -143,6 +143,21 @@ export async function subtractFromBalance(accountId: string, amount: number = 0)
     return doc;
 }
 
+
+export async function setBalance(accountId: string, amount: number = 0): Promise<Account | null> {
+    await connect();
+    const doc =  await AccountModel.findById(accountId);
+
+    if(doc) {
+        doc.balance = amount
+        await doc.save();
+    }
+    await disconnect();
+
+    return doc;
+}
+
+
 export async function addToAvailableCreditLimit(accountId: string, amount: number = 0): Promise<Account | null> {
     await connect();
     const doc =  await AccountModel.findById(accountId);
