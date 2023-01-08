@@ -18,10 +18,10 @@
             </div>
 
             <div class="invoice-info" v-if="selectedInvoice">
-                <!-- <div>
+                <div>
                     <h3 class="label">Total</h3>
-                    <h4 class="display"> R$ X</h4>
-                </div> -->
+                    <h4 class="display"> R$ {{ (+totalAmount / 100).toFixed(2) }}</h4>
+                </div>
                 <div>
                     <h3 class="label">Fechamento</h3>
                     <h4 class="display">{{ `${(''+selectedInvoice.closeDate.getUTCDate()).padStart(2, '0')}/${(selectedInvoice.closeDate.getUTCMonth()+1).toString().padStart(2, '0')}/${selectedInvoice.closeDate.getUTCFullYear()}` }}</h4>
@@ -56,7 +56,6 @@ const router = useRouter()
 
 const route = useRoute()
 
-const accountId = route.params.accountId.toString()
 
 const account = ref<AccountDTO>()
 
@@ -71,6 +70,12 @@ async function getAccount(accountId: String) {
     console.log(error.response?.data);
   })
 }
+
+const totalAmount = computed(() => {
+  return transactions.value.reduce((accumulator: number, transaction: Transaction) => {
+    return accumulator += transaction.amount.valueOf()
+  }, 0)
+})
 
 const invoices = ref<CreditCardInvoice[]>([])
 
