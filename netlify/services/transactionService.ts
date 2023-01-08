@@ -28,12 +28,16 @@ export async function addCreditCardTransaction(transaction: Transaction): Promis
     await AccountRepository.addToAvailableCreditLimit(transaction.accountId.toString(), transaction.amount.valueOf());
     
     // UPDATE BALANCE
+    // TODO bug: devido a diferença de fuso horário entre back e front, ele pode não encontrar a fatura
     const lastClosedInvoice = await CreditCardInvoiceRepository.getLastClosedInvoice(transaction.accountId.toString())
+    console.log('LAST CLOSED INVOICE', lastClosedInvoice)
     if(lastClosedInvoice) {
         const transactions = await TransactionRepository.fetchByCreditCardInvoice(lastClosedInvoice._id)
         const balance = transactions.reduce((accumulator: number, transaction: Transaction) => {
+            console.log(transaction.amount.valueOf())
            return accumulator += transaction.amount.valueOf()
         }, 0)
+        console.log('NEW BALANCE', balance)
         await AccountRepository.setBalance(transaction.accountId.toString(), balance)
     }
 

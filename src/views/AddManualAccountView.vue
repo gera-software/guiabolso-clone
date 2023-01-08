@@ -41,7 +41,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Qual o valor da fatura atual?</label>
-                <CurrencyInput class="form-input" required v-model="form.creditData.currentInvoice"/>
+                <CurrencyInput class="form-input" required v-model="form.amount"/>
               </div>
               <!-- <div class="form-group">
                 <label class="form-label">E o valor total das próximas faturas?</label>
@@ -99,7 +99,7 @@ const form = ref({
       brand: 'Mastercard',
       creditLimit: 0,
       availableCreditLimit: 0,
-      currentInvoice: 0,
+      // currentInvoice: 0,
       // nextInvoices: 0,
       closeDay: 3,
       dueDay: 10,
@@ -122,7 +122,8 @@ async function handleSubmit() {
         name: form.value.name,
         type: form.value.type,
         initialBalance: form.value.type == 'WALLET' || form.value.type == 'BANK' ? form.value.amount : 0,
-        balance: form.value.type == 'WALLET' || form.value.type == 'BANK' ? form.value.amount : 0,
+        // balance: form.value.type == 'WALLET' || form.value.type == 'BANK' ? form.value.amount : 0,
+        balance: form.value.amount,
         userId: userStore.user._id,
         imageUrl: '',
         syncType: AccountSyncType.MANUAL,
@@ -131,13 +132,15 @@ async function handleSubmit() {
     }
 
     if(form.value.type == 'CREDIT_CARD') {
+      payload.balance = -form.value.amount, // o balanço do cartão de credito deve ser negativo
+
       //@ts-ignore
       payload.creditData = {
         brand: form.value.creditData.brand,
         closeDay: form.value.creditData.closeDay,
         dueDay: form.value.creditData.dueDay,
         creditLimit: form.value.creditData.creditLimit,
-        availableCreditLimit: form.value.creditData.availableCreditLimit + form.value.creditData.currentInvoice, // descontando do limite disponível o valor das transações do mes atual (que ainda deverão ser cadastradas manualmente)
+        availableCreditLimit: form.value.creditData.availableCreditLimit + form.value.amount, // descontando do limite disponível o valor das transações do mes atual (que ainda deverão ser cadastradas manualmente)
       }
     }
 
