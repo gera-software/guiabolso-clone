@@ -1,3 +1,8 @@
+
+/**
+ * @deprecated
+ */
+
 import { Handler } from "@netlify/functions";
 import mongoose from 'mongoose';
 
@@ -25,8 +30,8 @@ const handler :Handler = async (event, context) => {
   const year = parseInt(event.queryStringParameters?.year ?? currentYear)
   const month = parseInt(event.queryStringParameters?.month ?? currentMonth) 
 
-  const firstDay = new Date(`${year}-${month}-01`)
-  const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+  const firstDay = new Date(`${year}-${month}-01-01T00:00:00Z`)
+  const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01-01T00:00:00Z`) ) : ( new Date(`${year}-${month + 1}-01-01T00:00:00Z`) )
 
   const transactions = await Transaction.aggregate([
     { $match: { date: { $gte: firstDay, $lt: lastDay } } },

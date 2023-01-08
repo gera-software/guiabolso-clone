@@ -2,16 +2,16 @@
       <div class="transactions-container" v-if="!isLoading">
         
         <div v-for="(transaction, index) in transactions">
-          <div class="date-separator" v-if="index === 0 || transactions[index - 1].date.getUTCDate() !== transaction.date.getUTCDate()">
+          <div class="date-separator" v-if="index === 0 || transactions[index - 1].creditCardDate?.getUTCDate() !== transaction.creditCardDate?.getUTCDate()">
             <div class="date">
-              <h2 class="day">{{ transaction.date.getUTCDate() }}</h2>
-              <!-- <h2 class="day">{{ transaction.date.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2> -->
-              <!-- <div class="month">{{ transaction.date.toLocaleString('pt-BR', { month: 'short'}) }}</div> -->
-              <div class="month">{{ numberToMonth(transaction.date.getUTCMonth()) }}</div>
+              <h2 class="day">{{ transaction.creditCardDate?.getUTCDate() }}</h2>
+              <!-- <h2 class="day">{{ transaction.creditCardDate.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2> -->
+              <!-- <div class="month">{{ transaction.creditCardDate.toLocaleString('pt-BR', { month: 'short'}) }}</div> -->
+              <div class="month">{{ numberToMonth(transaction.creditCardDate?.getUTCMonth() ?? -1) }}</div>
             </div>
           </div>
 
-          <TransactionSummary :transaction="transaction"></TransactionSummary>
+          <CreditCardTransactionSummary :transaction="transaction" />
         </div>
         <div v-if="transactions.length == 0">Ainda não há transações</div>
 
@@ -31,20 +31,19 @@
           </div>
       </div>
 </template>
+
 <script setup lang="ts">
-import { computed } from "vue";
-import TransactionSummary from "../components/TransactionSummary.vue";
-import { TransactionSummaryDTO } from "../config/types";
+import CreditCardTransactionSummary from '@/components/CreditCardTransactionSummary.vue'
+import { Transaction } from "../config/types";
 import { numberToMonth } from '../config/dateHelper'
 
 defineProps<{
-    transactions: TransactionSummaryDTO[],
+    transactions: Transaction[],
     isLoading: boolean
 }>()
 
-
-
 </script>
+
 <style scoped>
 
 .transactions-container {

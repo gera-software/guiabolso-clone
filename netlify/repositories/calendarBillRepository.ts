@@ -21,10 +21,11 @@ export async function fetchByUser(id, monthField, yearField, limit = 0): Promise
     const year = parseInt(yearField)
     const month = parseInt(monthField)
 
-    const firstDay = new Date(`${year}-${month}-01`)
-    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+    const firstDay = new Date(`${year}-${(''+month).padStart(2, '0')}-01T00:00:00Z`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01T00:00:00Z`) ) : ( new Date(`${year}-${(''+(month + 1)).padStart(2, '0')}-01T00:00:00Z`) )
+    
+    console.log('FIRST DAY', firstDay.toISOString(),'LAST DAY', lastDay.toISOString())
 
-    console.log(id, firstDay, lastDay)
     const result = await CalendarBillModel.find(
         { userId: new Types.ObjectId(id), _isDeleted: { $ne: true }, dueDate: { $gte: firstDay, $lt: lastDay } }
     ).sort({ dueDate: -1 })

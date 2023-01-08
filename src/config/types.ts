@@ -133,6 +133,7 @@ export interface Transaction {
     amount: number,
     currencyCode: CurrencyCodes,
     date: Date,
+    creditCardDate?: Date,
     category?: Category,
     type: TransactionType,
     syncType: AccountSyncType,
@@ -140,7 +141,9 @@ export interface Transaction {
     comment?: string,
     ignored?: boolean,
     accountId: string,
+    accountType?: AccountType,
     userId: string,
+    creditCardInvoiceId?: string,
     _isDeleted?: boolean,
 }
 
@@ -158,6 +161,7 @@ export interface TransactionSummaryDTO {
     amount: number,
     currencyCode: CurrencyCodes,
     date: Date,
+    // plainDate: string,
     category?: Category,
     type: TransactionType,
     status: TransactionStatus,
@@ -193,6 +197,7 @@ export enum BillType {
     RECEIVABLE = 'RECEIVABLE',
 }
 
+// TODO agenda deve ter um atributo plainDate também, assim como as transações para resolver os problemas com fuso horários
 export interface CalendarBill {
     _id?: string,
     dueDate: Date,
@@ -201,6 +206,17 @@ export interface CalendarBill {
     status: BillStatus,
     type: BillType,
     userId: string,
+    _isDeleted: boolean,
+}
+
+export interface CreditCardInvoice {
+    _id?: string,
+    dueDate: Date,
+    closeDate: Date,
+    amount: number,
+    currencyCode: CurrencyCodes,
+    userId: string,
+    accountId: string,
     _isDeleted: boolean,
 }
 

@@ -1,31 +1,9 @@
 import { Handler } from "@netlify/functions";
-import * as TransactionRepository from "../repositories/transactionRepository";
-import { Transaction, CurrencyCodes, TransactionType, TransactionStatus } from "../types";
-import * as AccountRepository from '../repositories/accountRepository'
+import { Transaction, AccountType } from "../types";
+import * as TransactionService from "../services/transactionService";
 
 const handler: Handler = async (event, context) => {
-    // {
-    //     "pluggyTransactionId": "dsaddasd",
-    //     "description": "Stringsdaasd",
-    //     "descriptionOriginal": "",
-    //     "amount": -3000,
-    //     "currencyCode": "BRL",
-    //     "date": "2022/11/13",
-    //     "category": {
-    //         "_id": "6368226650320103b4aa108e",
-    //         "name": "Transporte",
-    //         "iconName": "ICON",
-    //         "primaryColor": "green"
-    //     },
-    //     "type": "EXPENSE",
-    //     "syncType": "MANUAL",
-    //     "status": "POSTED",
-    //     "comment": "comentario",
-    //     "ignored": false,
-    //     "accountId": "6371717be128f3741973f5cb",
-    //     "userId": "6371717be128f3741973f5cb",
-    //     "_isDeleted": false
-    // }
+
     if (!event.body) {
         return {
             statusCode: 400,
@@ -33,24 +11,28 @@ const handler: Handler = async (event, context) => {
     }
 
     const transaction = JSON.parse(event.body) as Transaction;
-    let docBeforeUpdate: Transaction | null;
+
     try {
-        docBeforeUpdate = await TransactionRepository.findOneAndUpdate(transaction);
-        if(docBeforeUpdate) {
-            const balance = -docBeforeUpdate.amount + transaction.amount.valueOf()
-            const account = await AccountRepository.addToBalance('' + transaction?.accountId.toString(), balance);
+        let result: Transaction | null | undefined = null
+
+        if(transaction.accountType == AccountType.WALLET) {
+            result = await TransactionService.updateCashTransaction(transaction)
+        } else if(transaction.accountType == AccountType.CREDIT_CARD) {
+            result = await TransactionService.updateCreditCardTransaction(transaction)
+        } else {
+            result = await TransactionService.updateCheckingAccountTransaction(transaction)
         }
-    } catch (err) {
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(result),
+        };
+    } catch(err) {
         return {
             statusCode: 500,
             body: JSON.stringify(err),
         };
     }
-
-    return {
-        statusCode: 200,
-        body: JSON.stringify(transaction),
-    };
 };
 
 export { handler };

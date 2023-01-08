@@ -137,6 +137,9 @@ export interface Transaction {
     amount: Number,
     currencyCode: CurrencyCodes,
     date: Date,
+    plainDate: String,
+    creditCardDate?: Date,
+    plainCreditCardDate?: String,
     category?: Category,
     type: TransactionType,
     syncType: AccountSyncType,
@@ -144,7 +147,9 @@ export interface Transaction {
     comment?: String,
     ignored?: Boolean,
     accountId: String,
+    accountType?: AccountType,
     userId: String,
+    creditCardInvoiceId?: String,
     _isDeleted?: Boolean,
 }
 
@@ -162,6 +167,7 @@ export interface TransactionSummary {
     amount: Number,
     currencyCode: CurrencyCodes,
     date: Date,
+    plainDate: String,
     category?: Category,
     type: TransactionType,
     status: TransactionStatus,
@@ -204,6 +210,17 @@ export interface CalendarBill {
     status: BillStatus,
     type: BillType,
     userId: string,
+    _isDeleted: boolean,
+}
+
+export interface CreditCardInvoice {
+    _id?: string,
+    dueDate: Date,
+    closeDate: Date,
+    amount: number,
+    currencyCode: CurrencyCodes,
+    userId: string,
+    accountId: string,
     _isDeleted: boolean,
 }
 

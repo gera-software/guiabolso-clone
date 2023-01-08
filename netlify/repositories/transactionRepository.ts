@@ -40,9 +40,11 @@ export async function fetchByAccount(id, monthField, yearField, transactionType 
     const year = parseInt(yearField)
     const month = parseInt(monthField)
 
-    const firstDay = new Date(`${year}-${month}-01`)
-    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+    const firstDay = new Date(`${year}-${(''+month).padStart(2, '0')}-01T00:00:00Z`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01T00:00:00Z`) ) : ( new Date(`${year}-${(''+(month + 1)).padStart(2, '0')}-01T00:00:00Z`) )
     
+    console.log('FIRST DAY', firstDay.toISOString(),'LAST DAY', lastDay.toISOString())
+
     const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
     const result = await TransactionModel.aggregate([
@@ -68,6 +70,9 @@ export async function fetchByAccount(id, monthField, yearField, transactionType 
                     amount: 1,
                     currencyCode: 1,
                     date: 1,
+                    plainDate: 1,
+                    creditCardDate: 1,
+                    plainCreditCardDate: 1,
                     category: 1,
                     type: 1,
                     status: 1,
@@ -77,7 +82,8 @@ export async function fetchByAccount(id, monthField, yearField, transactionType 
                         name: 1,
                         type: 1,
                         imageUrl: 1
-                    }
+                    },
+                    creditCardInvoiceId: 1,
                 }
             },
             { $sort: { date: -1 } }
@@ -99,8 +105,10 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
     const year = parseInt(yearField)
     const month = parseInt(monthField)
 
-    const firstDay = new Date(`${year}-${month}-01`)
-    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+    const firstDay = new Date(`${year}-${(''+month).padStart(2, '0')}-01T00:00:00Z`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01T00:00:00Z`) ) : ( new Date(`${year}-${(''+(month + 1)).padStart(2, '0')}-01T00:00:00Z`) )
+    
+    console.log('FIRST DAY', firstDay.toISOString(),'LAST DAY', lastDay.toISOString())
 
     const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 
@@ -128,6 +136,9 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
                 amount: 1,
                 currencyCode: 1,
                 date: 1,
+                plainDate: 1,
+                creditCardDate: 1,
+                plainCreditCardDate: 1,
                 category: 1,
                 type: 1,
                 status: 1,
@@ -137,7 +148,8 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
                     name: 1,
                     type: 1,
                     imageUrl: 1
-                }
+                },
+                creditCardInvoiceId: 1,
             }
         },
         { $sort: { date: -1 } },
@@ -154,12 +166,64 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
 }
 
 /**
+ * Fetch all (not deleted) transactions linked to an credit card invoice
+ * @param id 
+ * @returns 
+ */
+export async function fetchByCreditCardInvoice(id): Promise<Transaction[]> {
+    await connect();
+
+    const result = await TransactionModel.aggregate([
+            { $match: { 
+                creditCardInvoiceId: new Types.ObjectId(id), 
+                _isDeleted: { $ne: true }, 
+              }
+            },
+            { $lookup: { 
+                from: 'accounts', 
+                localField: 'accountId', 
+                foreignField: '_id', 
+                as: 'account' 
+                }
+            },
+            { $unwind: { 'path': '$account' } },
+            { $project: {
+                    _id: 1,
+                    description: 1,
+                    descriptionOriginal: 1,
+                    amount: 1,
+                    currencyCode: 1,
+                    date: 1,
+                    plainDate: 1,
+                    creditCardDate: 1,
+                    plainCreditCardDate: 1,
+                    category: 1,
+                    type: 1,
+                    status: 1,
+                    ignored: 1,
+                    account: {
+                        _id: 1,
+                        name: 1,
+                        type: 1,
+                        imageUrl: 1
+                    },
+                    creditCardInvoiceId: 1,
+                }
+            },
+            { $sort: { creditCardDate: -1 } }
+          ]) as Transaction[];
+
+    await disconnect();
+    return result;
+}
+
+/**
  * Creates a transaction
  * @param transaction 
  * @returns 
  */
 export async function create(transaction: Transaction | null): Promise<Transaction | null> {
-    console.log('CREATE', transaction?.category)
+    console.log('CREATE', transaction)
     await connect();
     const doc = new TransactionModel(transaction);
     const result = await doc.save();
@@ -190,9 +254,13 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
         doc.description = transaction.description
         doc.amount = transaction.amount
         doc.date = transaction.date
+        doc.plainDate = transaction.plainDate
+        doc.creditCardDate = transaction.creditCardDate
+        doc.plainCreditCardDate = transaction.plainCreditCardDate
         doc.category = transaction.category
         doc.accountId = transaction.accountId
         doc.type = transaction.type
+        doc.creditCardInvoiceId = transaction.creditCardInvoiceId,
         doc.comment = transaction.comment
         doc.ignored = transaction.ignored
         await doc.save();
@@ -210,9 +278,13 @@ export async function findOneAndUpdate(transaction: Transaction): Promise<Transa
         description: transaction.description,
         amount: transaction.amount,
         date: transaction.date,
+        plainDate: transaction.plainDate,
+        creditCardDate: transaction.creditCardDate,
+        plainCreditCardDate: transaction.plainCreditCardDate,
         category: transaction.category,
         accountId: transaction.accountId,
         type: transaction.type,
+        creditCardInvoiceId: transaction.creditCardInvoiceId,
         comment: transaction.comment,
         ignored: transaction.ignored,
     }
@@ -258,8 +330,10 @@ export async function fetchSpendingsByCategories(id, monthField, yearField, tran
     const year = parseInt(yearField)
     const month = parseInt(monthField)
 
-    const firstDay = new Date(`${year}-${month}-01`)
-    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01`) ) : ( new Date(`${year}-${month + 1}-01`) )
+    const firstDay = new Date(`${year}-${(''+month).padStart(2, '0')}-01T00:00:00Z`)
+    const lastDay = (month === 12) ? ( new Date(`${year + 1}-01-01T00:00:00Z`) ) : ( new Date(`${year}-${(''+(month + 1)).padStart(2, '0')}-01T00:00:00Z`) )
+    
+    console.log('FIRST DAY', firstDay.toISOString(),'LAST DAY', lastDay.toISOString())
 
     const types: string[] = transactionType == 'ALL' ? ['EXPENSE', 'INCOME'] : [transactionType]
 

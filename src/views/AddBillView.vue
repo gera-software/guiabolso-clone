@@ -23,7 +23,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Data</label>
-                    <input class="form-input" type="date" required v-model="form.dueDate" :min="dateToString(new Date())">
+                    <input class="form-input" type="date" required v-model="form.dueDate" :min="currentDateToUTCString()">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Status</label>
@@ -47,6 +47,7 @@ import { useRouter } from 'vue-router';
 import CurrencyInput from '../components/CurrencyInput.vue'
 import { BillStatus, BillType, CalendarBill } from '../config/types';
 import { useUserStore } from '../stores/userStore';
+import { dateToUTCString, stringToUTCDate, currentDateToUTCString } from '../config/dateHelper';
 
 const router = useRouter()
 
@@ -74,26 +75,8 @@ const status = [
     }, 
 ]
 
-// TODO não funciona a partir das 22h kkkk por causa do fuso horario de -3 horas 
-function dateToString(date: Date) : string {
-  return date.toISOString().split('T')[0]
-}
-
-function stringToDate(dateString: string): Date {
-    // const date = new Date(dateString)
-    // const start = date.toISOString().split('T')[0]
-    // const end = (new Date()).toISOString().split('T')[1]
-    // const isoDateString = start + 'T' + end
-    // return new Date(isoDateString)
-
-    const date = new Date()
-    const [ year, month, day ] = dateString.split('-')
-    date.setFullYear(+year, +month - 1, +day)
-    return date
-}
-
 const form = ref({
-    dueDate: dateToString(new Date()),
+    dueDate: currentDateToUTCString(),
     description: '',
     amount: 0, // multiplied by 100 to remove decimals
     status: 'WAITING',
@@ -109,7 +92,7 @@ async function handleSubmit() {
     const payload: CalendarBill = {
         description: form.value.description,
         amount: form.value.type === BillType.PAYABLE ? Math.abs(form.value.amount) * -1 : Math.abs(form.value.amount),
-        dueDate: stringToDate(form.value.dueDate),
+        dueDate: stringToUTCDate(form.value.dueDate),
         type: form.value.type as BillType,
         status: form.value.status as BillStatus,
         _isDeleted: false,

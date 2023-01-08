@@ -14,6 +14,7 @@ import PluggyConnectWidgetView from '../views/PluggyConnectWidgetView.vue'
 import ConnectAccountView from '../views/ConnectAccountView.vue'
 import AddManualAccountView from '../views/AddManualAccountView.vue'
 import LoginView from '../views/LoginView.vue'
+import CreditCardInvoiceView from '../views/CreditCardInvoiceView.vue'
 import { useUserStore } from '../stores/userStore'
 
 
@@ -65,6 +66,16 @@ const router = createRouter({
       path: '/extract/:id',
       name: 'extract-by-account',
       component: ExtractByAccountView,
+    },
+    // {
+    //   path: '/creditcard/:id/invoices',
+    //   name: 'creditcard-invoices',
+    //   component: ExtractByAccountView,
+    // },
+    {
+      path: '/creditcard/:accountId/invoices',
+      name: 'creditcard-invoice',
+      component: CreditCardInvoiceView,
     },
     {
       path: '/transactions/add-transaction',

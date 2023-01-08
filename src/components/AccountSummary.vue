@@ -1,5 +1,5 @@
 <template>
-        <div class="account" @click="goToExtract(account._id?.toString())">
+        <div class="account" @click="goToExtract(account)">
           <div class="col-1">
             <img v-if="account.imageUrl" class="account-logo" :src="account.imageUrl?.toString()" />
             <img v-else class="account-logo" src="@/assets/ManualAccountIcon.svg" />
@@ -37,7 +37,7 @@
 
 </template>
 <script setup lang="ts">
-import { AccountSummaryDTO } from '../config/types';
+import { AccountSummaryDTO, AccountType } from '../config/types';
 import { useRouter } from 'vue-router';
 import api from '../config/axios.js'
 import BottomSheet from '@/components/BottomSheet.vue'
@@ -54,13 +54,23 @@ const props = defineProps<{
 
 const router = useRouter()
 
-function goToExtract(accountId: String | undefined) {
-  router.push({
-    name: 'extract-by-account',
-    params: {
-      id: accountId?.toString()
-    }
-  })
+function goToExtract(account: AccountSummaryDTO) {
+  console.log(account.type)
+  if(account.type == AccountType.CREDIT_CARD) {
+    router.push({
+      name: 'creditcard-invoice',
+      params: {
+        accountId: account._id?.toString()
+      }
+    })
+  } else {
+    router.push({
+      name: 'extract-by-account',
+      params: {
+        id: account._id?.toString()
+      }
+    })
+  }
 }
 
 async function getConnectToken(itemId?: string | undefined) {

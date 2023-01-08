@@ -2,10 +2,10 @@
     <div class="bills-container" v-if="!isLoading">
       
       <div v-for="(bill, index) in bills">
-        <div class="date-separator" v-if="index === 0 || bills[index - 1].dueDate.getDate() !== bill.dueDate.getDate()">
+        <div class="date-separator" v-if="index === 0 || bills[index - 1].dueDate.getUTCDate() !== bill.dueDate.getUTCDate()">
           <div class="date">
-            <h2 class="day">{{ bill.dueDate.toLocaleString('pt-BR', { day: '2-digit'}) }}</h2>
-            <div class="month">{{ bill.dueDate.toLocaleString('pt-BR', { month: 'short'}) }}</div>
+            <h2 class="day">{{ bill.dueDate.getUTCDate() }}</h2>
+            <div class="month">{{ numberToMonth(bill.dueDate.getUTCMonth()) }}</div>
           </div>
         </div>
         <CalendarSummary :bill="bill"></CalendarSummary>
@@ -27,6 +27,7 @@
 <script setup lang="ts">
 import { CalendarBill } from "../config/types";
 import CalendarSummary from '@/components/CalendarSummary.vue'
+import { numberToMonth } from "../config/dateHelper";
 
 
 defineProps<{
