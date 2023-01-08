@@ -29,11 +29,14 @@ export async function addCreditCardTransaction(transaction: Transaction): Promis
     
     // UPDATE BALANCE
     const lastClosedInvoice = await CreditCardInvoiceRepository.getLastClosedInvoice(transaction.accountId.toString())
+    console.log('LAST CLOSED INVOICE', lastClosedInvoice)
     if(lastClosedInvoice) {
         const transactions = await TransactionRepository.fetchByCreditCardInvoice(lastClosedInvoice._id)
         const balance = transactions.reduce((accumulator: number, transaction: Transaction) => {
+            console.log(transaction.amount.valueOf())
            return accumulator += transaction.amount.valueOf()
         }, 0)
+        console.log('NEW BALANCE', balance)
         await AccountRepository.setBalance(transaction.accountId.toString(), balance)
     }
 

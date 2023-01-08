@@ -55,10 +55,11 @@ export async function fetchByAccount(accountId): Promise<CreditCardInvoice[]> {
  * @returns 
  */
 export async function getLastClosedInvoice(accountId: string): Promise<CreditCardInvoice | null> {
+    // TODO bug: devido a diferença de fuso horário entre back e front, ele pode não encontrar a fatura
     await connect();
     const c = new Date()
     const currentDate = new Date(Date.UTC(c.getFullYear(), c.getMonth(), c.getDate()))
-
+    console.log(currentDate.toISOString())
     const result = await CreditCardInvoiceModel.aggregate([
         { 
             $match: { 
