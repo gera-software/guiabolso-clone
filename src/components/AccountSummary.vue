@@ -9,7 +9,7 @@
               <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.sync?.lastSyncAt)).toLocaleString() }} <span class="badge" v-if="account.sync">{{account.sync.syncStatus}}</span> </div>
               <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
               <!-- <pre>{{account.sync}}</pre> -->
-              <!-- <button @click="updateItem(account.sync?.pluggyItemId, $event)">update</button> -->
+              <button  v-if="account.syncType === 'AUTOMATIC'" @click="updateItem(account.sync?.pluggyItemId, $event)">sincronizar</button>
             </div>
           </div>
           <button class="icon-button" @click="openMoreDialog">

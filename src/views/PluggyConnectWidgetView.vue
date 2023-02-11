@@ -1,4 +1,5 @@
 <template>
+    DEPRECATED
     <div class="page">
         <!-- <component is="script" src="https://cdn.pluggy.ai/pluggy-connect/v2.3.1/pluggy-connect.js" async></component> -->
         pluggy connect

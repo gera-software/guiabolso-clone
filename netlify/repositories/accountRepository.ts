@@ -71,10 +71,6 @@ export async function fetchByUserId(id): Promise<AccountSummaryDTO[]> {
                 userId: 1,
                 syncId: 1,
                 sync: 1,
-                connection: {
-                    lastUpdatedAt: 1,
-                    status: 1,
-                },
             }
         },
     ]) as AccountSummaryDTO[];

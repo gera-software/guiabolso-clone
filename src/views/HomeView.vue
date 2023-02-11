@@ -1,4 +1,5 @@
 <template>
+    DEPRECATED
     <h1>Pluggy API Playground</h1>
     <input type="text" placeholder="connection id" v-model="selectedConnection"/> {{selectedConnection}}
     <button @click="getConnection">get connection</button>

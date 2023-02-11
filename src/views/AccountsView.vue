@@ -182,6 +182,9 @@ onMounted(async () => {
 })
 
 
+/**
+ * @deprecated
+ */
 function requestSync() {
   console.log('requested sync')
   return api.guiabolsoApi({
@@ -209,7 +212,9 @@ async function getConnectToken(itemId?: string | undefined) {
     })
 }
 
-
+/**
+ * @deprecated
+ */
 async function openPluggyConnectWidget() {
     const accessToken: string = await getConnectToken()
 

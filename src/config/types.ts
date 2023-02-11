@@ -50,20 +50,6 @@ export interface AccountOwner {
     cpf?: String,
 }
 
-export enum ConnectionStatus {
-    UPDATING = 'UPDATING',
-    LOGIN_ERROR = 'LOGIN_ERROR',
-    OUTDATED = 'OUTDATED',
-    WAITING_USER_INPUT = 'WAITING_USER_INPUT',
-    UPDATED = 'UPDATED',
-}
-
-export interface Connection {
-    pluggyItemId: String,
-    lastUpdatedAt: Date,
-    status: ConnectionStatus,
-}
-
 export interface BankData {
     institution: Institution,
 } 
@@ -91,7 +77,6 @@ export interface AccountDTO {
     syncId?: String,
     sync?: Synchronization,
     accountOwner?: AccountOwner,
-    connection?: Connection,
     bankData?: BankData,
     creditData?: CreditData,
     _isDeleted?: Boolean,
@@ -108,10 +93,6 @@ export interface AccountSummaryDTO {
     userId: String,
     syncId?: String,
     sync?: Synchronization,
-    connection?: {
-        lastUpdatedAt: Date,
-        status: ConnectionStatus,
-    },
     _isDeleted?: Boolean,
 }
 
