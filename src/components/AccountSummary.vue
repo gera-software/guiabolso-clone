@@ -8,13 +8,16 @@
               <div class="balance">R$ {{ (+account.balance / 100).toFixed(2) }}</div>
               <div class="date" v-if="account.syncType === 'AUTOMATIC'"><font-awesome-icon icon="fa-solid fa-arrows-rotate" /> Atualizado em {{ (new Date(""+account.sync?.lastSyncAt)).toLocaleString() }} <span class="badge" v-if="account.sync">{{account.sync.syncStatus}}</span> </div>
               <div class="date" v-else><font-awesome-icon icon="fa-solid fa-user" /> Conta manual</div>
-              <!-- <pre>{{account.sync}}</pre> -->
-              <button  v-if="account.syncType === 'AUTOMATIC'" @click="updateItem(account.sync?.pluggyItemId, $event)">sincronizar</button>
             </div>
           </div>
-          <button class="icon-button" @click="openMoreDialog">
-            <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
-          </button>
+          <div class="col-2">
+            <button v-if="account.syncType === 'AUTOMATIC'" class="icon-button" @click="requestUpdate(account, $event)">
+              <font-awesome-icon icon="fa-solid fa-arrows-rotate" :spin="account.sync?.syncStatus != SyncStatus.SYNCED"/>
+            </button>
+            <button class="icon-button" @click="openMoreDialog">
+              <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
+            </button>
+          </div>
         </div>
         <Teleport to="body">
             <BottomSheet v-model="isBottomSheetOpen">
@@ -37,7 +40,7 @@
 
 </template>
 <script setup lang="ts">
-import { AccountSummaryDTO, AccountType } from '../config/types';
+import { AccountSummaryDTO, AccountType, Synchronization, SyncStatus } from '../config/types';
 import { useRouter } from 'vue-router';
 import api from '../config/axios.js'
 import BottomSheet from '@/components/BottomSheet.vue'
@@ -86,43 +89,62 @@ async function getConnectToken(itemId?: string | undefined) {
     })
 }
 
-async function updatePluggyConnectWidget(itemId: string | undefined) {
+async function updatePluggyConnectWidget(account: AccountSummaryDTO) {
     //@ts-ignore
-    const existingItemIdToUpdate = itemId
-    console.log('update', existingItemIdToUpdate)
+    const existingItemIdToUpdate = account.sync?.pluggyItemId
+    //@ts-ignore
+    account.sync.syncStatus = SyncStatus.PREPARING
+    console.log('update account', account._id, existingItemIdToUpdate)
     //@ts-ignore
     const accessToken: string = await getConnectToken(existingItemIdToUpdate)
 
     // configure the Pluggy Connect widget instance
     // @ts-ignore
     const pluggyConnect = new PluggyConnect({
-    connectToken: accessToken,
-    updateItem: existingItemIdToUpdate, // by specifying the Item id to update here, Pluggy Connect will attempt to trigger an update on it, and/or prompt credentials request if needed.
-    includeSandbox: true, // note: not needed in production
-    onSuccess: (itemData: Object) => {
-        // TODO: Implement logic for successful connection
-        // The following line is an example, it should be removed when implemented.
-        console.log('Yay! Pluggy connect success!', itemData);
-        //@ts-ignore
-        // item.value = itemData.item
-    },
-    onError: (error: Object) => {
-        // TODO: Implement logic for error on connection
-        // The following line is an example, it should be removed when implemented.
-        console.error('Whoops! Pluggy Connect error... ', error);
-    },
-    onEvent: (object: Object) => {
-      console.log(object)
-    } 
+      connectToken: accessToken,
+      updateItem: existingItemIdToUpdate, // by specifying the Item id to update here, Pluggy Connect will attempt to trigger an update on it, and/or prompt credentials request if needed.
+      includeSandbox: true, // note: not needed in production
+      onSuccess: async (itemData: Object) => {
+          if(account.sync) {
+          // @ts-ignore
+            account.sync.itemStatus = itemData.item.status
+            // @ts-ignore
+            account.sync.lastSyncAt = itemData.item.lastUpdatedAt
+            account.sync.syncStatus = SyncStatus.READY
+
+            console.log('Yay! Pluggy connect success!', account, itemData, account.sync);
+            await synchronizationUpdate(account.sync)
+          }
+
+      },
+      onError: (error: Object) => {
+          // TODO: Implement logic for error on connection
+          // The following line is an example, it should be removed when implemented.
+          console.error('Whoops! Pluggy Connect error... ', account, error);
+      },
+      onEvent: (object: Object) => {
+        console.log(object)
+      } 
     });
 
     // Open Pluggy Connect widget
     pluggyConnect.init();
 }
 
-async function updateItem(itemId: string | undefined, event: Event) {
+async function requestUpdate(account: AccountSummaryDTO, event: Event) {
   event.stopImmediatePropagation()
-  await updatePluggyConnectWidget(itemId)
+  await updatePluggyConnectWidget(account)
+}
+
+async function synchronizationUpdate(sync: Synchronization) {
+  return api.guiabolsoApi({
+        method: 'post',
+        url: '/synchronization-update',
+        data: sync
+    }).then((response) => {
+        console.log(response)
+        return response.data
+    })
 }
 
 const isBottomSheetOpen = ref(false)
@@ -170,6 +192,10 @@ async function deleteAccount(id: string) {
 
 .account .col-1 {
   display: flex;
+}
+.account .col-2 {
+  display: flex;
+  gap: 8px;
 }
 
 .account:last-child {
@@ -223,6 +249,9 @@ async function deleteAccount(id: string) {
     border: none;
     background-color: transparent;
     font-size: 18px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
 }
 
 /**
