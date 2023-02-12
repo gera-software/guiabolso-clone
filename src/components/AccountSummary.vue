@@ -161,6 +161,7 @@ async function synchronizationReady(sync: Synchronization) {
  * @param 
  */
 async function startSynchronization(account: AccountSummaryDTO) {
+  console.time('synchronization')
   // start syncronization from 7 days before the last sync date, for guarantee 
   const fromDate = new Date(account.sync?.lastSyncAt ?? '')
   fromDate.setDate(fromDate.getDate() - 7)
@@ -173,7 +174,8 @@ async function startSynchronization(account: AccountSummaryDTO) {
           from: dateToUTCString(fromDate),
         }
     }).then((response) => {
-        console.log('SYNCRONIZATION ENDED', response.data)
+        // console.log('SYNCRONIZATION ENDED', response.data)
+        console.timeEnd('synchronization')
         return response.data
     })
 }
