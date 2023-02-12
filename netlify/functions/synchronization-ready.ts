@@ -15,7 +15,7 @@ const handler: Handler = async (event, context) => {
     try {
         let result: Synchronization | null | undefined = null
 
-        result = await SynchronizationService.start(sync)
+        result = await SynchronizationService.updateStatus(sync)
        
         return {
             statusCode: 200,

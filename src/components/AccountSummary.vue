@@ -113,7 +113,7 @@ async function openPluggyConnectWidget(account: AccountSummaryDTO) {
             account.sync.syncStatus = SyncStatus.READY
 
             console.log('Yay! Pluggy connect success!', account, itemData, account.sync);
-            await startSynchronization(account.sync)
+            await synchronizationReady(account.sync)
           }
 
       },
@@ -136,10 +136,14 @@ async function requestUpdate(account: AccountSummaryDTO, event: Event) {
   await openPluggyConnectWidget(account)
 }
 
-async function startSynchronization(sync: Synchronization) {
+/**
+ * O provedor de dados já concluiu a preparação e atualização com a instituição bancária
+ * @param sync 
+ */
+async function synchronizationReady(sync: Synchronization) {
   return api.guiabolsoApi({
         method: 'post',
-        url: '/synchronization-start',
+        url: '/synchronization-ready',
         data: sync
     }).then((response) => {
         console.log(response)

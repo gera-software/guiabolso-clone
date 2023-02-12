@@ -1,9 +1,5 @@
 import { Handler } from "@netlify/functions";
-import * as TransactionRepository from "../repositories/transactionRepository";
-import * as AccountRepository from "../repositories/accountRepository";
-import pluggy from 'pluggy-sdk'
-import PluggyDataProvider from '../config/pluggyDataProvider'
-import { AccountSyncType, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from "../types";
+import * as SynchronizationService from "../services/synchronizationService";
 
 // TODO atualizar status em Synchronization
 // TODO atualizar account balance
@@ -14,56 +10,20 @@ const handler :Handler = async (event, context) => {
     // const pageSize = +(event.queryStringParameters?.pageSize ?? 20)
     const from = event.queryStringParameters?.from ?? '' // 2022-11-01
 
-    const account = await AccountRepository.getById(accountId)
-    console.log(account)
+    try {
+        await SynchronizationService.importTransactions(accountId, from)
 
-    let pluggyTransactions: pluggy.Transaction[] = [];
-    let transactions: Transaction[] = []
-
-    if(account) {
-        const pluggyAccountId = account.pluggyAccountId ?? ''
-    
-        try {
-            const provider = new PluggyDataProvider()
-            pluggyTransactions = await provider.fetchTransactions(pluggyAccountId, from)
-            console.log(pluggyTransactions.length)
-
-            transactions = pluggyTransactions.map(transaction => ({
-                pluggyTransactionId: transaction.id,
-                syncType: AccountSyncType.AUTOMATIC,
-                descriptionOriginal: transaction.description,
-                amount: Math.trunc(transaction.amount * 100),
-                currencyCode: CurrencyCodes.BRL,
-                date: transaction.date,
-                type: transaction.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
-                status: TransactionStatus.POSTED,
-                // ignored: false,
-                // _isDeleted: false,
-                accountId: account._id,
-                userId: account.userId,
-            }) as Transaction)
-
-            await TransactionRepository.batchUpdate(transactions)
-
-        } catch(err) {
-            console.error(err)
-            return {
-                statusCode: 400,
-                body: JSON.stringify(err),
-            };
-        }
-    } else {
+    } catch(err) {
+        console.error(err)
         return {
             statusCode: 400,
-            body: JSON.stringify('invalid account'),
+            body: JSON.stringify(err),
         };
     }
-
-
+    
     return {
         statusCode: 201
     };
-
 
 }
 
