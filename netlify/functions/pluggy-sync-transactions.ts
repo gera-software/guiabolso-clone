@@ -3,9 +3,11 @@ import * as TransactionRepository from "../repositories/transactionRepository";
 import * as AccountRepository from "../repositories/accountRepository";
 import pluggy from 'pluggy-sdk'
 import PluggyDataProvider from '../config/pluggyDataProvider'
-import { AccountSyncType, CurrencyCodes, Transaction, TransactionType } from "../types";
+import { AccountSyncType, CurrencyCodes, Transaction, TransactionStatus, TransactionType } from "../types";
 
-
+// TODO atualizar status em Synchronization
+// TODO atualizar account balance
+// TODO e se for uma transação de cartão de crédito, tem que inverter os valores...
 const handler :Handler = async (event, context) => {
 
     const accountId = event.queryStringParameters?.accountId ?? ''
@@ -34,7 +36,7 @@ const handler :Handler = async (event, context) => {
                 currencyCode: CurrencyCodes.BRL,
                 date: transaction.date,
                 type: transaction.amount >= 0 ? TransactionType.INCOME : TransactionType.EXPENSE,
-                status: transaction.status,
+                status: TransactionStatus.POSTED,
                 // ignored: false,
                 // _isDeleted: false,
                 accountId: account._id,

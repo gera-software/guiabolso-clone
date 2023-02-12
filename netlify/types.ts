@@ -116,7 +116,6 @@ export interface Transaction {
     amount: Number,
     currencyCode: CurrencyCodes,
     date: Date,
-    plainDate: String,
     creditCardDate?: Date,
     plainCreditCardDate?: String,
     category?: Category,

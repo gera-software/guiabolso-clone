@@ -254,7 +254,6 @@ export async function updateOne(transaction: Transaction): Promise<Transaction |
         doc.description = transaction.description
         doc.amount = transaction.amount
         doc.date = transaction.date
-        doc.plainDate = transaction.plainDate
         doc.creditCardDate = transaction.creditCardDate
         doc.plainCreditCardDate = transaction.plainCreditCardDate
         doc.category = transaction.category
@@ -278,7 +277,6 @@ export async function findOneAndUpdate(transaction: Transaction): Promise<Transa
         description: transaction.description,
         amount: transaction.amount,
         date: transaction.date,
-        plainDate: transaction.plainDate,
         creditCardDate: transaction.creditCardDate,
         plainCreditCardDate: transaction.plainCreditCardDate,
         category: transaction.category,
@@ -313,7 +311,7 @@ export async function batchUpdate(transactions: Transaction[]) {
     await TransactionModel.bulkWrite(
         updateArray
       ).then(res => {
-        console.log(res);
+        console.log(res.result);
       });
 
     await disconnect();
