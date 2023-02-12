@@ -89,7 +89,7 @@ async function getConnectToken(itemId?: string | undefined) {
     })
 }
 
-async function updatePluggyConnectWidget(account: AccountSummaryDTO) {
+async function openPluggyConnectWidget(account: AccountSummaryDTO) {
     //@ts-ignore
     const existingItemIdToUpdate = account.sync?.pluggyItemId
     //@ts-ignore
@@ -113,7 +113,7 @@ async function updatePluggyConnectWidget(account: AccountSummaryDTO) {
             account.sync.syncStatus = SyncStatus.READY
 
             console.log('Yay! Pluggy connect success!', account, itemData, account.sync);
-            await synchronizationUpdate(account.sync)
+            await startSynchronization(account.sync)
           }
 
       },
@@ -133,13 +133,13 @@ async function updatePluggyConnectWidget(account: AccountSummaryDTO) {
 
 async function requestUpdate(account: AccountSummaryDTO, event: Event) {
   event.stopImmediatePropagation()
-  await updatePluggyConnectWidget(account)
+  await openPluggyConnectWidget(account)
 }
 
-async function synchronizationUpdate(sync: Synchronization) {
+async function startSynchronization(sync: Synchronization) {
   return api.guiabolsoApi({
         method: 'post',
-        url: '/synchronization-update',
+        url: '/synchronization-start',
         data: sync
     }).then((response) => {
         console.log(response)
