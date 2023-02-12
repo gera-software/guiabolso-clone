@@ -40,6 +40,14 @@ export async function importTransactions(accountId: string, from: string) {
         const pluggyAccountId = account.pluggyAccountId ?? ''
   
         const provider = new PluggyDataProvider()
+
+        // update balance
+        const accountData = await provider.getAccount(pluggyAccountId)
+        console.log('PLUGGY ACCOUNT DATA', accountData)
+        const newBalance =  Math.trunc(accountData.balance * 100)
+        await AccountRepository.setBalance(account._id?.toString() ?? '', newBalance)
+
+        // update transactions
         pluggyTransactions = await provider.fetchTransactions(pluggyAccountId, from)
         console.log('TRANSACTIONS FOUND: ' + pluggyTransactions.length)
 

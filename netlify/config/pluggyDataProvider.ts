@@ -77,6 +77,13 @@ class PluggyDataProvider implements DataProvider {
         return transactions
     }
 
+    async getAccount(pluggyAccountId: string): Promise<pluggy.Account> {
+        console.log('[Pluggy] get account...')
+        return this.client
+                .fetchAccount(pluggyAccountId)
+                .then((account) => account)
+    }
+
     /**
      * Request an item to start update process in background
      * @param id 
