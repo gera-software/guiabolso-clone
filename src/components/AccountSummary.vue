@@ -112,11 +112,13 @@ async function openPluggyConnectWidget(account: AccountSummaryDTO) {
             // account.sync.lastSyncAt = itemData.item.lastUpdatedAt
             account.sync.syncStatus = SyncStatus.READY
 
-            console.log('Yay! Pluggy connect success!', account, itemData, account.sync);
+            console.log('PLUGGY CONNECT SUCCESS', itemData);
             account.sync = await synchronizationReady(account.sync)
+            console.log('SYNCRONIZATION READY ', account.sync)
             const { sync, balance } = await startSynchronization(account)
             account.sync = sync
             account.balance = balance
+            console.log('SYNCRONIZATION endend ', account)
           }
 
       },
