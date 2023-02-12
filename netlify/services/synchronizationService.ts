@@ -26,10 +26,11 @@ export async function updateStatus(sync: Synchronization) {
  * @param from string no formato 'aaaa-mm-dd' representando a data a partir do qual as transações serão importadas
  * @returns 
  */
-export async function importTransactions(accountId, from) {
+export async function importTransactions(accountId: string, from: string) {
 
     const account = await AccountRepository.getById(accountId)
     console.log(account)
+    console.log(from)
 
     let pluggyTransactions: pluggy.Transaction[] = [];
     let transactions: Transaction[] = []

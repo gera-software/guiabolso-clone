@@ -45,6 +45,7 @@ import { useRouter } from 'vue-router';
 import api from '../config/axios.js'
 import BottomSheet from '@/components/BottomSheet.vue'
 import { ref } from 'vue';
+import { dateToUTCString } from '../config/dateHelper';
 
 const props = defineProps<{
     account: AccountSummaryDTO
@@ -106,14 +107,14 @@ async function openPluggyConnectWidget(account: AccountSummaryDTO) {
       includeSandbox: true, // note: not needed in production
       onSuccess: async (itemData: Object) => {
           if(account.sync) {
-          // @ts-ignore
-            account.sync.itemStatus = itemData.item.status
             // @ts-ignore
-            account.sync.lastSyncAt = itemData.item.lastUpdatedAt
+            account.sync.itemStatus = itemData.item.status
+            // account.sync.lastSyncAt = itemData.item.lastUpdatedAt
             account.sync.syncStatus = SyncStatus.READY
 
             console.log('Yay! Pluggy connect success!', account, itemData, account.sync);
             await synchronizationReady(account.sync)
+            await startSynchronization(account._id?.toString() ?? '', new Date(account.sync.lastSyncAt))
           }
 
       },
@@ -137,7 +138,7 @@ async function requestUpdate(account: AccountSummaryDTO, event: Event) {
 }
 
 /**
- * O provedor de dados já concluiu a preparação e atualização com a instituição bancária
+ * O provedor de dados já concluiu a preparação e atualização dos dados com a instituição bancária
  * @param sync 
  */
 async function synchronizationReady(sync: Synchronization) {
@@ -145,6 +146,24 @@ async function synchronizationReady(sync: Synchronization) {
         method: 'post',
         url: '/synchronization-ready',
         data: sync
+    }).then((response) => {
+        console.log(response)
+        return response.data
+    })
+}
+
+/**
+ * Inicia a importação das transações de uma conta
+ * @param 
+ */
+async function startSynchronization(accountId: string, _from: Date) {
+  return api.guiabolsoApi({
+        method: 'get',
+        url: '/pluggy-sync-transactions',
+        params: {
+          accountId,
+          from: dateToUTCString(_from),
+        }
     }).then((response) => {
         console.log(response)
         return response.data
