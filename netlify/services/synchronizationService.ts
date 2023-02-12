@@ -1,5 +1,5 @@
 import * as SynchronizationRepository from "../repositories/synchronizationRepository";
-import { Synchronization } from "../types";
+import { Synchronization, SyncStatus } from "../types";
 
 import * as TransactionRepository from "../repositories/transactionRepository";
 import * as AccountRepository from "../repositories/accountRepository";
@@ -11,16 +11,17 @@ import { AccountSyncType, CurrencyCodes, Transaction, TransactionStatus, Transac
 
 
 export async function updateStatus(sync: Synchronization) {
+    console.log('UPDATE STATUS: ', sync)
     return await SynchronizationRepository.updateOne(sync)
 }
 
-// TODO atualizar status em Synchronization
 // TODO atualizar account balance
 // TODO e se for uma transação de cartão de crédito, tem que inverter os valores...
 /**
  * Inicia o processo de importação das transações do provedor de dados
  * 
  * - upsert as transações recentes (desde a data da ultima sincronização de uma conta)
+ * - atualiza synchronzation status 
  * - atualiza o balanço da conta
  * @param accountId
  * @param from string no formato 'aaaa-mm-dd' representando a data a partir do qual as transações serão importadas
@@ -59,7 +60,16 @@ export async function importTransactions(accountId: string, from: string) {
 
         await TransactionRepository.batchUpdate(transactions)
 
-        return true
+
+        // update syncronization status to SYNCED
+        let sync = await SynchronizationRepository.getById(account.syncId)
+        if(sync) {
+            sync.syncStatus = SyncStatus.SYNCED
+            sync.lastSyncAt = new Date()
+            sync = await updateStatus(sync)
+        }
+
+        return sync
   
     } else {
         throw new Error('Account not found')

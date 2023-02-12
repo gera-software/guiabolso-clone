@@ -113,8 +113,8 @@ async function openPluggyConnectWidget(account: AccountSummaryDTO) {
             account.sync.syncStatus = SyncStatus.READY
 
             console.log('Yay! Pluggy connect success!', account, itemData, account.sync);
-            await synchronizationReady(account.sync)
-            await startSynchronization(account._id?.toString() ?? '', new Date(account.sync.lastSyncAt))
+            account.sync = await synchronizationReady(account.sync)
+            account.sync = await startSynchronization(account)
           }
 
       },
@@ -156,16 +156,20 @@ async function synchronizationReady(sync: Synchronization) {
  * Inicia a importação das transações de uma conta
  * @param 
  */
-async function startSynchronization(accountId: string, _from: Date) {
+async function startSynchronization(account: AccountSummaryDTO) {
+  // start syncronization from 7 days before the last sync date, for guarantee 
+  const fromDate = new Date(account.sync?.lastSyncAt ?? '')
+  fromDate.setDate(fromDate.getDate() - 7)
+
   return api.guiabolsoApi({
         method: 'get',
         url: '/pluggy-sync-transactions',
         params: {
-          accountId,
-          from: dateToUTCString(_from),
+          accountId: account._id?.toString() ?? '',
+          from: dateToUTCString(fromDate),
         }
     }).then((response) => {
-        console.log(response)
+        console.log('SYNCRONIZATION ENDED', response.data)
         return response.data
     })
 }

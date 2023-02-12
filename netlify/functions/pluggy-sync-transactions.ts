@@ -1,7 +1,6 @@
 import { Handler } from "@netlify/functions";
 import * as SynchronizationService from "../services/synchronizationService";
 
-// TODO atualizar status em Synchronization
 // TODO atualizar account balance
 // TODO e se for uma transação de cartão de crédito, tem que inverter os valores...
 const handler :Handler = async (event, context) => {
@@ -10,9 +9,9 @@ const handler :Handler = async (event, context) => {
     // const pageSize = +(event.queryStringParameters?.pageSize ?? 20)
     const from = event.queryStringParameters?.from ?? '' // 2022-11-01
 
+    let result
     try {
-        await SynchronizationService.importTransactions(accountId, from)
-
+        result = await SynchronizationService.importTransactions(accountId, from)
     } catch(err) {
         console.error(err)
         return {
@@ -22,7 +21,8 @@ const handler :Handler = async (event, context) => {
     }
     
     return {
-        statusCode: 201
+        statusCode: 200,
+        body: JSON.stringify(result),
     };
 
 }
