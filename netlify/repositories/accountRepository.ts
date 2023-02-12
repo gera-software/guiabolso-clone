@@ -85,6 +85,39 @@ export async function getById(id): Promise<Account | null> {
     return result;
 }
 
+export async function getSummaryById(id): Promise<AccountSummaryDTO | null> {
+    await connect();
+    const result = await AccountModel.aggregate([
+        { $match: { _id: new Types.ObjectId(id) } },
+        { $lookup: {
+                from: 'synchronizations',
+                localField: 'syncId',
+                foreignField: '_id',
+                as: 'sync',
+                
+            }
+        },
+        { $unwind: { path: '$sync', preserveNullAndEmptyArrays: true } },
+        { $project: {
+                _id: 1,
+                name: 1,
+                imageUrl: 1,
+                syncType: 1,
+                balance: 1,
+                currencyCode: 1,
+                type: 1,
+                userId: 1,
+                syncId: 1,
+                sync: 1,
+            }
+        },
+    ]) as AccountSummaryDTO[];
+    
+    // const result = await AccountModel.findById(id);
+    await disconnect();
+    return result[0];
+}
+
 /**
  * Creates a account
  * @param account 

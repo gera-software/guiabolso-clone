@@ -1,5 +1,5 @@
 import * as SynchronizationRepository from "../repositories/synchronizationRepository";
-import { Synchronization, SyncStatus } from "../types";
+import { AccountSummaryDTO, Synchronization, SyncStatus } from "../types";
 
 import * as TransactionRepository from "../repositories/transactionRepository";
 import * as AccountRepository from "../repositories/accountRepository";
@@ -15,7 +15,6 @@ export async function updateStatus(sync: Synchronization) {
     return await SynchronizationRepository.updateOne(sync)
 }
 
-// TODO atualizar account balance
 // TODO e se for uma transação de cartão de crédito, tem que inverter os valores...
 /**
  * Inicia o processo de importação das transações do provedor de dados
@@ -27,7 +26,7 @@ export async function updateStatus(sync: Synchronization) {
  * @param from string no formato 'aaaa-mm-dd' representando a data a partir do qual as transações serão importadas
  * @returns 
  */
-export async function importTransactions(accountId: string, from: string) {
+export async function importTransactions(accountId: string, from: string): Promise<AccountSummaryDTO | null> {
 
     const account = await AccountRepository.getById(accountId)
     console.log(account)
@@ -44,8 +43,8 @@ export async function importTransactions(accountId: string, from: string) {
         // update balance
         const accountData = await provider.getAccount(pluggyAccountId)
         console.log('PLUGGY ACCOUNT DATA', accountData)
-        const newBalance =  Math.trunc(accountData.balance * 100)
-        await AccountRepository.setBalance(account._id?.toString() ?? '', newBalance)
+        account.balance =  Math.trunc(accountData.balance * 100)
+        await AccountRepository.setBalance(account._id?.toString() ?? '', account.balance.valueOf())
 
         // update transactions
         pluggyTransactions = await provider.fetchTransactions(pluggyAccountId, from)
@@ -75,9 +74,17 @@ export async function importTransactions(accountId: string, from: string) {
             sync.syncStatus = SyncStatus.SYNCED
             sync.lastSyncAt = new Date()
             sync = await updateStatus(sync)
+            
+
         }
 
-        return sync
+        // get account summary
+        const accountSummary: AccountSummaryDTO | null = await AccountRepository.getSummaryById(account._id)
+
+
+        console.log('ACCOUNT SUMMARY', accountSummary)
+
+        return accountSummary
   
     } else {
         throw new Error('Account not found')
