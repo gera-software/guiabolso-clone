@@ -151,7 +151,6 @@ async function synchronizationReady(sync: Synchronization) {
         url: '/synchronization-ready',
         data: sync
     }).then((response) => {
-        console.log(response)
         return response.data
     })
 }
