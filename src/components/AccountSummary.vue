@@ -165,9 +165,9 @@ async function startSynchronization(account: AccountSummaryDTO) {
   const fromDate = new Date(account.sync?.lastSyncAt ?? '')
   fromDate.setDate(fromDate.getDate() - 7)
 
-  return api.guiabolsoApi({
-        method: 'get',
-        url: '/pluggy-sync-transactions',
+  return api.guiabolsoServer({
+        method: 'post',
+        url: '/sync',
         params: {
           accountId: account._id?.toString() ?? '',
           from: dateToUTCString(fromDate),
