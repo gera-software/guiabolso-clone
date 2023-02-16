@@ -1,11 +1,11 @@
 {
   "name": "guiabolso-clone",
   "private": false,
-  "version": "0.8.5",
+  "version": "0.8.6",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "netlify:dev": "netlify dev",
+    "vite:dev": "vite",
+    "dev": "netlify dev",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
