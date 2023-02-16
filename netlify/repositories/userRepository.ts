@@ -10,14 +10,14 @@ const schema = new Schema<User>({
 
 const UserModel = model<User>('users', schema);
 
-export async function getById(id): Promise<User | null> {
+export async function getById(id: any): Promise<User | null> {
     await connect();
     const result = await UserModel.findById(id);
     await disconnect();
     return result;
 }
 
-export async function getByNetlifyId(id): Promise<User | null> {
+export async function getByNetlifyId(id: any): Promise<User | null> {
     await connect();
     const result = await UserModel.findOne({ netlifyId: id });
     await disconnect();

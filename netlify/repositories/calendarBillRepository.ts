@@ -15,7 +15,7 @@ const schema = new Schema<CalendarBill>({
 
 const CalendarBillModel = model<CalendarBill>('bills', schema);
 
-export async function fetchByUser(id, monthField, yearField, limit = 0): Promise<CalendarBill[]> {
+export async function fetchByUser(id: any, monthField: string, yearField: string, limit = 0): Promise<CalendarBill[]> {
     await connect();
 
     const year = parseInt(yearField)
@@ -44,7 +44,7 @@ export async function create(bill: CalendarBill | null): Promise<CalendarBill | 
     return result;
 }
 
-export async function getById(id): Promise<CalendarBill | null> {
+export async function getById(id: any): Promise<CalendarBill | null> {
     await connect();
     const result = await CalendarBillModel.findOne({ _id: id, _isDeleted: { $ne: true } });
     await disconnect();
@@ -68,7 +68,7 @@ export async function updateOne(bill: CalendarBill): Promise<CalendarBill | null
     return doc;
 }
 
-export async function remove(id): Promise<CalendarBill | null> {
+export async function remove(id: any): Promise<CalendarBill | null> {
     await connect();
     const doc = await CalendarBillModel.findById(id);
 

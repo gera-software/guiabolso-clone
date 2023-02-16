@@ -10,7 +10,7 @@ const TransactionModel = model<Transaction>('transactions', schema);
  * @param id 
  * @returns 
  */
-export async function getById(id): Promise<Transaction | null> {
+export async function getById(id: any): Promise<Transaction | null> {
     await connect();
     const result = await TransactionModel.findOne({ _id: id, _isDeleted: { $ne: true } });
     await disconnect();
@@ -22,7 +22,7 @@ export async function getById(id): Promise<Transaction | null> {
  * @param id
  * @returns 
  */
-export async function remove(id): Promise<Transaction | null> {
+export async function remove(id: any): Promise<Transaction | null> {
     await connect();
     const result = await TransactionModel.findOneAndUpdate({ _id: id }, { _isDeleted: true });
     await disconnect();
@@ -34,7 +34,7 @@ export async function remove(id): Promise<Transaction | null> {
  * @param id 
  * @returns 
  */
-export async function fetchByAccount(id, monthField, yearField, transactionType = 'ALL'): Promise<TransactionSummary[]> {
+export async function fetchByAccount(id: any, monthField: string, yearField: string, transactionType = 'ALL'): Promise<TransactionSummary[]> {
     await connect();
 
     const year = parseInt(yearField)
@@ -98,7 +98,7 @@ export async function fetchByAccount(id, monthField, yearField, transactionType 
  * @param id 
  * @returns 
  */
-export async function fetchByUser(id, monthField, yearField, limit = 0, transactionType = 'ALL'): Promise<TransactionSummary[]> {
+export async function fetchByUser(id: any, monthField: string, yearField: string, limit = 0, transactionType = 'ALL'): Promise<TransactionSummary[]> {
     
     await connect();
 
@@ -170,7 +170,7 @@ export async function fetchByUser(id, monthField, yearField, limit = 0, transact
  * @param id 
  * @returns 
  */
-export async function fetchByCreditCardInvoice(id): Promise<Transaction[]> {
+export async function fetchByCreditCardInvoice(id: any): Promise<Transaction[]> {
     await connect();
 
     const result = await TransactionModel.aggregate([
@@ -323,7 +323,7 @@ interface SpendingByCategory {
     totalAmount: number,
 }
 
-export async function fetchSpendingsByCategories(id, monthField, yearField, transactionType): Promise<SpendingByCategory[]> {
+export async function fetchSpendingsByCategories(id: any, monthField: string, yearField: string, transactionType: string): Promise<SpendingByCategory[]> {
     await connect();
     const year = parseInt(yearField)
     const month = parseInt(monthField)

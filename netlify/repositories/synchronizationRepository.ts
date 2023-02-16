@@ -14,14 +14,14 @@ const schema = new Schema<Synchronization>({
 
 const SynchronizationModel = model<Synchronization>('synchronizations', schema);
 
-export async function fetchByUserId(id): Promise<Synchronization[]> {
+export async function fetchByUserId(id: any): Promise<Synchronization[]> {
     await connect();
     const result = await SynchronizationModel.find({ userId: new Types.ObjectId(id) })
     await disconnect();
     return result;
 }
 
-export async function getById(id): Promise<Synchronization | null> {
+export async function getById(id: any): Promise<Synchronization | null> {
     await connect();
     const result = await SynchronizationModel.findById(id);
     await disconnect();

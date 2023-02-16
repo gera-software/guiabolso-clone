@@ -24,7 +24,7 @@ const TransactionModel = model<Transaction>('transactions', schema);
  * @param yearField 
  * @returns 
  */
-export async function getHighestMonthlySpendings(id, monthField, yearField): Promise<SpendingByCategory[]> {
+export async function getHighestMonthlySpendings(id: any, monthField: string, yearField: string): Promise<SpendingByCategory[]> {
     await connect();
     const year = parseInt(yearField)
     const month = parseInt(monthField)
@@ -62,7 +62,7 @@ export async function getHighestMonthlySpendings(id, monthField, yearField): Pro
  * @param yearField 
  * @returns 
  */
-export async function getMonthPlanning(id, monthField, yearField): Promise<MonthPlanning[]> {
+export async function getMonthPlanning(id: any, monthField: string, yearField: string): Promise<MonthPlanning[]> {
     await connect();
     const year = parseInt(yearField)
     const month = parseInt(monthField)

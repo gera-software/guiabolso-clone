@@ -47,7 +47,7 @@ const schema = new Schema<Account>({
 
 const AccountModel = model<Account>('accounts', schema);
 
-export async function fetchByUserId(id): Promise<AccountSummaryDTO[]> {
+export async function fetchByUserId(id: any): Promise<AccountSummaryDTO[]> {
     await connect();
     const result = await AccountModel.aggregate([
         { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true } } },
@@ -78,14 +78,14 @@ export async function fetchByUserId(id): Promise<AccountSummaryDTO[]> {
     return result;
 }
 
-export async function getById(id): Promise<Account | null> {
+export async function getById(id: any): Promise<Account | null> {
     await connect();
     const result = await AccountModel.findById(id);
     await disconnect();
     return result;
 }
 
-export async function getSummaryById(id): Promise<AccountSummaryDTO | null> {
+export async function getSummaryById(id: any): Promise<AccountSummaryDTO | null> {
     await connect();
     const result = await AccountModel.aggregate([
         { $match: { _id: new Types.ObjectId(id) } },
@@ -137,7 +137,7 @@ export async function create(account: Account | null): Promise<Account | null> {
  * @param id
  * @returns 
  */
-export async function remove(id): Promise<Account | null> {
+export async function remove(id: any): Promise<Account | null> {
     await connect();
     const result = await AccountModel.findOneAndUpdate({ _id: id }, { _isDeleted: true });
     await disconnect();
@@ -217,7 +217,7 @@ type Balance = {
     balance: number
 }
 
-export async function fetchUserBalance(id): Promise<Balance[]> {
+export async function fetchUserBalance(id: any): Promise<Balance[]> {
     await connect();
     const result = await AccountModel.aggregate([
         { $match: { userId: new Types.ObjectId(id), _isDeleted: { $ne: true } } },

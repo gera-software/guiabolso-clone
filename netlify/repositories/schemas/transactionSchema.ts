@@ -8,7 +8,6 @@ const schema = new Schema<Transaction>({
     amount: Number,
     currencyCode: String,
     date: Date,
-    plainDate: { type: String, required: false },
     creditCardDate: { type: Date, required: false },
     plainCreditCardDate: { type: String, required: false },
     category: {

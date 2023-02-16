@@ -1,11 +1,12 @@
-import pluggy from "pluggy-sdk"
+import { PluggyClient, Transaction as PluggyTransaction, Account as PluggyAccount, Item as PluggyItem, PageResponse } from 'pluggy-sdk';
+
 import { DataProvider, Institution, InstitutionType } from '../types'
 
 class PluggyDataProvider implements DataProvider {
-    private client : pluggy.PluggyClient
+    private client : PluggyClient
 
     constructor() {
-        this.client = new pluggy.PluggyClient({
+        this.client = new PluggyClient({
             clientId: process.env.VITE_PLUGGY_CLIENT_ID ?? '',
             clientSecret: process.env.VITE_PLUGGY_CLIENT_SECRET ?? '',
         });
@@ -41,16 +42,16 @@ class PluggyDataProvider implements DataProvider {
      * @param from 
      * @returns 
      */
-    async fetchTransactions(pluggyAccountId: string, from: string ): Promise<pluggy.Transaction[]> {
+    async fetchTransactions(pluggyAccountId: string, from: string ): Promise<PluggyTransaction[]> {
         console.log('[Pluggy] fetchTransactions...')
 
         // const pluggyAccountId = '100e848a-22e7-491e-bebc-a3c489df7893'
         const pageSize = 10
         // const from = '2022-11-01'
 
-        let transactions: pluggy.Transaction[]  = []
+        let transactions: PluggyTransaction[]  = []
 
-        let response;
+        let response: PageResponse<PluggyTransaction>;
 
         let page = 1
         let totalPages = 1
@@ -70,14 +71,16 @@ class PluggyDataProvider implements DataProvider {
             // console.log(response.totalPages)
             // console.log(response.page)
 
+            // @ts-ignore
             totalPages = +response.totalPages
+            // @ts-ignore
             page = +response.page + 1
         } while(page <= totalPages)
 
         return transactions
     }
 
-    async getAccount(pluggyAccountId: string): Promise<pluggy.Account> {
+    async getAccount(pluggyAccountId: string): Promise<PluggyAccount> {
         console.log('[Pluggy] get account...')
         return this.client
                 .fetchAccount(pluggyAccountId)
@@ -89,7 +92,7 @@ class PluggyDataProvider implements DataProvider {
      * @param id 
      * @returns 
      */
-    async updateItem(id: string): Promise<pluggy.Item> {
+    async updateItem(id: string): Promise<PluggyItem> {
         console.log('[Pluggy] updateItems...')
         return this.client
             .updateItem(id)
